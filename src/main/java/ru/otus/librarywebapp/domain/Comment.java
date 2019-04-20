@@ -5,10 +5,12 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @ToString(exclude = "book")
 @Document(collection = "comments")
@@ -21,6 +23,7 @@ public class Comment {
     @DBRef
     private Book book;
     private String author;
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date date;
     private String content;
 
