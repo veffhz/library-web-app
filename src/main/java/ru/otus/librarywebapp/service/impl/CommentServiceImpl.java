@@ -30,6 +30,11 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    public long count() {
+        return repository.count();
+    }
+
+    @Override
     public Optional<Comment> getById(String id) {
         return repository.findById(id);
     }
