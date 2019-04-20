@@ -2,16 +2,14 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Edit author</title>
+    <title>Author info</title>
     <link type="text/css" rel="stylesheet" href="css/style.css" th:href="@{css/style.css}" />
     <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css" th:href="@{css/bootstrap.min.css}" />
 </head>
 <body>
+<h1>Author info:</h1>
 
-<!-- Author detail -->
 <form id="edit-form" th:object="${author}">
-    <h1>Person Info:</h1>
-
     <div class="row">
         <label for="id-input">ID:</label>
         <input id="id-input" type="text" readonly="readonly" th:value="*{id}" value="1"/>

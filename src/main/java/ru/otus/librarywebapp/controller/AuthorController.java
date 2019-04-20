@@ -51,7 +51,7 @@ public class AuthorController {
         authorService.save(author);
         RedirectView rv = new RedirectView();
         rv.setContextRelative(true);
-        rv.setUrl("/author/?id={id}");
+        rv.setUrl("/author?id={id}");
         rv.getAttributesMap().put("id", author.getId());
         return rv;
     }
