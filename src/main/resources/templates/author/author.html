@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Edit author</title>
+    <link type="text/css" rel="stylesheet" href="css/style.css" th:href="@{css/style.css}" />
+    <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css" th:href="@{css/bootstrap.min.css}" />
+</head>
+<body>
+
+<!-- Author detail -->
+<form id="edit-form" th:object="${author}">
+    <h1>Person Info:</h1>
+
+    <div class="row">
+        <label for="id-input">ID:</label>
+        <input id="id-input" type="text" readonly="readonly" th:value="*{id}" value="1"/>
+    </div>
+
+    <div class="row">
+        <label for="holder-fn-input">First name:</label>
+        <input id="holder-fn-input" name="firstname" readonly="readonly" type="text" th:field="*{firstName}" value="John"/>
+    </div>
+
+    <div class="row">
+        <label for="holder-ln-input">Last name:</label>
+        <input id="holder-ln-input" name="laststname" readonly="readonly" type="text" th:field="*{lastName}" value="Doe"/>
+    </div>
+
+    <div class="row">
+        <label for="holder-bd-input">Birth date:</label>
+        <input id="holder-bd-input" name="birthdate" readonly="readonly" type="date" th:field="*{birthDate}" value="2013-01-08"/>
+    </div>
+
+    <div class="row">
+        <a th:href="@{/editAuthor(id=${author.id})}" href="edit.html">Edit</a>
+    </div>
+</form>
+
+</body>
+</html>
