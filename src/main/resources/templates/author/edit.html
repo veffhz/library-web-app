@@ -9,7 +9,7 @@
 <body>
 <h1>Author edit:</h1>
 
-<form id="edit-form" th:action="@{/editAuthor}" th:object="${author}" th:method="post" action="author.html" modelAttribute="author">
+<form id="edit-form" th:action="@{/editAuthor}" th:object="${author}" th:method="post" action="author.html">
     <div class="row">
         <label for="id">ID:</label>
         <input id="id" type="text" readonly="readonly" th:field="*{id}" value="1"/>

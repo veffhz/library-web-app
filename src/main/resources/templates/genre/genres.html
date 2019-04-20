@@ -2,27 +2,27 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>List of all authors</title>
+    <title>List of all genres</title>
     <link type="text/css" rel="stylesheet" href="css/style.css" th:href="@{css/style.css}" />
     <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css" th:href="@{css/bootstrap.min.css}" />
 </head>
 <body>
-<h1>Authors:</h1>
+<h1>Genres:</h1>
 
 <table class="items">
     <thead>
     <tr>
         <th>ID</th>
-        <th>Last Name</th>
+        <th>Genre Name</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="author : ${authors}">
+    <tr th:each="genre : ${genres}">
 
-        <td th:text="${author.id}">1</td>
-        <td th:text="${author.lastName}">Doe</td>
+        <td th:text="${genre.id}">1</td>
+        <td th:text="${genre.genreName}">Fantasy</td>
         <td>
-            <a th:href="@{/author(id=${author.id})}" href="author.html">Detail</a>
+            <a th:href="@{/genre(id=${genre.id})}" href="genre.html">Detail</a>
         </td>
     </tr>
     </tbody>

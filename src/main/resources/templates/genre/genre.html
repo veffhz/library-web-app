@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Genre info</title>
+    <link type="text/css" rel="stylesheet" href="css/style.css" th:href="@{css/style.css}" />
+    <link type="text/css" rel="stylesheet" href="css/bootstrap.min.css" th:href="@{css/bootstrap.min.css}" />
+</head>
+<body>
+<h1>Genre info:</h1>
+
+<form id="edit-form" th:object="${genre}">
+    <div class="row">
+        <label for="id-input">ID:</label>
+        <input id="id-input" type="text" readonly="readonly" th:value="*{id}" value="1"/>
+    </div>
+
+    <div class="row">
+        <label for="holder-fn-input">Genre name:</label>
+        <input id="holder-fn-input" name="genreName" readonly="readonly" type="text" th:field="*{genreName}" value="Fantasy"/>
+    </div>
+
+    <div class="row">
+        <a th:href="@{/editGenre(id=${genre.id})}" href="edit.html">Edit</a>
+    </div>
+</form>
+
+</body>
+</html>

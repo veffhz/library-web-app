@@ -1,7 +1,7 @@
 body {
     padding: 50px;
 }
-.authors, .authors td {
+.items, .items td {
     border: 1px solid lightgray;
     padding: 5px;
 }
