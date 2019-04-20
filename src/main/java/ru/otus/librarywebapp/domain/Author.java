@@ -31,4 +31,8 @@ public class Author {
         this.lastName = lastName;
     }
 
+    public String getFullName() {
+        return String.format("%s %s", firstName, lastName);
+    }
+
 }
