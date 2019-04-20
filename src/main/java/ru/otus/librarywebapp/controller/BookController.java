@@ -47,7 +47,7 @@ public class BookController {
         return "book/book";
     }
 
-    @GetMapping("/editBook")
+    @GetMapping("/book/edit")
     public String edit(@RequestParam("id") String id, Model model) {
         Book book = bookService.getById(id).orElseThrow(BookNotFoundException::new);
         model.addAttribute("book", book);
@@ -58,7 +58,7 @@ public class BookController {
         return "book/edit";
     }
 
-    @PostMapping("/editBook")
+    @PostMapping("/book/edit")
     public RedirectView save(@ModelAttribute("book") Book book) {
         bookService.save(book);
         RedirectView rv = new RedirectView();

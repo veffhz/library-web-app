@@ -39,14 +39,14 @@ public class GenreController {
         return "genre/genre";
     }
 
-    @GetMapping("/editGenre")
+    @GetMapping("/genre/edit")
     public String edit(@RequestParam("id") String id, Model model) {
         Genre genre = genreService.getById(id).orElseThrow(GenreNotFoundException::new);
         model.addAttribute("genre", genre);
         return "genre/edit";
     }
 
-    @PostMapping("/editGenre")
+    @PostMapping("/genre/edit")
     public RedirectView save(@ModelAttribute("genre") Genre genre) {
         genreService.save(genre);
         RedirectView rv = new RedirectView();

@@ -39,14 +39,14 @@ public class AuthorController {
         return "author/author";
     }
 
-    @GetMapping("/editAuthor")
+    @GetMapping("/author/edit")
     public String edit(@RequestParam("id") String id, Model model) {
         Author author = authorService.getById(id).orElseThrow(AuthorNotFoundException::new);
         model.addAttribute("author", author);
         return "author/edit";
     }
 
-    @PostMapping("/editAuthor")
+    @PostMapping("/author/edit")
     public RedirectView save(@ModelAttribute("author") Author author) {
         authorService.save(author);
         RedirectView rv = new RedirectView();
