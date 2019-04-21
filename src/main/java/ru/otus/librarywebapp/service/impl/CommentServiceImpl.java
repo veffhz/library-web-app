@@ -4,10 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import ru.otus.librarywebapp.dao.BookRepository;
 import ru.otus.librarywebapp.dao.CommentRepository;
 import ru.otus.librarywebapp.domain.Book;
 import ru.otus.librarywebapp.domain.Comment;
-import ru.otus.librarywebapp.service.BookService;
 import ru.otus.librarywebapp.service.CommentService;
 
 import java.util.List;
@@ -21,12 +21,12 @@ public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository repository;
 
-    private final BookService bookService;
+    private final BookRepository bookRepository;
 
     @Autowired
-    public CommentServiceImpl(CommentRepository repository, BookService bookService) {
+    public CommentServiceImpl(CommentRepository repository, BookRepository bookRepository) {
         this.repository = repository;
-        this.bookService = bookService;
+        this.bookRepository = bookRepository;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public String insert(String author, String date, String content, String bookId) {
         Comment comment = new Comment(author, toDate(date), content);
-        Book book = bookService.getById(bookId).get(); // TODO get
+        Book book = bookRepository.findById(bookId).get(); // TODO get
         comment.setBook(book);
         Comment commentDb = repository.save(comment);
         return Objects.nonNull(commentDb) ? commentDb.getId() : null;

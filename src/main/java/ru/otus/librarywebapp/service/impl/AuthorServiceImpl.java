@@ -1,13 +1,12 @@
 package ru.otus.librarywebapp.service.impl;
 
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ru.otus.librarywebapp.dao.AuthorRepository;
+import ru.otus.librarywebapp.dao.BookRepository;
 import ru.otus.librarywebapp.domain.Author;
 import ru.otus.librarywebapp.service.AuthorService;
-import ru.otus.librarywebapp.service.BookService;
 
 import java.util.Date;
 import java.util.List;
@@ -18,12 +17,12 @@ import java.util.Optional;
 public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository repository;
-    private final BookService bookService;
+    private final BookRepository bookRepository;
 
     @Autowired
-    public AuthorServiceImpl(AuthorRepository repository, BookService bookService) {
+    public AuthorServiceImpl(AuthorRepository repository, BookRepository bookRepository) {
         this.repository = repository;
-        this.bookService = bookService;
+        this.bookRepository = bookRepository;
     }
 
     @Override
@@ -48,7 +47,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public void deleteById(String id) {
-        bookService.deleteByAuthorId(id);
+        bookRepository.deleteByAuthorId(id);
         repository.deleteById(id);
     }
 
