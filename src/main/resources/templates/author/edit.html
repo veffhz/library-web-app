@@ -10,7 +10,7 @@
 <h1>Author edit:</h1>
 
 <form id="edit-form" th:action="@{/author/edit}" th:object="${author}" th:method="post" action="author.html">
-    <div class="row">
+    <div class="row" th:if="*{id != null}">
         <label for="id">ID:</label>
         <input id="id" type="text" readonly="readonly" th:field="*{id}" value="1"/>
     </div>

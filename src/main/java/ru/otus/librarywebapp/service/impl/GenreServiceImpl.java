@@ -56,13 +56,13 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public String save(Genre genre) {
-        Genre authorDb;
+        Genre genreDb;
         if (Strings.isNotEmpty(genre.getId())) {
-            authorDb = repository.save(genre);
+            genreDb = repository.save(genre);
         } else {
-            authorDb = repository.insert(genre);
+            genreDb = repository.insert(genre);
         }
-        return Objects.nonNull(authorDb) ? authorDb.getId() : null;
+        return Objects.nonNull(genreDb) ? genreDb.getId() : null;
     }
 
 }

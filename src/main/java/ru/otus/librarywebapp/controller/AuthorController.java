@@ -51,8 +51,7 @@ public class AuthorController {
         authorService.save(author);
         RedirectView rv = new RedirectView();
         rv.setContextRelative(true);
-        rv.setUrl("/author?id={id}");
-        rv.getAttributesMap().put("id", author.getId());
+        rv.setUrl("/authors");
         return rv;
     }
 
@@ -63,6 +62,13 @@ public class AuthorController {
         rv.setContextRelative(true);
         rv.setUrl("/authors");
         return rv;
+    }
+
+    @GetMapping("/author/add")
+    public String add(Model model) {
+        Author author = new Author();
+        model.addAttribute("author", author);
+        return "author/edit";
     }
 
 }

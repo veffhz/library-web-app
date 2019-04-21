@@ -1,5 +1,6 @@
 package ru.otus.librarywebapp.service.impl;
 
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,7 +61,12 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public String save(Author author) {
-        Author authorDb = repository.save(author);
+        Author authorDb;
+        if (Strings.isNotEmpty(author.getId())) {
+            authorDb = repository.save(author);
+        } else {
+            authorDb = repository.insert(author);
+        }
         return Objects.nonNull(authorDb) ? authorDb.getId() : null;
     }
 
