@@ -68,4 +68,13 @@ public class BookController {
         return rv;
     }
 
+    @GetMapping("/book/delete")
+    public RedirectView delete(@RequestParam("id") String id) {
+        bookService.deleteById(id);
+        RedirectView rv = new RedirectView();
+        rv.setContextRelative(true);
+        rv.setUrl("/books");
+        return rv;
+    }
+
 }

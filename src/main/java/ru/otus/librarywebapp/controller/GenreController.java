@@ -56,4 +56,13 @@ public class GenreController {
         return rv;
     }
 
+    @GetMapping("/genre/delete")
+    public RedirectView delete(@RequestParam("id") String id) {
+        genreService.deleteById(id);
+        RedirectView rv = new RedirectView();
+        rv.setContextRelative(true);
+        rv.setUrl("/genres");
+        return rv;
+    }
+
 }

@@ -31,7 +31,8 @@
     </div>
 
     <div class="row">
-        <a th:href="@{/author/edit(id=${author.id})}" href="edit.html">Edit</a>
+        <a class="btn btn-default" th:href="@{/author/edit(id=${author.id})}" href="edit.html">Edit</a>
+        <a class="btn btn-default" th:href="@{/author/delete(id=${author.id})}" href="authors.html">Delete</a>
     </div>
 </form>
 

@@ -26,14 +26,14 @@ public class AuthorController {
     }
 
     @GetMapping("/authors")
-    public String authorsPage(Model model) {
+    public String authors(Model model) {
         List<Author> authors = authorService.getAll();
         model.addAttribute("authors", authors);
         return "author/authors";
     }
 
     @GetMapping("/author")
-    public String authorPage(@RequestParam("id") String id, Model model) {
+    public String author(@RequestParam("id") String id, Model model) {
         Author author = authorService.getById(id).orElseThrow(AuthorNotFoundException::new);
         model.addAttribute("author", author);
         return "author/author";
@@ -53,6 +53,15 @@ public class AuthorController {
         rv.setContextRelative(true);
         rv.setUrl("/author?id={id}");
         rv.getAttributesMap().put("id", author.getId());
+        return rv;
+    }
+
+    @GetMapping("/author/delete")
+    public RedirectView delete(@RequestParam("id") String id) {
+        authorService.deleteById(id);
+        RedirectView rv = new RedirectView();
+        rv.setContextRelative(true);
+        rv.setUrl("/authors");
         return rv;
     }
 
