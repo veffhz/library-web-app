@@ -13,4 +13,5 @@ public interface CommentService {
     List<Comment> getAll();
     void deleteById(String id);
     List<Comment> deleteByBookId(String bookId);
+    String save(Comment comment);
 }

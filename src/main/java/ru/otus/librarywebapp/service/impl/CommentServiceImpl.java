@@ -1,5 +1,6 @@
 package ru.otus.librarywebapp.service.impl;
 
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,5 +68,16 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     public List<Comment> deleteByBookId(String bookId) {
         return repository.deleteByBookId(bookId);
+    }
+
+    @Override
+    public String save(Comment comment) {
+        Comment commentDb;
+        if (Strings.isNotEmpty(comment.getId())) {
+            commentDb = repository.save(comment);
+        } else {
+            commentDb = repository.insert(comment);
+        }
+        return Objects.nonNull(commentDb) ? commentDb.getId() : null;
     }
 }
