@@ -33,7 +33,7 @@ public class HomeController {
     }
 
     @GetMapping("/info")
-    public String genrePage(Model model) {
+    public String info(Model model) {
         long authors = authorService.count();
         model.addAttribute("authors", authors);
         long genres = genreService.count();
