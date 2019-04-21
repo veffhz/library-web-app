@@ -2,6 +2,7 @@ package ru.otus.librarywebapp.service.impl;
 
 import lombok.extern.java.Log;
 
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -86,7 +87,12 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public String save(Book book) {
-        Book bookDb = repository.save(book);
+        Book bookDb;
+        if (Strings.isNotEmpty(book.getId())) {
+            bookDb = repository.save(book);
+        } else {
+            bookDb = repository.insert(book);
+        }
         return Objects.nonNull(bookDb) ? bookDb.getId() : null;
     }
 

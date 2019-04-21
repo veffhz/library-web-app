@@ -10,7 +10,7 @@
 <h1>Book edit:</h1>
 
 <form id="edit-form" th:action="@{/book/edit}" th:object="${book}" th:method="post" action="book.html">
-    <div class="row">
+    <div class="row" th:if="*{id != null}">
         <label for="id">ID:</label>
         <input id="id" name="id" type="text" readonly="readonly" th:field="*{id}" value="1"/>
     </div>
@@ -48,7 +48,7 @@
     <div class="row">
         <label for="holder-a-input">Author:</label>
         <select id="holder-a-input" name="author" th:field="*{author.id}">
-            <option th:value="*{author.fullName}">author</option>
+            <option th:value="*{author.fullName}">---</option>
             <option th:each="author : ${authors}" th:value="${author.id}" th:text="${author.fullName}"/>
         </select>
     </div>
@@ -56,7 +56,7 @@
     <div class="row">
         <label for="holder-g-input">Genre:</label>
         <select id="holder-g-input" name="genre" th:field="*{genre.id}">
-            <option th:value="*{genre.genreName}">genre</option>
+            <option th:value="*{genre.genreName}">---</option>
             <option th:each="genre : ${genres}" th:value="${genre.id}" th:text="${genre.genreName}"/>
         </select>
     </div>

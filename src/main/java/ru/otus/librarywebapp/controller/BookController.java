@@ -77,4 +77,15 @@ public class BookController {
         return rv;
     }
 
+    @GetMapping("/book/add")
+    public String add(Model model) {
+        Book book = new Book();
+        model.addAttribute("book", book);
+        List<Author> authors = authorService.getAll();
+        model.addAttribute("authors", authors);
+        List<Genre> genres = genreService.getAll();
+        model.addAttribute("genres", genres);
+        return "book/edit";
+    }
+
 }

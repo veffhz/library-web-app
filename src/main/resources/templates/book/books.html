@@ -20,13 +20,18 @@
     <tr th:each="book : ${books}">
 
         <td th:text="${book.id}">1</td>
-        <td th:text="${book.bookName}">Doe</td>
+        <td th:text="${book.bookName}">Best</td>
         <td>
             <a th:href="@{/book(id=${book.id})}" href="book.html">Detail</a>
         </td>
     </tr>
     </tbody>
 </table>
+
+<div class="row">
+    <a class="btn btn-default" th:href="@{/book/add}" href="edit.html">Add</a>
+</div>
+
 </body>
 </html>
 

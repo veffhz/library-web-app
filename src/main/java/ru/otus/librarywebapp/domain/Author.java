@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -32,7 +33,8 @@ public class Author {
     }
 
     public String getFullName() {
-        return String.format("%s %s", firstName, lastName);
+        return String.format("%s %s", Objects.toString(firstName, ""),
+                Objects.toString(lastName, ""));
     }
 
 }
