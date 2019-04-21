@@ -12,7 +12,7 @@
 <form id="edit-form" th:action="@{/book/edit}" th:object="${book}" th:method="post" action="book.html">
     <div class="row">
         <label for="id">ID:</label>
-        <input id="id" name="id" type="text" th:field="*{id}" value="1"/>
+        <input id="id" name="id" type="text" readonly="readonly" th:field="*{id}" value="1"/>
     </div>
 
     <div class="row">

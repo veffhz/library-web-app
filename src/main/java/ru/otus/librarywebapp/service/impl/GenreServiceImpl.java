@@ -1,5 +1,6 @@
 package ru.otus.librarywebapp.service.impl;
 
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -55,7 +56,12 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public String save(Genre genre) {
-        Genre authorDb = repository.save(genre);
+        Genre authorDb;
+        if (Strings.isNotEmpty(genre.getId())) {
+            authorDb = repository.save(genre);
+        } else {
+            authorDb = repository.insert(genre);
+        }
         return Objects.nonNull(authorDb) ? authorDb.getId() : null;
     }
 

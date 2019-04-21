@@ -51,8 +51,7 @@ public class GenreController {
         genreService.save(genre);
         RedirectView rv = new RedirectView();
         rv.setContextRelative(true);
-        rv.setUrl("/genre?id={id}");
-        rv.getAttributesMap().put("id", genre.getId());
+        rv.setUrl("/genres");
         return rv;
     }
 
@@ -63,6 +62,13 @@ public class GenreController {
         rv.setContextRelative(true);
         rv.setUrl("/genres");
         return rv;
+    }
+
+    @GetMapping("/genre/add")
+    public String add(Model model) {
+        Genre genre = new Genre();
+        model.addAttribute("genre", genre);
+        return "genre/edit";
     }
 
 }

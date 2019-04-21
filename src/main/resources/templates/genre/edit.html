@@ -10,9 +10,9 @@
 <h1>Genre edit:</h1>
 
 <form id="edit-form" th:action="@{/genre/edit}" th:object="${genre}" th:method="post" action="genre.html">
-    <div class="row">
+    <div class="row" th:if="*{id != null}">
         <label for="id">ID:</label>
-        <input id="id" type="text" readonly="readonly" th:field="*{id}" value="1"/>
+        <input id="id"  type="text" readonly="readonly" th:field="*{id}" value="1"/>
     </div>
 
     <div class="row">
