@@ -78,7 +78,7 @@ class GenreControllerTest {
     }
 
     @Test
-    void author() throws Exception {
+    void genre() throws Exception {
         Genre genre = new Genre("test");
         given(this.genreService.getById("123")).willReturn(Optional.of(genre));
 
