@@ -43,6 +43,7 @@ class GenreControllerTest {
     @Autowired
     private MockMvc mvc;
 
+    //Все бины нужны, потому что иначе spring начинает искать mongoTemplate bean, и не находит
     @MockBean
     private BookService bookService;
     @MockBean
