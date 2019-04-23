@@ -19,13 +19,16 @@
         <label for="holder-fn-input">Genre name:</label>
         <input id="holder-fn-input" name="genreName" readonly="readonly" type="text" th:field="*{genreName}" value="Fantasy"/>
     </div>
-
-    <div class="row">
-        <a class="btn btn-default" th:href="@{/genres}" href="genres.html">Genres</a>
-        <a class="btn btn-default" th:href="@{/genre/edit(id=${genre.id})}" href="edit.html">Edit</a>
-        <a class="btn btn-default" th:href="@{/genre/delete(id=${genre.id})}" href="genres.html">Delete</a>
-    </div>
 </form>
+
+<div class="row">
+    <a class="btn btn-default" th:href="@{/genres}" href="genres.html">Genres</a>
+    <a class="btn btn-default" th:href="@{/genre/edit(id=${genre.id})}" href="edit.html">Edit</a>
+
+    <form class="form-inline" th:action="@{/genre/delete(id=${genre.id})}" th:method="post" action="genres.html">
+        <button class="btn btn-default" type="submit">Delete</button>
+    </form>
+</div>
 
 </body>
 </html>

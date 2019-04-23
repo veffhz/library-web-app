@@ -29,13 +29,16 @@
         <label for="holder-bd-input">Birth date:</label>
         <input id="holder-bd-input" name="birthdate" readonly="readonly" type="date" th:field="*{birthDate}" value="2013-01-08"/>
     </div>
-
-    <div class="row">
-        <a class="btn btn-default" th:href="@{/authors}" href="authors.html">Authors</a>
-        <a class="btn btn-default" th:href="@{/author/edit(id=${author.id})}" href="edit.html">Edit</a>
-        <a class="btn btn-default" th:href="@{/author/delete(id=${author.id})}" href="authors.html">Delete</a>
-    </div>
 </form>
+
+<div class="row">
+    <a class="btn btn-default" th:href="@{/authors}" href="authors.html">Authors</a>
+    <a class="btn btn-default" th:href="@{/author/edit(id=${author.id})}" href="edit.html">Edit</a>
+
+    <form class="form-inline" th:action="@{/author/delete(id=${author.id})}" th:method="post" action="authors.html">
+        <button class="btn btn-default" type="submit">Delete</button>
+    </form>
+</div>
 
 </body>
 </html>

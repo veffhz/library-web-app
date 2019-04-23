@@ -55,7 +55,7 @@ public class GenreController {
         return rv;
     }
 
-    @GetMapping("/genre/delete")
+    @PostMapping("/genre/delete")
     public RedirectView delete(@RequestParam("id") String id) {
         genreService.deleteById(id);
         RedirectView rv = new RedirectView();

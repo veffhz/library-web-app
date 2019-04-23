@@ -44,7 +44,7 @@ public class CommentController {
         return "comment/comment";
     }
 
-    @GetMapping("/comment/delete")
+    @PostMapping("/comment/delete")
     public RedirectView delete(@RequestParam("id") String id) {
         commentService.deleteById(id);
         RedirectView rv = new RedirectView();

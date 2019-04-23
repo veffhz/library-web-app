@@ -54,13 +54,16 @@
         <label for="holder-g-input">Genre:</label>
         <input id="holder-g-input" name="genre" readonly="readonly" type="text" th:field="*{genre.genreName}" value="333-555"/>
     </div>
-
-    <div class="row">
-        <a class="btn btn-default" th:href="@{/books}" href="books.html">Books</a>
-        <a class="btn btn-default" th:href="@{/book/edit(id=${book.id})}" href="edit.html">Edit</a>
-        <a class="btn btn-default" th:href="@{/book/delete(id=${book.id})}" href="books.html">Delete</a>
-    </div>
 </form>
+
+<div class="row">
+    <a class="btn btn-default" th:href="@{/books}" href="books.html">Books</a>
+    <a class="btn btn-default" th:href="@{/book/edit(id=${book.id})}" href="edit.html">Edit</a>
+
+    <form class="form-inline" th:action="@{/book/delete(id=${book.id})}" th:method="post" action="books.html">
+        <button class="btn btn-default" type="submit">Delete</button>
+    </form>
+</div>
 
 </body>
 </html>

@@ -55,7 +55,7 @@ public class AuthorController {
         return rv;
     }
 
-    @GetMapping("/author/delete")
+    @PostMapping("/author/delete")
     public RedirectView delete(@RequestParam("id") String id) {
         authorService.deleteById(id);
         RedirectView rv = new RedirectView();

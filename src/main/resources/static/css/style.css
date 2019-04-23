@@ -17,3 +17,7 @@ input:read-only {
 .row {
     margin-top: 10px;
 }
+
+.form-inline {
+  display: inline;
+}

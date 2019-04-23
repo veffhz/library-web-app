@@ -34,12 +34,15 @@
         <label for="holder-bn-input">Book name:</label>
         <input id="holder-bn-input" name="bookName" readonly="readonly" type="text" th:field="*{book.bookName}" value="Text"/>
     </div>
-
-    <div class="row">
-        <a class="btn btn-default" th:href="@{/comments}" href="comments.html">Comments</a>
-        <a class="btn btn-default" th:href="@{/comment/delete(id=${comment.id})}" href="comments.html">Delete</a>
-    </div>
 </form>
+
+<div class="row">
+    <a class="btn btn-default" th:href="@{/comments}" href="comments.html">Comments</a>
+
+    <form class="form-inline" th:action="@{/comment/delete(id=${comment.id})}" th:method="post" action="comments.html">
+        <button class="btn btn-default" type="submit">Delete</button>
+    </form>
+</div>
 
 </body>
 </html>
