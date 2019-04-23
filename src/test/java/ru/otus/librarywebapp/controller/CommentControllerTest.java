@@ -60,7 +60,8 @@ class CommentControllerTest {
     private CommentRepository commentRepository;
 
     @Test
-    void comments() throws Exception {
+    @DisplayName("Test get all comments page on /comments")
+    void shouldGetAllCommentsPage() throws Exception {
         Book book = new Book();
         Comment comment = new Comment("test", new Date(), "test");
         comment.setBook(book);
@@ -77,7 +78,8 @@ class CommentControllerTest {
     }
 
     @Test
-    void comment() throws Exception {
+    @DisplayName("Test get comment page on /comment by id")
+    void shouldGetCommentPage() throws Exception {
         Comment comment = new Comment("test", new Date(), "test");
         given(this.commentService.getById("123")).willReturn(Optional.of(comment));
 
@@ -92,8 +94,9 @@ class CommentControllerTest {
     }
 
     @Test
-    void delete() throws Exception {
-        this.mvc.perform(get("/comment/delete")
+    @DisplayName("Test delete comment on post /comment/delete")
+    void shouldDeleteCommentById() throws Exception {
+        this.mvc.perform(post("/comment/delete")
                 .param("id", "123")
                 .accept(MediaType.TEXT_PLAIN))
                 .andExpect(status().is3xxRedirection())
@@ -102,7 +105,8 @@ class CommentControllerTest {
     }
 
     @Test
-    void add() throws Exception {
+    @DisplayName("Test add comment page on /comment/add")
+    void shouldAddCommentPage() throws Exception {
         List<Book> books = Collections.singletonList(new Book());
         given(this.bookService.getAll()).willReturn(books);
         Comment comment = new Comment();
@@ -120,7 +124,8 @@ class CommentControllerTest {
     }
 
     @Test
-    void save() throws Exception {
+    @DisplayName("Test save comment on post /comment/add")
+    void shouldSaveComment() throws Exception {
         this.mvc.perform(post("/comment/add")
                 .accept(MediaType.TEXT_PLAIN))
                 .andExpect(status().is3xxRedirection())

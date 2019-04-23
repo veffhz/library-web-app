@@ -52,13 +52,15 @@ class HomeControllerTest {
     private CommentRepository commentRepository;
 
     @Test
-    void index() throws Exception {
+    @DisplayName("Test get index page on / & redirect")
+    void shouldGetIndexPage() throws Exception {
         this.mvc.perform(get("/").accept(MediaType.TEXT_PLAIN))
                 .andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/info"));
     }
 
     @Test
-    void info() throws Exception {
+    @DisplayName("Test get info page on /info")
+    void shouldGetInfoPage() throws Exception {
         given(this.authorService.count()).willReturn(2L);
         given(this.genreService.count()).willReturn(2L);
         given(this.bookService.count()).willReturn(4L);

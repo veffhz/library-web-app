@@ -64,7 +64,8 @@ class BookControllerTest {
     private CommentRepository commentRepository;
 
     @Test
-    void books() throws Exception {
+    @DisplayName("Test get all books page on /books")
+    void shouldGetAllBooksPage() throws Exception {
         List<Book> books = Arrays.asList(
                 new Book(),
                 new Book(),
@@ -81,7 +82,8 @@ class BookControllerTest {
     }
 
     @Test
-    void book() throws Exception {
+    @DisplayName("Test get book page on /book by id")
+    void shouldGetBookPage() throws Exception {
         Book book = new Book();
         given(this.bookService.getById("123")).willReturn(Optional.of(book));
 
@@ -96,7 +98,8 @@ class BookControllerTest {
     }
 
     @Test
-    void edit() throws Exception {
+    @DisplayName("Test edit book page on /book/edit")
+    void shouldEditBookPage() throws Exception {
         Book book = new Book();
         given(this.bookService.getById("123")).willReturn(Optional.of(book));
 
@@ -111,7 +114,8 @@ class BookControllerTest {
     }
 
     @Test
-    void save() throws Exception {
+    @DisplayName("Test save book on post /book/edit")
+    void shouldSaveBook() throws Exception {
         this.mvc.perform(post("/book/edit")
                 .param("id", "123")
                 .accept(MediaType.TEXT_PLAIN))
@@ -121,8 +125,9 @@ class BookControllerTest {
     }
 
     @Test
-    void delete() throws Exception {
-        this.mvc.perform(get("/book/delete")
+    @DisplayName("Test delete book on post /book/delete")
+    void shouldDeleteBookById() throws Exception {
+        this.mvc.perform(post("/book/delete")
                 .param("id", "123")
                 .accept(MediaType.TEXT_PLAIN))
                 .andExpect(status().is3xxRedirection())
@@ -131,7 +136,8 @@ class BookControllerTest {
     }
 
     @Test
-    void add() throws Exception {
+    @DisplayName("Test add book page on /book/add")
+    void shouldAddBookPage() throws Exception {
         Book book = new Book();
         book.setAuthor(new Author());
         book.setGenre(new Genre());

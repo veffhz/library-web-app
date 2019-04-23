@@ -64,7 +64,8 @@ class AuthorControllerTest {
     private CommentRepository commentRepository;
 
     @Test
-    void authors() throws Exception {
+    @DisplayName("Test get all authors page on /authors")
+    void shouldGetAllAuthorsPage() throws Exception {
         List<Author> authors = Arrays.asList(
                 new Author("test", new Date(), "test"),
                 new Author("test", new Date(), "test"),
@@ -81,7 +82,8 @@ class AuthorControllerTest {
     }
 
     @Test
-    void author() throws Exception {
+    @DisplayName("Test get author page on /author by id")
+    void shouldGetAuthorPage() throws Exception {
         Author author = new Author("test", new Date(), "test");
         given(this.authorService.getById("123")).willReturn(Optional.of(author));
 
@@ -96,7 +98,8 @@ class AuthorControllerTest {
     }
 
     @Test
-    void edit() throws Exception {
+    @DisplayName("Test edit author page on /author/edit")
+    void shouldEditAuthorPage() throws Exception {
         Author author = new Author("test", new Date(), "test");
         given(this.authorService.getById("123")).willReturn(Optional.of(author));
 
@@ -111,7 +114,8 @@ class AuthorControllerTest {
     }
 
     @Test
-    void save() throws Exception {
+    @DisplayName("Test save author on post /author/edit")
+    void shouldSaveAuthor() throws Exception {
         this.mvc.perform(post("/author/edit")
                 .accept(MediaType.TEXT_PLAIN))
                 .andExpect(status().is3xxRedirection())
@@ -120,8 +124,9 @@ class AuthorControllerTest {
     }
 
     @Test
-    void delete() throws Exception {
-        this.mvc.perform(get("/author/delete")
+    @DisplayName("Test delete author on post /author/delete")
+    void shouldDeleteAuthorById() throws Exception {
+        this.mvc.perform(post("/author/delete")
                 .param("id", "123")
                 .accept(MediaType.TEXT_PLAIN))
                 .andExpect(status().is3xxRedirection())
@@ -130,7 +135,8 @@ class AuthorControllerTest {
     }
 
     @Test
-    void add() throws Exception {
+    @DisplayName("Test add author page on /author/add")
+    void shouldAddAuthorPage() throws Exception {
         this.mvc.perform(get("/author/add")
                 .accept(MediaType.TEXT_PLAIN))
                 .andExpect(status().isOk())

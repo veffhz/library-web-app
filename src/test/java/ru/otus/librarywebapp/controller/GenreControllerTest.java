@@ -62,7 +62,8 @@ class GenreControllerTest {
     private CommentRepository commentRepository;
 
     @Test
-    void genres() throws Exception {
+    @DisplayName("Test get genres authors page on /genres")
+    void shouldGetAllGenresPage() throws Exception {
         List<Genre> genres = Arrays.asList(
                 new Genre("test"),
                 new Genre("test"),
@@ -79,7 +80,8 @@ class GenreControllerTest {
     }
 
     @Test
-    void genre() throws Exception {
+    @DisplayName("Test get genre page on /genre by id")
+    void shouldGetGenrePage() throws Exception {
         Genre genre = new Genre("test");
         given(this.genreService.getById("123")).willReturn(Optional.of(genre));
 
@@ -94,7 +96,8 @@ class GenreControllerTest {
     }
 
     @Test
-    void edit() throws Exception {
+    @DisplayName("Test edit genre page on /author/genre")
+    void shouldEditGenrePage() throws Exception {
         Genre genre = new Genre("test");
         given(this.genreService.getById("123")).willReturn(Optional.of(genre));
 
@@ -109,7 +112,8 @@ class GenreControllerTest {
     }
 
     @Test
-    void save() throws Exception {
+    @DisplayName("Test save genre on post /genre/edit")
+    void shouldSaveGenre() throws Exception {
         this.mvc.perform(post("/genre/edit")
                 .accept(MediaType.TEXT_PLAIN))
                 .andExpect(status().is3xxRedirection())
@@ -118,8 +122,9 @@ class GenreControllerTest {
     }
 
     @Test
-    void delete() throws Exception {
-        this.mvc.perform(get("/genre/delete")
+    @DisplayName("Test delete genre on post /genre/delete")
+    void shouldDeleteGenreById() throws Exception {
+        this.mvc.perform(post("/genre/delete")
                 .param("id", "123")
                 .accept(MediaType.TEXT_PLAIN))
                 .andExpect(status().is3xxRedirection())
@@ -128,7 +133,8 @@ class GenreControllerTest {
     }
 
     @Test
-    void add() throws Exception {
+    @DisplayName("Test add genre page on /genre/add")
+    void shouldAddGenrePage() throws Exception {
         this.mvc.perform(get("/genre/add")
                 .accept(MediaType.TEXT_PLAIN))
                 .andExpect(status().isOk())
