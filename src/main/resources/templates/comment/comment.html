@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Comment info</title>
+    <link type="text/css" rel="stylesheet" th:href="@{css/style.css}" href="../../static/css/style.css"/>
+    <link type="text/css" rel="stylesheet" th:href="@{css/bootstrap.min.css}" href="../../static/css/bootstrap.min.css"/>
+</head>
+<body>
+<h1>Comment info:</h1>
+
+<form id="edit-form" th:object="${comment}">
+    <div class="row">
+        <label for="id-input">ID:</label>
+        <input id="id-input" type="text" readonly="readonly" th:value="*{id}" value="1"/>
+    </div>
+
+    <div class="row">
+        <label for="holder-fn-input">Author:</label>
+        <input id="holder-fn-input" name="author" readonly="readonly" type="text" th:field="*{author}" value="John"/>
+    </div>
+
+    <div class="row">
+        <label for="holder-bd-input">Date:</label>
+        <input id="holder-bd-input" name="date" readonly="readonly" type="date" th:field="*{date}" value="2013-01-08"/>
+    </div>
+
+    <div class="row">
+        <label for="holder-ln-input">Content:</label>
+        <input id="holder-ln-input" name="content" readonly="readonly" type="text" th:field="*{content}" value="Text"/>
+    </div>
+
+    <div class="row">
+        <label for="holder-bn-input">Book name:</label>
+        <input id="holder-bn-input" name="bookName" readonly="readonly" type="text" th:field="*{book.bookName}" value="Text"/>
+    </div>
+</form>
+
+<div class="row">
+    <a class="btn btn-default" th:href="@{/comments}" href="comments.html">Comments</a>
+
+    <form class="form-inline" th:action="@{/comment/delete(id=${comment.id})}" th:method="post" action="comments.html">
+        <button class="btn btn-default" type="submit">Delete</button>
+    </form>
+</div>
+
+</body>
+</html>

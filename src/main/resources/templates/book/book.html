@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Book info</title>
+    <link type="text/css" rel="stylesheet" th:href="@{css/style.css}" href="../../static/css/style.css"/>
+    <link type="text/css" rel="stylesheet" th:href="@{css/bootstrap.min.css}" href="../../static/css/bootstrap.min.css"/>
+</head>
+<body>
+<h1>Book info:</h1>
+
+<form id="edit-form" th:object="${book}">
+    <div class="row">
+        <label for="id-input">ID:</label>
+        <input id="id-input" type="text" readonly="readonly" th:value="*{id}" value="1"/>
+    </div>
+
+    <div class="row">
+        <label for="holder-bn-input">Book name:</label>
+        <input id="holder-bn-input" name="bookName" readonly="readonly" type="text" th:field="*{bookName}" value="Best"/>
+    </div>
+
+    <div class="row">
+        <label for="holder-pd-input">Publish date:</label>
+        <input id="holder-pd-input" name="publishDate" readonly="readonly" type="date" th:field="*{publishDate}" value="2013-01-08"/>
+    </div>
+
+    <div class="row">
+        <label for="holder-l-input">Language:</label>
+        <input id="holder-l-input" name="language" readonly="readonly" type="text" th:field="*{language}" value="Russian"/>
+    </div>
+
+    <div class="row">
+        <label for="holder-ph-input">Publishing house:</label>
+        <input id="holder-ph-input" name="publishingHouse" readonly="readonly" type="text" th:field="*{publishingHouse}" value="Mir"/>
+    </div>
+
+    <div class="row">
+        <label for="holder-c-input">City:</label>
+        <input id="holder-c-input" name="city" readonly="readonly" type="text" th:field="*{city}" value="Moscow"/>
+    </div>
+
+    <div class="row">
+        <label for="holder-i-input">Isbn:</label>
+        <input id="holder-i-input" name="isbn" readonly="readonly" type="text" th:field="*{isbn}" value="333-555"/>
+    </div>
+
+    <div class="row">
+        <label for="holder-a-input">Author:</label>
+        <input id="holder-a-input" name="author" readonly="readonly" type="text" th:field="*{author.fullName}" value="Name"/>
+    </div>
+
+    <div class="row">
+        <label for="holder-g-input">Genre:</label>
+        <input id="holder-g-input" name="genre" readonly="readonly" type="text" th:field="*{genre.genreName}" value="333-555"/>
+    </div>
+</form>
+
+<div class="row">
+    <a class="btn btn-default" th:href="@{/books}" href="books.html">Books</a>
+    <a class="btn btn-default" th:href="@{/book/edit(id=${book.id})}" href="edit.html">Edit</a>
+
+    <form class="form-inline" th:action="@{/book/delete(id=${book.id})}" th:method="post" action="books.html">
+        <button class="btn btn-default" type="submit">Delete</button>
+    </form>
+</div>
+
+</body>
+</html>
