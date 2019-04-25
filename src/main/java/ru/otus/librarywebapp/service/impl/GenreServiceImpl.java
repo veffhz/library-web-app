@@ -1,7 +1,9 @@
 package ru.otus.librarywebapp.service.impl;
 
+import lombok.RequiredArgsConstructor;
+
 import org.apache.logging.log4j.util.Strings;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
 import ru.otus.librarywebapp.dao.GenreRepository;
@@ -13,14 +15,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class GenreServiceImpl implements GenreService {
 
     private final GenreRepository repository;
-
-    @Autowired
-    public GenreServiceImpl(GenreRepository repository) {
-        this.repository = repository;
-    }
 
     @Override
     public long count() {

@@ -1,9 +1,10 @@
 package ru.otus.librarywebapp.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 
 import org.apache.logging.log4j.util.Strings;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
 import ru.otus.librarywebapp.dao.AuthorRepository;
@@ -23,6 +24,7 @@ import static ru.otus.librarywebapp.utils.Helper.toDate;
 
 @Log
 @Service
+@RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
 
     private final BookRepository repository;
@@ -30,15 +32,6 @@ public class BookServiceImpl implements BookService {
     private final AuthorRepository authorRepository;
     private final GenreService genreService;
     private final CommentRepository commentRepository;
-
-    @Autowired
-    public BookServiceImpl(BookRepository repository, AuthorRepository authorRepository,
-                           GenreService genreService, CommentRepository commentRepository) {
-        this.repository = repository;
-        this.authorRepository = authorRepository;
-        this.genreService = genreService;
-        this.commentRepository = commentRepository;
-    }
 
     @Override
     public long count() {

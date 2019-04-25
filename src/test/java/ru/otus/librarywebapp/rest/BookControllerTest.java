@@ -1,4 +1,4 @@
-package ru.otus.librarywebapp.controller;
+package ru.otus.librarywebapp.rest;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DisplayName("Test for book Controller")
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(controllers = BookController.class)
+@WebMvcTest(controllers = BookApi.class)
 class BookControllerTest {
 
     @Autowired

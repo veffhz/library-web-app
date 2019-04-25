@@ -10,12 +10,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-@ToString
 @Document(collection = "books")
-@EqualsAndHashCode
 public class Book {
 
     @Id

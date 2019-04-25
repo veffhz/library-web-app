@@ -1,4 +1,4 @@
-package ru.otus.librarywebapp.controller;
+package ru.otus.librarywebapp.rest;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

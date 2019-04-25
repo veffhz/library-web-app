@@ -6,12 +6,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-@ToString
 @Document(collection = "genres")
-@EqualsAndHashCode
 public class Genre {
 
     @Id
