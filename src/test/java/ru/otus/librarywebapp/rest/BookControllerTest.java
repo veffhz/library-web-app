@@ -121,7 +121,7 @@ class BookControllerTest {
                 .accept(MediaType.TEXT_PLAIN))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/book?id=123"));
-        verify(this.bookService, times(1)).save(any(Book.class));
+        verify(this.bookService, times(1)).insert(any(Book.class));
     }
 
     @Test

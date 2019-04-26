@@ -34,17 +34,24 @@ Vue.component('author-form', {
       }
   },
   template:
-        '<div>' +
-            '<input type="text" placeholder="First Name" v-model="firstName">' +
-            '<input type="date" placeholder="Birth Date" v-model="birthDate">' +
-            '<input type="text" placeholder="Last Name" v-model="lastName">' +
-            '<input type="button" value="Save" @click="save">' +
+        '<div class="block">' +
+            '<form onsubmit="return false">' +
+            '<input type="text" placeholder="First Name" v-model="firstName" required="required"><p/>' +
+            '<input type="date" placeholder="Birth Date" v-model="birthDate" required="required"><p/>' +
+            '<input type="text" placeholder="Last Name" v-model="lastName" required="required"><p/>' +
+            '<input type="reset" value="Clean">' +
+            '<input type="submit" value="Save" @click="save"></form>' +
         '</div>',
   methods: {
       save: function() {
+          var inputs = document.getElementsByTagName('input');
+          for (index = 0; index < inputs.length; ++index) {
+             if (!inputs[index].checkValidity()) {
+               return;
+             }
+          }
+
           var author = { id: this.id, firstName: this.firstName, birthDate: this.birthDate, lastName: this.lastName };
-          console.log(author.id)
-          console.log(this.id)
           if (this.id) {
               authorApi.update({}, author)
               .then(response => response.json())
@@ -77,8 +84,8 @@ Vue.component('author-tr', {
         '<tr><td>{{ author.id }}</td>' +
         '<td>{{ author.fullName }}</td>' +
         '<td>' +
-            '<input type="button" value="Edit" @click="edit">' +
-            '<input type="button" value="X" @click="del" />' +
+            '<input type="button" value="edit" @click="edit">' +
+            '<input type="button" value="x" @click="del" />' +
         '</td></tr>',
   methods: {
       edit: function() {
@@ -102,13 +109,14 @@ Vue.component('authors-table', {
       }
   },
   template: '<div>' +
+                '<h1>Authors:</h1>' +
                 '<table class="items">' +
                 '<thead>' +
-                '<tr><th>Id</th><th>Full Name</th></tr>' +
+                '<tr><th>Id</th><th>Full Name</th><th>Controls</th></tr>' +
                 '</thead><tbody>' +
                     '<author-tr v-for="author in authors" :key="author.id" :author="author" :editMethod="editMethod" :authors="authors"/>' +
                 '</tbody></table>' +
-            '<div><p/><author-form :authors="authors" :authorAttr="author" /></div>' +
+            '<div class="gap-30"></div><p>Edit:</p><author-form :authors="authors" :authorAttr="author" />' +
             '</div>',
   created: function() {
       authorApi.get()

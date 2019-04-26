@@ -7,6 +7,8 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.Objects;
 
@@ -17,10 +19,13 @@ public class Author {
 
     @Id
     private String id;
+    @NotBlank
     private String firstName;
     @DateTimeFormat(pattern="yyyy-MM-dd")
+    @NotNull
     private Date birthDate;
     @Indexed
+    @NotBlank
     private String lastName;
 
     public Author(String firstName, Date birthDate, String lastName) {
