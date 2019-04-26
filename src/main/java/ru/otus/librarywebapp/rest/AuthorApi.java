@@ -35,9 +35,7 @@ public class AuthorApi {
 
     @PutMapping("/api/author")
     public ResponseEntity<Author> update(@Valid @RequestBody Author author) {
-        log.info("update author {} by id {}",  author);
-        //authorService.getById(id).orElseThrow(AuthorNotFoundException::new);
-        //author.setId(id);
+        log.info("update author {} by id {}",  author, author.getId());
         Author updatedAuthor = authorService.update(author);
         return new ResponseEntity<>(updatedAuthor, HttpStatus.OK);
     }

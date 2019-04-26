@@ -15,5 +15,6 @@ public interface BookService {
     void deleteById(String id);
     String insert(String authorId, String genreId, String bookName, String publishDate, String language,
                   String publishingHouse, String city, String isbn);
-    Book save(Book book);
+    Book insert(Book author);
+    Book update(Book author);
 }
