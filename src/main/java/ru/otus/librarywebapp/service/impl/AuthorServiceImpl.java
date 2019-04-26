@@ -2,8 +2,6 @@ package ru.otus.librarywebapp.service.impl;
 
 import lombok.RequiredArgsConstructor;
 
-import org.apache.logging.log4j.util.Strings;
-
 import org.springframework.stereotype.Service;
 
 import ru.otus.librarywebapp.dao.AuthorRepository;
@@ -57,14 +55,13 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public String save(Author author) {
-        Author authorDb;
-        if (Strings.isNotEmpty(author.getId())) {
-            authorDb = repository.save(author);
-        } else {
-            authorDb = repository.insert(author);
-        }
-        return Objects.nonNull(authorDb) ? authorDb.getId() : null;
+    public Author insert(Author author) {
+        return repository.insert(author);
+    }
+
+    @Override
+    public Author update(Author author) {
+        return repository.save(author);
     }
 
 }

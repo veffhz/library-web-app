@@ -1,7 +1,9 @@
 package ru.otus.librarywebapp.rest;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,39 +12,46 @@ import ru.otus.librarywebapp.exception.AuthorNotFoundException;
 import ru.otus.librarywebapp.service.AuthorService;
 
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class AuthorApi {
 
     private final AuthorService authorService;
 
-    @GetMapping("/api/authors")
+    @GetMapping("/api/author")
     public List<Author> getAll() {
+        log.info("get all authors");
         return authorService.getAll();
     }
 
-    @GetMapping("/api/authors/{id}")
+    @GetMapping("/api/author/{id}")
     public Author getById(@PathVariable String id) {
+        log.info("get author by id {}",  id);
         return authorService.getById(id).orElseThrow(AuthorNotFoundException::new);
     }
 
-    @PutMapping("/api/authors")
-    public ResponseEntity update(@Valid @RequestBody Author author) {
-        authorService.save(author);
-        return ResponseEntity.ok().build();
+    @PutMapping("/api/author")
+    public ResponseEntity<Author> update(@Valid @RequestBody Author author) {
+        log.info("update author {} by id {}",  author);
+        //authorService.getById(id).orElseThrow(AuthorNotFoundException::new);
+        //author.setId(id);
+        Author updatedAuthor = authorService.update(author);
+        return new ResponseEntity<>(updatedAuthor, HttpStatus.OK);
     }
 
-    @PostMapping("/api/authors")
-    public ResponseEntity create(@Valid @RequestBody Author author) {
-        String id = authorService.save(author);
-        return ResponseEntity.created(URI.create(String.format("/api/authors/%s", id))).build();
+    @PostMapping("/api/author")
+    public ResponseEntity<Author> create(@Valid @RequestBody Author author) {
+        log.info("create author {}",  author);
+        Author savedAuthor = authorService.insert(author);
+        return new ResponseEntity<>(savedAuthor, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/api/authors/{id}")
+    @DeleteMapping("/api/author/{id}")
     public ResponseEntity delete(@PathVariable String id) {
+        log.info("delete author by id {}",  id);
         authorService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

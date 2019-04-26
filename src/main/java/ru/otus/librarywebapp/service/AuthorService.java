@@ -13,5 +13,6 @@ public interface AuthorService {
     List<Author> getAll();
     void deleteById(String id);
     String insert(String firstName, Date birthDate, String lastName);
-    String save(Author author);
+    Author insert(Author author);
+    Author update(Author author);
 }

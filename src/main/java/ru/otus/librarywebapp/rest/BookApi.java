@@ -2,6 +2,7 @@ package ru.otus.librarywebapp.rest;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,7 +11,6 @@ import ru.otus.librarywebapp.exception.BookNotFoundException;
 import ru.otus.librarywebapp.service.BookService;
 
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -37,8 +37,8 @@ public class BookApi {
 
     @PostMapping("/api/books")
     public ResponseEntity create(@Valid @RequestBody Book book) {
-        String id = bookService.save(book);
-        return ResponseEntity.created(URI.create(String.format("/api/books/%s", id))).build();
+        Book savedBook = bookService.save(book);
+        return new ResponseEntity<>(savedBook, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/api/books/{id}")

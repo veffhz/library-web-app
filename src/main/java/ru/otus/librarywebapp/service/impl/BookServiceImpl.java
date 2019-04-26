@@ -79,14 +79,12 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public String save(Book book) {
-        Book bookDb;
+    public Book save(Book book) {
         if (Strings.isNotEmpty(book.getId())) {
-            bookDb = repository.save(book);
+            return repository.save(book);
         } else {
-            bookDb = repository.insert(book);
+            return repository.insert(book);
         }
-        return Objects.nonNull(bookDb) ? bookDb.getId() : null;
     }
 
 }

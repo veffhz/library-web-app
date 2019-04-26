@@ -120,7 +120,7 @@ class AuthorControllerTest {
                 .accept(MediaType.TEXT_PLAIN))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/authors"));
-        verify(this.authorService, times(1)).save(any(Author.class));
+        verify(this.authorService, times(1)).insert(any(Author.class));
     }
 
     @Test
