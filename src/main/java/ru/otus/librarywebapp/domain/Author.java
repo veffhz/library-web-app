@@ -1,5 +1,6 @@
 package ru.otus.librarywebapp.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import org.springframework.data.annotation.Id;
@@ -21,7 +22,7 @@ public class Author {
     private String id;
     @NotBlank
     private String firstName;
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     @NotNull
     private Date birthDate;
     @Indexed

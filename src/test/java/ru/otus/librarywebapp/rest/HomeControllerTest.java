@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import ru.otus.librarywebapp.controller.HomeController;
 import ru.otus.librarywebapp.dao.AuthorRepository;
 import ru.otus.librarywebapp.dao.BookRepository;
 import ru.otus.librarywebapp.dao.CommentRepository;
