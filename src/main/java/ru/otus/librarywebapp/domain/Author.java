@@ -21,7 +21,7 @@ public class Author {
     private String id;
     @NotBlank
     private String firstName;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd", timezone = "Europe/Moscow")
     @NotNull
     private Date birthDate;
     @Indexed

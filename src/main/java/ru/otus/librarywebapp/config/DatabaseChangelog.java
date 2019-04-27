@@ -17,10 +17,10 @@ public class DatabaseChangelog {
     @ChangeSet(order = "001", id = "addAuthors", author = "veffhz")
     public void insertAuthors(DB db) {
         createDbObject(db, "authors", Arrays.asList(Pair.of("firstName", "Роберт"),
-                Pair.of("birthDate", Helper.toDate("01-01-1985")),
+                Pair.of("birthDate", Helper.toDate("1985-01-01")),
                 Pair.of("lastName", "Шекли")));
         createDbObject(db, "authors", Arrays.asList(Pair.of("firstName", "Агата"),
-                Pair.of("birthDate", Helper.toDate("02-02-1985")),
+                Pair.of("birthDate", Helper.toDate("1985-02-02")),
                 Pair.of("lastName", "Кристи")));
     }
 
@@ -42,7 +42,7 @@ public class DatabaseChangelog {
         DBRef refGenre1 = new DBRef("genres", genre1.get("_id"));
 
         createDbObject(db, "books", Arrays.asList(Pair.of("bookName", "Избранное"),
-                Pair.of("publishDate", Helper.toDate("01-01-1991")), Pair.of("language", "Русский"),
+                Pair.of("publishDate", Helper.toDate("1991-01-01")), Pair.of("language", "Русский"),
                 Pair.of("publishingHouse", "Мир"), Pair.of("city", "Москва"), Pair.of("isbn", "5-03002745-9"),
                 Pair.of("author", refAuthor1), Pair.of("genre", refGenre1)));
 
@@ -53,7 +53,7 @@ public class DatabaseChangelog {
         DBRef refGenre2 = new DBRef("genres", genre2.get("_id"));
 
         createDbObject(db, "books", Arrays.asList(Pair.of("bookName", "Десять негритят"),
-                Pair.of("publishDate", Helper.toDate("01-01-2017")), Pair.of("language", "Русский"),
+                Pair.of("publishDate", Helper.toDate("2017-01-01")), Pair.of("language", "Русский"),
                 Pair.of("publishingHouse", "Эксмо-Пресс"), Pair.of("city", "Москва"), Pair.of("isbn", "978-5-699-83193-7"),
                 Pair.of("author", refAuthor2), Pair.of("genre", refGenre2)));
     }
@@ -66,22 +66,22 @@ public class DatabaseChangelog {
         DBRef refBook1 = new DBRef("books", book1.get("_id"));
 
         createDbObject(db, "comments", Arrays.asList(Pair.of("author", "Me"),
-                Pair.of("date", Helper.toDate("01-01-2018")), Pair.of("content", "Очень"),
+                Pair.of("date", Helper.toDate("2018-01-01")), Pair.of("content", "Очень"),
                 Pair.of("book", refBook1)));
 
         createDbObject(db, "comments", Arrays.asList(Pair.of("author", "Anonymous"),
-                Pair.of("date", Helper.toDate("01-01-2019")), Pair.of("content", "Cool!"),
+                Pair.of("date", Helper.toDate("2019-01-01")), Pair.of("content", "Cool!"),
                 Pair.of("book", refBook1)));
 
         DBObject book2 = booksCollection.findOne(new BasicDBObject("bookName", "Десять негритят"));
         DBRef refBook2 = new DBRef("books", book2.get("_id"));
 
         createDbObject(db, "comments", Arrays.asList(Pair.of("author", "Me"),
-                Pair.of("date", Helper.toDate("01-01-2018")), Pair.of("content", "Хорошо"),
+                Pair.of("date", Helper.toDate("2018-01-01")), Pair.of("content", "Хорошо"),
                 Pair.of("book", refBook2)));
 
         createDbObject(db, "comments", Arrays.asList(Pair.of("author", "Anonymous"),
-                Pair.of("date", Helper.toDate("01-01-2019")), Pair.of("content", "Nice!"),
+                Pair.of("date", Helper.toDate("2019-01-01")), Pair.of("content", "Nice!"),
                 Pair.of("book", refBook2)));
     }
 

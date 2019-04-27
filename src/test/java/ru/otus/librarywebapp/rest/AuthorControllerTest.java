@@ -20,6 +20,7 @@ import ru.otus.librarywebapp.service.AuthorService;
 import ru.otus.librarywebapp.service.BookService;
 import ru.otus.librarywebapp.service.CommentService;
 import ru.otus.librarywebapp.service.GenreService;
+import ru.otus.librarywebapp.utils.Helper;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -64,37 +65,38 @@ class AuthorControllerTest {
     private CommentRepository commentRepository;
 
     @Test
-    @DisplayName("Test get all authors page on /authors")
-    void shouldGetAllAuthorsPage() throws Exception {
+    @DisplayName("Test get all authors page on /api/author")
+    void shouldGetAllAuthors() throws Exception {
+        Date date = Helper.toDate("2019-04-27");
         List<Author> authors = Arrays.asList(
-                new Author("test", new Date(), "test"),
-                new Author("test", new Date(), "test"),
-                new Author("test", new Date(), "test"));
+                new Author("test", date, "test"),
+                new Author("test", date, "test"));
 
         given(this.authorService.getAll()).willReturn(authors);
 
-        this.mvc.perform(get("/authors").accept(MediaType.TEXT_PLAIN))
+        String responseBody = "[{\"id\":null,\"firstName\":\"test\",\"birthDate\":\"2019-04-27\",\"lastName\":\"test\",\"fullName\":\"test test\"}," +
+                "{\"id\":null,\"firstName\":\"test\",\"birthDate\":\"2019-04-27\",\"lastName\":\"test\",\"fullName\":\"test test\"}]";
+
+        this.mvc.perform(get("/api/author")
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(view().name("author/authors"))
-                .andExpect(model().attribute("authors", authors))
-                .andExpect(content().string(containsString("Full Name")))
-                .andExpect(content().string(containsString("Authors:")));
+                .andExpect(content().string(responseBody));
     }
 
     @Test
-    @DisplayName("Test get author page on /author by id")
-    void shouldGetAuthorPage() throws Exception {
-        Author author = new Author("test", new Date(), "test");
+    @DisplayName("Test get author on /author by id")
+    void shouldGetAuthor() throws Exception {
+        Date date = Helper.toDate("2019-04-27");
+        Author author = new Author("test", date, "test");
+
         given(this.authorService.getById("123")).willReturn(Optional.of(author));
 
-        this.mvc.perform(get("/author")
-                .param("id", "123")
-                .accept(MediaType.TEXT_PLAIN))
+        String responseBody = "{\"id\":null,\"firstName\":\"test\",\"birthDate\":\"2019-04-27\",\"lastName\":\"test\",\"fullName\":\"test test\"}";
+
+        this.mvc.perform(get("/api/author/123")
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(view().name("author/author"))
-                .andExpect(model().attribute("author", author))
-                .andExpect(content().string(containsString("First name:")))
-                .andExpect(content().string(containsString("Author info:")));
+                .andExpect(content().string(responseBody));;
     }
 
     @Test

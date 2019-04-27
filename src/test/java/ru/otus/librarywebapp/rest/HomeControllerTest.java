@@ -16,17 +16,21 @@ import ru.otus.librarywebapp.dao.AuthorRepository;
 import ru.otus.librarywebapp.dao.BookRepository;
 import ru.otus.librarywebapp.dao.CommentRepository;
 import ru.otus.librarywebapp.dao.GenreRepository;
+import ru.otus.librarywebapp.domain.*;
 import ru.otus.librarywebapp.service.AuthorService;
 import ru.otus.librarywebapp.service.BookService;
 import ru.otus.librarywebapp.service.CommentService;
 import ru.otus.librarywebapp.service.GenreService;
 
-import static org.hamcrest.Matchers.containsString;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@DisplayName("Test for home Controller")
+@DisplayName("Test for Home Controller")
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = HomeController.class)
 class HomeControllerTest {
@@ -53,29 +57,28 @@ class HomeControllerTest {
     private CommentRepository commentRepository;
 
     @Test
-    @DisplayName("Test get index page on / & redirect")
-    void shouldGetIndexPage() throws Exception {
-        this.mvc.perform(get("/").accept(MediaType.TEXT_PLAIN))
-                .andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/info"));
-    }
-
-    @Test
-    @DisplayName("Test get info page on /info")
+    @DisplayName("Test get info page on / ")
     void shouldGetInfoPage() throws Exception {
-        given(this.authorService.count()).willReturn(2L);
-        given(this.genreService.count()).willReturn(2L);
-        given(this.bookService.count()).willReturn(4L);
-        given(this.commentService.count()).willReturn(4L);
 
-        this.mvc.perform(get("/info").accept(MediaType.TEXT_PLAIN))
+        HashMap<Object, Object> data = new HashMap<>();
+
+        List<Author> authors = Collections.singletonList(new Author());
+        data.put("authors", authors);
+        List<Genre> genres = Collections.singletonList(new Genre());
+        data.put("genres", genres);
+        List<Book> books = Collections.singletonList(new Book());
+        data.put("books", books);
+        List<Comment> comments = Collections.singletonList(new Comment());
+        data.put("comments", comments);
+
+        given(this.authorService.getAll()).willReturn(authors);
+        given(this.genreService.getAll()).willReturn(genres);
+        given(this.bookService.getAll()).willReturn(books);
+        given(this.commentService.getAll()).willReturn(comments);
+
+        this.mvc.perform(get("/").accept(MediaType.TEXT_PLAIN))
                 .andExpect(status().isOk())
-                .andExpect(view().name("info"))
-                .andExpect(model().attribute("authors", 2L))
-                .andExpect(model().attribute("genres", 2L))
-                .andExpect(model().attribute("books", 4L))
-                .andExpect(model().attribute("comments", 4L))
-                .andExpect(content().string(containsString("what")))
-                .andExpect(content().string(containsString("count")))
-                .andExpect(content().string(containsString("Info:")));
+                .andExpect(view().name("index"))
+                .andExpect(model().attribute("frontendData", data));
     }
 }

@@ -36,18 +36,4 @@ public class HomeController {
         return "index";
     }
 
-    @GetMapping("/info")
-    public String info(Model model) {
-        log.info("get /info");
-        long authors = authorService.count();
-        model.addAttribute("authors", authors);
-        long genres = genreService.count();
-        model.addAttribute("genres", genres);
-        long books = bookService.count();
-        model.addAttribute("books", books);
-        long comments = commentService.count();
-        model.addAttribute("comments", comments);
-        return "info";
-    }
-
 }
