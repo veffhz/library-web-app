@@ -29,6 +29,7 @@ public class HomeController {
         log.info("get /");
         HashMap<Object, Object> data = new HashMap<>();
         data.put("authors", authorService.getAll());
+        data.put("genres", genreService.getAll());
         model.addAttribute("frontendData", data);
         return "index";
     }

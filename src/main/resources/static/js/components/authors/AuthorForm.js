@@ -34,9 +34,14 @@ export default {
   methods: {
       save: function() {
           var inputs = document.getElementsByTagName('input');
+
+          console.log('CALL');
+
           for (var index = 0; index < inputs.length; ++index) {
              if (!inputs[index].checkValidity()) {
                return;
+             } else {
+               inputs[index].setCustomValidity('');
              }
           }
 
@@ -45,7 +50,7 @@ export default {
               this.$resource('/api/author{/id}').update({}, author)
               .then(response => response.json())
               .then(data => {
-                  var index = this.authors.findIndex(data);
+                  var index = this.authors.findIndex(function(item) { return item.id == data.id; });
                   this.authors.splice(index, 1, data);
                   this.firstName = '';
                   this.birthDate = '';
