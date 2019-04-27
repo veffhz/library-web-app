@@ -19,12 +19,12 @@ export default {
             <table class="items">
                 <thead>
                 <tr>
-                    <th>Id</th>
-                    <th>Author</th>
-                    <th>Date</th>
-                    <th>Content</th>
-                    <th>Book</th>
-                    <th>Controls</th>
+                    <th>id</th>
+                    <th>author</th>
+                    <th>date</th>
+                    <th>content</th>
+                    <th>book</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>

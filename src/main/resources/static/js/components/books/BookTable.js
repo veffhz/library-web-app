@@ -19,16 +19,16 @@ export default {
             <table class="items">
                 <thead>
                 <tr>
-                    <th>Id</th>
-                    <th>Book Name</th>
-                    <th>Publish Date:</th>
-                    <th>Language</th>
-                    <th>Publishing House</th>
-                    <th>City</th>
-                    <th>Isbn</th>
-                    <th>Author</th>
-                    <th>Genre</th>
-                    <th>Controls</th>
+                    <th>id</th>
+                    <th>bookName</th>
+                    <th>publishDate</th>
+                    <th>language</th>
+                    <th>publishingHouse</th>
+                    <th>city</th>
+                    <th>isbn</th>
+                    <th>author</th>
+                    <th>genre</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>

@@ -19,9 +19,9 @@ export default {
             <table class="items">
                 <thead>
                 <tr>
-                    <th>Id</th>
-                    <th>Genre Name</th>
-                    <th>Controls</th>
+                    <th>id</th>
+                    <th>genreName</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>

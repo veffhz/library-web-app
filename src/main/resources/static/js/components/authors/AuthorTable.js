@@ -20,8 +20,8 @@ export default {
                 <thead>
                 <tr>
                     <th>Id</th>
-                    <th>Full Name</th>
-                    <th>Controls</th>
+                    <th>fullName</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>

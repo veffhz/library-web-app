@@ -22,7 +22,7 @@ export default {
           <form onsubmit="return false">
               <input type="text" placeholder="First Name" v-model="firstName" required="required">
               <p/>
-              <input type="date" placeholder="Birth Date" v-model="birthDate" required="required">
+              <input type="date" v-model="birthDate" required="required">
               <p/>
               <input type="text" placeholder="Last Name" v-model="lastName" required="required">
               <p/>

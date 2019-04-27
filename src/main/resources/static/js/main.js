@@ -1,5 +1,5 @@
 import App from './App.js';
-import router from './router/index.js';
+import router from './Router.js';
 
 Vue.use(VueResource)
 

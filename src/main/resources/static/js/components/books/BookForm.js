@@ -32,7 +32,7 @@ export default {
           <form onsubmit="return false">
               <input type="text" placeholder="Book Name" v-model="bookName" required="required">
               <p/>
-              <input type="date" placeholder="Publish Date" v-model="publishDate" required="required">
+              <input type="date" v-model="publishDate" required="required">
               <p/>
               <input type="text" placeholder="Language" v-model="language" required="required">
               <p/>
