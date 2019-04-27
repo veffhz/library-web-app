@@ -31,6 +31,7 @@ public class HomeController {
         data.put("authors", authorService.getAll());
         data.put("genres", genreService.getAll());
         data.put("books", bookService.getAll());
+        data.put("comments", commentService.getAll());
         model.addAttribute("frontendData", data);
         return "index";
     }

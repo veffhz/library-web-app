@@ -67,13 +67,12 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public String save(Comment comment) {
-        Comment commentDb;
-        if (Strings.isNotEmpty(comment.getId())) {
-            commentDb = repository.save(comment);
-        } else {
-            commentDb = repository.insert(comment);
-        }
-        return Objects.nonNull(commentDb) ? commentDb.getId() : null;
+    public Comment insert(Comment comment) {
+        return repository.insert(comment);
+    }
+
+    @Override
+    public Comment update(Comment comment) {
+        return repository.save(comment);
     }
 }

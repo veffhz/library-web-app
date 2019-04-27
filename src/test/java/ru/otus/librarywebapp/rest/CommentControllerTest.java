@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DisplayName("Test for comment Controller")
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(controllers = CommentController.class)
+@WebMvcTest(controllers = CommentApi.class)
 class CommentControllerTest {
 
     @Autowired
@@ -130,7 +130,7 @@ class CommentControllerTest {
                 .accept(MediaType.TEXT_PLAIN))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/comments"));
-        verify(this.commentService, times(1)).save(any(Comment.class));
+        verify(this.commentService, times(1)).insert(any(Comment.class));
     }
 
 }
