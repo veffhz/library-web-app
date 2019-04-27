@@ -22,12 +22,12 @@ export default {
                     <th>Id</th>
                     <th>Book Name</th>
                     <th>Publish Date:</th>
-                    <th>Language:</th>
-                    <th>Publishing House:</th>
-                    <th>City:</th>
-                    <th>Isbn:</th>
-                    <th>Author:</th>
-                    <th>Genre:</th>
+                    <th>Language</th>
+                    <th>Publishing House</th>
+                    <th>City</th>
+                    <th>Isbn</th>
+                    <th>Author</th>
+                    <th>Genre</th>
                     <th>Controls</th>
                 </tr>
                 </thead>

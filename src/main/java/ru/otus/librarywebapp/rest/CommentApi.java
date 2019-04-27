@@ -13,6 +13,7 @@ import ru.otus.librarywebapp.service.BookService;
 import ru.otus.librarywebapp.service.CommentService;
 
 import javax.validation.Valid;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -44,6 +45,7 @@ public class CommentApi {
 
     @PostMapping("/api/comment")
     public ResponseEntity<Comment> create(@Valid @RequestBody Comment comment) {
+        comment.setDate(new Date());
         log.info("create comment {}", comment);
         Comment savedGenre = commentService.insert(comment);
         return new ResponseEntity<>(savedGenre, HttpStatus.CREATED);
