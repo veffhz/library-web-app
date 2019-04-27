@@ -23,6 +23,7 @@ import ru.otus.librarywebapp.service.CommentService;
 import ru.otus.librarywebapp.service.GenreService;
 import ru.otus.librarywebapp.utils.Helper;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -116,22 +117,22 @@ class CommentControllerTest {
     @Test
     @DisplayName("Test create comment on post /api/comment")
     void shouldCreateComment() throws Exception {
-        Date date = Helper.toDate("2019-04-27");
         Comment comment = new Comment("test", null, "test");
+        Comment savedComment = new Comment("test", new Date(), "test");
 
-        //given(this.commentRepository.insert(comment)).willReturn(comment);
-        given(this.commentService.insert(comment)).willReturn(comment);
+        given(this.commentService.insert(any(Comment.class))).willReturn(savedComment);
 
         ObjectMapper mapper = new ObjectMapper();
 
-        String responseBody = "{\"id\":null,\"book\":null,\"author\":\"test\",\"date\":\"2019-04-27\",\"content\":\"test\"}";
+        String responseBody = String.format("{\"id\":null,\"book\":null,\"author\":\"test\",\"date\":\"%s\",\"content\":\"test\"}",
+                new SimpleDateFormat("yyyy-MM-dd").format(savedComment.getDate()));
 
         this.mvc.perform(post("/api/comment")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(comment))
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
-                //.andExpect(content().string(responseBody));
+                .andExpect(status().isCreated())
+                .andExpect(content().string(responseBody));
         verify(this.commentService, times(1)).insert(any(Comment.class));
     }
 

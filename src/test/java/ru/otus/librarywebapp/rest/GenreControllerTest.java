@@ -94,7 +94,7 @@ class GenreControllerTest {
 
     @Test
     @DisplayName("Test update genre on /api/genre")
-    void shouldEditGenre() throws Exception {
+    void shouldUpdateGenre() throws Exception {
         Genre genre = new Genre("test");
 
         given(this.genreService.update(genre)).willReturn(genre);

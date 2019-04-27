@@ -100,7 +100,7 @@ class AuthorControllerTest {
     }
 
     @Test
-    @DisplayName("Test update author on /api/author/{id}")
+    @DisplayName("Test update author on /api/author")
     void shouldUpdateAuthor() throws Exception {
         Date date = Helper.toDate("2019-04-27");
         Author author = new Author("test", date, "test");

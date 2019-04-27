@@ -1,8 +1,8 @@
 package ru.otus.librarywebapp.rest;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,10 +16,14 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequiredArgsConstructor
 public class GenreApi {
 
     private final GenreService genreService;
+
+    @Autowired
+    public GenreApi(GenreService genreService) {
+        this.genreService = genreService;
+    }
 
     @GetMapping("/api/genre")
     public List<Genre> getAll() {

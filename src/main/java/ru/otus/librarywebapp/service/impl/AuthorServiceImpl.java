@@ -1,7 +1,6 @@
 package ru.otus.librarywebapp.service.impl;
 
-import lombok.RequiredArgsConstructor;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ru.otus.librarywebapp.dao.AuthorRepository;
@@ -15,11 +14,16 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository repository;
     private final BookRepository bookRepository;
+
+    @Autowired
+    public AuthorServiceImpl(AuthorRepository repository, BookRepository bookRepository) {
+        this.repository = repository;
+        this.bookRepository = bookRepository;
+    }
 
     @Override
     public long count() {

@@ -1,5 +1,6 @@
 package ru.otus.librarywebapp.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,19 +23,16 @@ import ru.otus.librarywebapp.service.AuthorService;
 import ru.otus.librarywebapp.service.BookService;
 import ru.otus.librarywebapp.service.CommentService;
 import ru.otus.librarywebapp.service.GenreService;
+import ru.otus.librarywebapp.utils.Helper;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @DisplayName("Test for book Controller")
@@ -64,90 +62,101 @@ class BookControllerTest {
     private CommentRepository commentRepository;
 
     @Test
-    @DisplayName("Test get all books page on /books")
-    void shouldGetAllBooksPage() throws Exception {
-        List<Book> books = Arrays.asList(
-                new Book(),
-                new Book(),
-                new Book());
+    @DisplayName("Test get all books on /api/book")
+    void shouldGetAllBooks() throws Exception {
+        Date date = Helper.toDate("2019-04-27");
+        Book book = new Book(new Author(), new Genre(), "Best", date, "russian",
+                "Test", "Test", "555-555");
+
+        List<Book> books = Collections.singletonList(book);
 
         given(this.bookService.getAll()).willReturn(books);
 
-        this.mvc.perform(get("/books").accept(MediaType.TEXT_PLAIN))
+        String responseBody = "[{\"id\":null,\"author\":{\"id\":null,\"firstName\":null,\"birthDate\":null,\"lastName\":null,\"fullName\":\" \"}," +
+                "\"genre\":{\"id\":null,\"genreName\":null},\"bookName\":\"Best\",\"publishDate\":\"2019-04-27\",\"language\":\"russian\"," +
+                "\"publishingHouse\":\"Test\",\"city\":\"Test\",\"isbn\":\"555-555\"}]";
+
+        this.mvc.perform(get("/api/book")
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(view().name("book/books"))
-                .andExpect(model().attribute("books", books))
-                .andExpect(content().string(containsString("Book name")))
-                .andExpect(content().string(containsString("Books:")));
+                .andExpect(content().string(responseBody));
     }
 
     @Test
-    @DisplayName("Test get book page on /book by id")
-    void shouldGetBookPage() throws Exception {
-        Book book = new Book();
+    @DisplayName("Test get book on /api/book/{123}")
+    void shouldGetBook() throws Exception {
+        Date date = Helper.toDate("2019-04-27");
+        Book book = new Book(new Author(), new Genre(), "Best", date, "russian",
+                "Test", "Test", "555-555");
+
         given(this.bookService.getById("123")).willReturn(Optional.of(book));
 
-        this.mvc.perform(get("/book")
-                .param("id", "123")
-                .accept(MediaType.TEXT_PLAIN))
+        String responseBody = "{\"id\":null,\"author\":{\"id\":null,\"firstName\":null,\"birthDate\":null,\"lastName\":null,\"fullName\":\" \"}," +
+                "\"genre\":{\"id\":null,\"genreName\":null},\"bookName\":\"Best\",\"publishDate\":\"2019-04-27\",\"language\":\"russian\"," +
+                "\"publishingHouse\":\"Test\",\"city\":\"Test\",\"isbn\":\"555-555\"}";
+
+        this.mvc.perform(get("/api/book/123")
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(view().name("book/book"))
-                .andExpect(model().attribute("book", book))
-                .andExpect(content().string(containsString("Book name:")))
-                .andExpect(content().string(containsString("Book info:")));
+                .andExpect(content().string(responseBody));
     }
 
     @Test
-    @DisplayName("Test edit book page on /book/edit")
-    void shouldEditBookPage() throws Exception {
-        Book book = new Book();
-        given(this.bookService.getById("123")).willReturn(Optional.of(book));
+    @DisplayName("Test update book on /api/book")
+    void shouldUpdateBook() throws Exception {
+        Date date = Helper.toDate("2019-04-27");
+        Book book = new Book(new Author(), new Genre(), "Best", date, "russian",
+                "Test", "Test", "555-555");
 
-        this.mvc.perform(get("/book/edit")
-                .param("id", "123")
-                .accept(MediaType.TEXT_PLAIN))
+        given(this.bookService.update(book)).willReturn(book);
+
+        String responseBody = "{\"id\":null,\"author\":{\"id\":null,\"firstName\":null,\"birthDate\":null,\"lastName\":null,\"fullName\":\" \"}," +
+                "\"genre\":{\"id\":null,\"genreName\":null},\"bookName\":\"Best\",\"publishDate\":\"2019-04-27\",\"language\":\"russian\"," +
+                "\"publishingHouse\":\"Test\",\"city\":\"Test\",\"isbn\":\"555-555\"}";
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        this.mvc.perform(put("/api/book")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(book))
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(view().name("book/edit"))
-                .andExpect(model().attribute("book", book))
-                .andExpect(content().string(containsString("Book name:")))
-                .andExpect(content().string(containsString("Book edit:")));
+                .andExpect(content().string(responseBody));
+
+        verify(this.bookService, times(1)).update(any(Book.class));
     }
 
     @Test
-    @DisplayName("Test save book on post /book/edit")
-    void shouldSaveBook() throws Exception {
-        this.mvc.perform(post("/book/edit")
-                .param("id", "123")
-                .accept(MediaType.TEXT_PLAIN))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/book?id=123"));
+    @DisplayName("Test create book on post /api/book")
+    void shouldCreateBook() throws Exception {
+        Date date = Helper.toDate("2019-04-27");
+        Book book = new Book(new Author(), new Genre(), "Best", date, "russian",
+                "Test", "Test", "555-555");
+
+        given(this.bookService.insert(book)).willReturn(book);
+
+        String responseBody = "{\"id\":null,\"author\":{\"id\":null,\"firstName\":null,\"birthDate\":null,\"lastName\":null,\"fullName\":\" \"}," +
+                "\"genre\":{\"id\":null,\"genreName\":null},\"bookName\":\"Best\",\"publishDate\":\"2019-04-27\",\"language\":\"russian\"," +
+                "\"publishingHouse\":\"Test\",\"city\":\"Test\",\"isbn\":\"555-555\"}";
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        this.mvc.perform(post("/api/book")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(book))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(content().string(responseBody));
         verify(this.bookService, times(1)).insert(any(Book.class));
     }
 
     @Test
-    @DisplayName("Test delete book on post /book/delete")
+    @DisplayName("Test delete book on /api/book/{id}")
     void shouldDeleteBookById() throws Exception {
-        this.mvc.perform(post("/book/delete")
-                .param("id", "123")
+        this.mvc.perform(delete("/api/book/123")
                 .accept(MediaType.TEXT_PLAIN))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/books"));
+                .andExpect(status().isNoContent());
         verify(this.bookService, times(1)).deleteById("123");
     }
 
-    @Test
-    @DisplayName("Test add book page on /book/add")
-    void shouldAddBookPage() throws Exception {
-        Book book = new Book();
-        book.setAuthor(new Author());
-        book.setGenre(new Genre());
-
-        this.mvc.perform(get("/book/add")
-                .accept(MediaType.TEXT_PLAIN))
-                .andExpect(status().isOk())
-                .andExpect(view().name("book/edit"))
-                .andExpect(model().attribute("book", book))
-                .andExpect(content().string(containsString("Book name:")))
-                .andExpect(content().string(containsString("Book edit:")));
-    }
 }
