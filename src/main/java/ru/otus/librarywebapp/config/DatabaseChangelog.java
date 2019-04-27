@@ -42,7 +42,7 @@ public class DatabaseChangelog {
         DBRef refGenre1 = new DBRef("genres", genre1.get("_id"));
 
         createDbObject(db, "books", Arrays.asList(Pair.of("bookName", "Избранное"),
-                Pair.of("publishDate", Helper.toDate("1991-01-01")), Pair.of("language", "Русский"),
+                Pair.of("publishDate", Helper.toDate("01-01-1991")), Pair.of("language", "Русский"),
                 Pair.of("publishingHouse", "Мир"), Pair.of("city", "Москва"), Pair.of("isbn", "5-03002745-9"),
                 Pair.of("author", refAuthor1), Pair.of("genre", refGenre1)));
 
@@ -53,7 +53,7 @@ public class DatabaseChangelog {
         DBRef refGenre2 = new DBRef("genres", genre2.get("_id"));
 
         createDbObject(db, "books", Arrays.asList(Pair.of("bookName", "Десять негритят"),
-                Pair.of("publishDate", Helper.toDate("2017-01-01")), Pair.of("language", "Русский"),
+                Pair.of("publishDate", Helper.toDate("01-01-2017")), Pair.of("language", "Русский"),
                 Pair.of("publishingHouse", "Эксмо-Пресс"), Pair.of("city", "Москва"), Pair.of("isbn", "978-5-699-83193-7"),
                 Pair.of("author", refAuthor2), Pair.of("genre", refGenre2)));
     }

@@ -26,12 +26,12 @@ export default {
                 </thead>
                 <tbody>
                 <author-tr v-for="author in authors" :key="author.id" :author="author"
-                    :editMethod="editMethod" :authors="authors"/>
+                    :editMethod="editMethod" :authors="authors" />
                 </tbody>
             </table>
             <div class="gap-30"></div>
             <p>Edit:</p>
-            <author-form :authors="authors" :authorAttr="author"/>
+            <author-form :authors="authors" :authorAttr="author" />
         </div>
     `,
       methods: {

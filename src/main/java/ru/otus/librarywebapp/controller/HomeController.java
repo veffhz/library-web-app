@@ -30,6 +30,7 @@ public class HomeController {
         HashMap<Object, Object> data = new HashMap<>();
         data.put("authors", authorService.getAll());
         data.put("genres", genreService.getAll());
+        data.put("books", bookService.getAll());
         model.addAttribute("frontendData", data);
         return "index";
     }

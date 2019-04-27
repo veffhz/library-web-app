@@ -2,7 +2,8 @@ export default {
   name: 'GenreTr',
   props: ['genre', 'editMethod', 'genres'],
   template: `
-      <tr><td>{{ genre.id }}</td>
+      <tr>
+          <td>{{ genre.id }}</td>
           <td>{{ genre.genreName }}</td>
           <td>
               <input type="button" value="edit" @click="edit">

@@ -21,33 +21,33 @@ public class BookApi {
 
     private final BookService bookService;
 
-    @GetMapping("/api/books")
+    @GetMapping("/api/book")
     public List<Book> getAll() {
         log.info("get all books");
         return bookService.getAll();
     }
 
-    @GetMapping("/api/books/{id}")
-    public Book bookPage(@PathVariable String id) {
+    @GetMapping("/api/book/{id}")
+    public Book getById(@PathVariable String id) {
         log.info("get books by id {}",  id);
         return bookService.getById(id).orElseThrow(BookNotFoundException::new);
     }
 
-    @PutMapping("/api/books")
+    @PutMapping("/api/book")
     public ResponseEntity<Book> update(@Valid @RequestBody Book book) {
         log.info("update book {} by id {}",  book, book.getId());
         Book updatedBook = bookService.update(book);
         return new ResponseEntity<>(updatedBook, HttpStatus.OK);
     }
 
-    @PostMapping("/api/books")
+    @PostMapping("/api/book")
     public ResponseEntity<Book> create(@Valid @RequestBody Book book) {
         log.info("create book {}",  book);
         Book savedBook = bookService.insert(book);
         return new ResponseEntity<>(savedBook, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/api/books/{id}")
+    @DeleteMapping("/api/book/{id}")
     public ResponseEntity delete(@PathVariable String id) {
         log.info("delete book by id {}",  id);
         bookService.deleteById(id);

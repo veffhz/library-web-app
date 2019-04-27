@@ -1,13 +1,15 @@
 package ru.otus.librarywebapp.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Data
@@ -21,13 +23,19 @@ public class Book {
     private Author author;
     @DBRef
     private Genre genre;
+    @NotBlank
     @Indexed
     private String bookName;
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     private Date publishDate;
+    @NotBlank
     private String language;
+    @NotBlank
     private String publishingHouse;
+    @NotBlank
     private String city;
+    @NotBlank
     private String isbn;
 
     public Book(Author author, Genre genre, String bookName,

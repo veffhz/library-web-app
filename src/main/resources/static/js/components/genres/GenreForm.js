@@ -33,6 +33,7 @@ export default {
           }
 
           var genre = { id: this.id, genreName: this.genreName };
+
           if (this.id) {
               this.$resource('/api/genre{/id}').update({}, genre)
               .then(response => response.json())

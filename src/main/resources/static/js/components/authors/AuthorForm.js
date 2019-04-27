@@ -35,17 +35,14 @@ export default {
       save: function() {
           var inputs = document.getElementsByTagName('input');
 
-          console.log('CALL');
-
           for (var index = 0; index < inputs.length; ++index) {
              if (!inputs[index].checkValidity()) {
                return;
-             } else {
-               inputs[index].setCustomValidity('');
              }
           }
 
           var author = { id: this.id, firstName: this.firstName, birthDate: this.birthDate, lastName: this.lastName };
+
           if (this.id) {
               this.$resource('/api/author{/id}').update({}, author)
               .then(response => response.json())

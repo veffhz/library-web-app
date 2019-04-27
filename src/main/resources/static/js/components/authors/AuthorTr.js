@@ -2,7 +2,8 @@ export default {
   name: 'AuthorTr',
   props: ['author', 'editMethod', 'authors'],
   template: `
-      <tr><td>{{ author.id }}</td>
+      <tr>
+          <td>{{ author.id }}</td>
           <td>{{ author.fullName }}</td>
           <td>
               <input type="button" value="edit" @click="edit">

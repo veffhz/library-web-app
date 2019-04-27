@@ -26,12 +26,12 @@ export default {
                 </thead>
                 <tbody>
                 <genre-tr v-for="genre in genres" :key="genre.id" :genre="genre"
-                    :editMethod="editMethod" :genres="genres"/>
+                    :editMethod="editMethod" :genres="genres" />
                 </tbody>
             </table>
             <div class="gap-30"></div>
             <p>Edit:</p>
-            <genre-form :genres="genres" :genreAttr="genre"/>
+            <genre-form :genres="genres" :genreAttr="genre" />
         </div>
     `,
       methods: {
