@@ -1,15 +1,14 @@
 package ru.otus.librarywebapp.rest;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import ru.otus.librarywebapp.domain.Comment;
 import ru.otus.librarywebapp.exception.CommentNotFoundException;
-import ru.otus.librarywebapp.service.BookService;
 import ru.otus.librarywebapp.service.CommentService;
 
 import javax.validation.Valid;
@@ -18,11 +17,14 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequiredArgsConstructor
 public class CommentApi {
 
     private final CommentService commentService;
-    private final BookService bookService;
+
+    @Autowired
+    public CommentApi(CommentService commentService) {
+        this.commentService = commentService;
+    }
 
     @GetMapping("/api/comment")
     public List<Comment> getAll() {
@@ -47,8 +49,8 @@ public class CommentApi {
     public ResponseEntity<Comment> create(@Valid @RequestBody Comment comment) {
         comment.setDate(new Date());
         log.info("create comment {}", comment);
-        Comment savedGenre = commentService.insert(comment);
-        return new ResponseEntity<>(savedGenre, HttpStatus.CREATED);
+        Comment savedComment = commentService.insert(comment);
+        return new ResponseEntity<>(savedComment, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/api/comment/{id}")

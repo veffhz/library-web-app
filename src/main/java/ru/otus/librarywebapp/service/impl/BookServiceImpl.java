@@ -22,7 +22,6 @@ import java.util.Optional;
 
 import static ru.otus.librarywebapp.utils.Helper.toDate;
 
-@Log
 @Service
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {

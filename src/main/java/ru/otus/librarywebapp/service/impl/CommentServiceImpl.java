@@ -1,8 +1,6 @@
 package ru.otus.librarywebapp.service.impl;
 
-import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.util.Strings;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,12 +17,17 @@ import java.util.Optional;
 import static ru.otus.librarywebapp.utils.Helper.toDate;
 
 @Service
-@RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository repository;
 
     private final BookRepository bookRepository;
+
+    @Autowired
+    public CommentServiceImpl(CommentRepository repository, BookRepository bookRepository) {
+        this.repository = repository;
+        this.bookRepository = bookRepository;
+    }
 
     @Override
     public long count() {

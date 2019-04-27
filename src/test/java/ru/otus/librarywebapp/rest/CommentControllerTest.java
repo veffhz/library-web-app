@@ -1,5 +1,6 @@
 package ru.otus.librarywebapp.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,22 +16,20 @@ import ru.otus.librarywebapp.dao.AuthorRepository;
 import ru.otus.librarywebapp.dao.BookRepository;
 import ru.otus.librarywebapp.dao.CommentRepository;
 import ru.otus.librarywebapp.dao.GenreRepository;
-import ru.otus.librarywebapp.domain.Book;
 import ru.otus.librarywebapp.domain.Comment;
 import ru.otus.librarywebapp.service.AuthorService;
 import ru.otus.librarywebapp.service.BookService;
 import ru.otus.librarywebapp.service.CommentService;
 import ru.otus.librarywebapp.service.GenreService;
+import ru.otus.librarywebapp.utils.Helper;
 
 import java.util.*;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @DisplayName("Test for comment Controller")
@@ -60,77 +59,89 @@ class CommentControllerTest {
     private CommentRepository commentRepository;
 
     @Test
-    @DisplayName("Test get all comments page on /comments")
-    void shouldGetAllCommentsPage() throws Exception {
-        Book book = new Book();
-        Comment comment = new Comment("test", new Date(), "test");
-        comment.setBook(book);
-        List<Comment> comments = Arrays.asList(comment, comment, comment);
+    @DisplayName("Test get all comments on /api/comment")
+    void shouldGetAllComments() throws Exception {
+        Date date = Helper.toDate("2019-04-27");
+        Comment comment = new Comment("test", date, "test");
 
+        List<Comment> comments = Collections.singletonList(comment);
         given(this.commentService.getAll()).willReturn(comments);
 
-        this.mvc.perform(get("/comments").accept(MediaType.TEXT_PLAIN))
+        String responseBody = "[{\"id\":null,\"book\":null,\"author\":\"test\",\"date\":\"2019-04-27\",\"content\":\"test\"}]";
+
+        this.mvc.perform(get("/api/comment")
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(view().name("comment/comments"))
-                .andExpect(model().attribute("comments", comments))
-                .andExpect(content().string(containsString("Book name")))
-                .andExpect(content().string(containsString("List of all comments")));
+                .andExpect(content().string(responseBody));
     }
 
     @Test
-    @DisplayName("Test get comment page on /comment by id")
-    void shouldGetCommentPage() throws Exception {
-        Comment comment = new Comment("test", new Date(), "test");
+    @DisplayName("Test get comment on /api/comment{id}")
+    void shouldGetComment() throws Exception {
+        Date date = Helper.toDate("2019-04-27");
+        Comment comment = new Comment("test", date, "test");
+
         given(this.commentService.getById("123")).willReturn(Optional.of(comment));
 
-        this.mvc.perform(get("/comment")
-                .param("id", "123")
-                .accept(MediaType.TEXT_PLAIN))
+        String responseBody = "{\"id\":null,\"book\":null,\"author\":\"test\",\"date\":\"2019-04-27\",\"content\":\"test\"}";
+
+        this.mvc.perform(get("/api/comment/123")
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(view().name("comment/comment"))
-                .andExpect(model().attribute("comment", comment))
-                .andExpect(content().string(containsString("Content:")))
-                .andExpect(content().string(containsString("Comment info:")));
+                .andExpect(content().string(responseBody));
     }
 
     @Test
-    @DisplayName("Test delete comment on post /comment/delete")
-    void shouldDeleteCommentById() throws Exception {
-        this.mvc.perform(post("/comment/delete")
-                .param("id", "123")
-                .accept(MediaType.TEXT_PLAIN))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/comments"));
-        verify(this.commentService, times(1)).deleteById("123");
-    }
+    @DisplayName("Test update comment page on /api/comment")
+    void shouldUpdateComment() throws Exception {
+        Date date = Helper.toDate("2019-04-27");
+        Comment comment = new Comment("test", date, "test");
 
-    @Test
-    @DisplayName("Test add comment page on /comment/add")
-    void shouldAddCommentPage() throws Exception {
-        List<Book> books = Collections.singletonList(new Book());
-        given(this.bookService.getAll()).willReturn(books);
-        Comment comment = new Comment();
-        comment.setBook(books.get(0));
-        given(this.commentService.getById("123")).willReturn(Optional.of(comment));
+        given(this.commentService.update(comment)).willReturn(comment);
 
-        this.mvc.perform(get("/comment/add")
-                .accept(MediaType.TEXT_PLAIN))
+        ObjectMapper mapper = new ObjectMapper();
+
+        String responseBody = "{\"id\":null,\"book\":null,\"author\":\"test\",\"date\":\"2019-04-27\",\"content\":\"test\"}";
+
+        this.mvc.perform(put("/api/comment/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(comment))
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(view().name("comment/new"))
-                .andExpect(model().attribute("comment", comment))
-                .andExpect(model().attribute("books", books))
-                .andExpect(content().string(containsString("Author:")))
-                .andExpect(content().string(containsString("Content:")));
+                .andExpect(content().string(responseBody));
+
+        verify(this.commentService, times(1)).update(any(Comment.class));
     }
 
     @Test
-    @DisplayName("Test save comment on post /comment/add")
-    void shouldSaveComment() throws Exception {
-        this.mvc.perform(post("/comment/add")
-                .accept(MediaType.TEXT_PLAIN))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/comments"));
+    @DisplayName("Test create comment on post /api/comment")
+    void shouldCreateComment() throws Exception {
+        Date date = Helper.toDate("2019-04-27");
+        Comment comment = new Comment("test", null, "test");
+
+        //given(this.commentRepository.insert(comment)).willReturn(comment);
+        given(this.commentService.insert(comment)).willReturn(comment);
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        String responseBody = "{\"id\":null,\"book\":null,\"author\":\"test\",\"date\":\"2019-04-27\",\"content\":\"test\"}";
+
+        this.mvc.perform(post("/api/comment")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(comment))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+                //.andExpect(content().string(responseBody));
         verify(this.commentService, times(1)).insert(any(Comment.class));
+    }
+
+    @Test
+    @DisplayName("Test delete comment on /api/comment/{id}")
+    void shouldDeleteCommentById() throws Exception {
+        this.mvc.perform(delete("/api/comment/123")
+                .accept(MediaType.TEXT_PLAIN))
+                .andExpect(status().isNoContent());
+        verify(this.commentService, times(1)).deleteById("123");
     }
 
 }

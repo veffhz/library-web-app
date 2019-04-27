@@ -18,12 +18,11 @@ public class Comment {
 
     @Id
     private String id;
-    @Setter
     @DBRef
     private Book book;
     @NotBlank
     private String author;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd hh:mm:ss", timezone = "Europe/Moscow")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd", timezone = "Europe/Moscow")
     private Date date;
     @NotBlank
     private String content;
