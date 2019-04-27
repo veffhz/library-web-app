@@ -1,5 +1,6 @@
 package ru.otus.librarywebapp.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,14 +26,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @DisplayName("Test for genre Controller")
@@ -62,85 +61,85 @@ class GenreControllerTest {
     private CommentRepository commentRepository;
 
     @Test
-    @DisplayName("Test get genres authors page on /genres")
-    void shouldGetAllGenresPage() throws Exception {
+    @DisplayName("Test get genres on /api/genre")
+    void shouldGetAllGenres() throws Exception {
         List<Genre> genres = Arrays.asList(
-                new Genre("test"),
                 new Genre("test"),
                 new Genre("test"));
 
         given(this.genreService.getAll()).willReturn(genres);
 
-        this.mvc.perform(get("/genres").accept(MediaType.TEXT_PLAIN))
+        String responseBody = "[{\"id\":null,\"genreName\":\"test\"},{\"id\":null,\"genreName\":\"test\"}]";
+
+        this.mvc.perform(get("/api/genre")
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(view().name("genre/genres"))
-                .andExpect(model().attribute("genres", genres))
-                .andExpect(content().string(containsString("Genre Name")))
-                .andExpect(content().string(containsString("Genres:")));
+                .andExpect(content().string(responseBody));
     }
 
     @Test
-    @DisplayName("Test get genre page on /genre by id")
-    void shouldGetGenrePage() throws Exception {
+    @DisplayName("Test get genre on /api/genre/{id}")
+    void shouldGetGenre() throws Exception {
         Genre genre = new Genre("test");
+
         given(this.genreService.getById("123")).willReturn(Optional.of(genre));
 
-        this.mvc.perform(get("/genre")
-                .param("id", "123")
-                .accept(MediaType.TEXT_PLAIN))
+        String responseBody = "{\"id\":null,\"genreName\":\"test\"}";
+
+        this.mvc.perform(get("/api/genre/123")
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(view().name("genre/genre"))
-                .andExpect(model().attribute("genre", genre))
-                .andExpect(content().string(containsString("Genre name:")))
-                .andExpect(content().string(containsString("Genre info:")));
+                .andExpect(content().string(responseBody));
     }
 
     @Test
-    @DisplayName("Test edit genre page on /author/genre")
-    void shouldEditGenrePage() throws Exception {
+    @DisplayName("Test update genre on /api/genre")
+    void shouldEditGenre() throws Exception {
         Genre genre = new Genre("test");
-        given(this.genreService.getById("123")).willReturn(Optional.of(genre));
 
-        this.mvc.perform(get("/genre/edit")
-                .param("id", "123")
-                .accept(MediaType.TEXT_PLAIN))
+        given(this.genreService.update(genre)).willReturn(genre);
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        String responseBody = "{\"id\":null,\"genreName\":\"test\"}";
+
+        this.mvc.perform(put("/api/genre")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(genre))
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(view().name("genre/edit"))
-                .andExpect(model().attribute("genre", genre))
-                .andExpect(content().string(containsString("Genre name:")))
-                .andExpect(content().string(containsString("Genre edit:")));
+                .andExpect(content().string(responseBody));
+
+        verify(this.genreService, times(1)).update(any(Genre.class));
     }
 
     @Test
-    @DisplayName("Test save genre on post /genre/edit")
-    void shouldSaveGenre() throws Exception {
-        this.mvc.perform(post("/genre/edit")
-                .accept(MediaType.TEXT_PLAIN))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/genres"));
+    @DisplayName("Test create genre on post /api/genre")
+    void shouldCreateGenre() throws Exception {
+        Genre genre = new Genre("test");
+
+        given(this.genreService.insert(genre)).willReturn(genre);
+
+        String responseBody = "{\"id\":null,\"genreName\":\"test\"}";
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        this.mvc.perform(post("/api/genre")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(genre))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(content().string(responseBody));
         verify(this.genreService, times(1)).insert(any(Genre.class));
     }
 
     @Test
-    @DisplayName("Test delete genre on post /genre/delete")
+    @DisplayName("Test delete genre on /api/genre/{id}")
     void shouldDeleteGenreById() throws Exception {
-        this.mvc.perform(post("/genre/delete")
-                .param("id", "123")
+        this.mvc.perform(delete("/api/genre/123")
                 .accept(MediaType.TEXT_PLAIN))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/genres"));
+                .andExpect(status().isNoContent());
         verify(this.genreService, times(1)).deleteById("123");
     }
 
-    @Test
-    @DisplayName("Test add genre page on /genre/add")
-    void shouldAddGenrePage() throws Exception {
-        this.mvc.perform(get("/genre/add")
-                .accept(MediaType.TEXT_PLAIN))
-                .andExpect(status().isOk())
-                .andExpect(view().name("genre/edit"))
-                .andExpect(model().attribute("genre", new Genre()))
-                .andExpect(content().string(containsString("Genre name:")))
-                .andExpect(content().string(containsString("Genre edit:")));
-    }
 }

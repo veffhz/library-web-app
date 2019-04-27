@@ -23,7 +23,7 @@ public class Comment {
     private Book book;
     @NotBlank
     private String author;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd hh:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd hh:mm:ss", timezone = "Europe/Moscow")
     private Date date;
     @NotBlank
     private String content;

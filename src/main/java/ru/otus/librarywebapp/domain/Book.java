@@ -27,7 +27,7 @@ public class Book {
     @Indexed
     private String bookName;
     @NotNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd", timezone = "Europe/Moscow")
     private Date publishDate;
     @NotBlank
     private String language;

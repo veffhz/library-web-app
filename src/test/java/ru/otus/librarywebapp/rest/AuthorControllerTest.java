@@ -1,5 +1,7 @@
 package ru.otus.librarywebapp.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,14 +29,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
@@ -84,7 +84,7 @@ class AuthorControllerTest {
     }
 
     @Test
-    @DisplayName("Test get author on /author by id")
+    @DisplayName("Test get author on /api/author/{id}")
     void shouldGetAuthor() throws Exception {
         Date date = Helper.toDate("2019-04-27");
         Author author = new Author("test", date, "test");
@@ -96,55 +96,58 @@ class AuthorControllerTest {
         this.mvc.perform(get("/api/author/123")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().string(responseBody));;
+                .andExpect(content().string(responseBody));
     }
 
     @Test
-    @DisplayName("Test edit author page on /author/edit")
+    @DisplayName("Test update author on /api/author/{id}")
     void shouldEditAuthorPage() throws Exception {
-        Author author = new Author("test", new Date(), "test");
-        given(this.authorService.getById("123")).willReturn(Optional.of(author));
+        Date date = Helper.toDate("2019-04-27");
+        Author author = new Author("test", date, "test");
 
-        this.mvc.perform(get("/author/edit")
-                .param("id", "123")
-                .accept(MediaType.TEXT_PLAIN))
+        given(this.authorService.update(author)).willReturn(author);
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        String responseBody = "{\"id\":null,\"firstName\":\"test\",\"birthDate\":\"2019-04-27\",\"lastName\":\"test\",\"fullName\":\"test test\"}";
+
+        this.mvc.perform(put("/api/author/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(author))
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(view().name("author/edit"))
-                .andExpect(model().attribute("author", author))
-                .andExpect(content().string(containsString("First name:")))
-                .andExpect(content().string(containsString("Author edit:")));
+                .andExpect(content().string(responseBody));
+
+        verify(this.authorService, times(1)).update(any(Author.class));
     }
 
     @Test
-    @DisplayName("Test save author on post /author/edit")
-    void shouldSaveAuthor() throws Exception {
-        this.mvc.perform(post("/author/edit")
-                .accept(MediaType.TEXT_PLAIN))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/authors"));
+    @DisplayName("Test create author on post /api/author")
+    void shouldCreateAuthor() throws Exception {
+        Date date = Helper.toDate("2019-04-27");
+        Author author = new Author("test", date, "test");
+        given(this.authorService.insert(author)).willReturn(author);
+
+        String responseBody = "{\"id\":null,\"firstName\":\"test\",\"birthDate\":\"2019-04-27\",\"lastName\":\"test\",\"fullName\":\"test test\"}";
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        this.mvc.perform(post("/api/author")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(author))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(content().string(responseBody));
         verify(this.authorService, times(1)).insert(any(Author.class));
     }
 
     @Test
-    @DisplayName("Test delete author on post /author/delete")
+    @DisplayName("Test delete author on /api/author/{id}")
     void shouldDeleteAuthorById() throws Exception {
-        this.mvc.perform(post("/author/delete")
-                .param("id", "123")
+        this.mvc.perform(delete("/api/author/123")
                 .accept(MediaType.TEXT_PLAIN))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/authors"));
+                .andExpect(status().isNoContent());
         verify(this.authorService, times(1)).deleteById("123");
     }
 
-    @Test
-    @DisplayName("Test add author page on /author/add")
-    void shouldAddAuthorPage() throws Exception {
-        this.mvc.perform(get("/author/add")
-                .accept(MediaType.TEXT_PLAIN))
-                .andExpect(status().isOk())
-                .andExpect(view().name("author/edit"))
-                .andExpect(model().attribute("author", new Author()))
-                .andExpect(content().string(containsString("First name:")))
-                .andExpect(content().string(containsString("Author edit:")));
-    }
 }
