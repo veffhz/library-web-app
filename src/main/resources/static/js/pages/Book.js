@@ -4,7 +4,7 @@ import BookTable from '../components/books/BookTable.js'
 import CommentTable from '../components/comments/CommentTable.js'
 
 export default {
-  name: 'App',
+  name: 'Info',
   components: {
         AuthorTable,
         GenreTable,
@@ -22,5 +22,7 @@ export default {
   //template: '<author-table :authors="authors" />',
   //template: '<genre-table :genres="genres" />',
   //template: '<book-table :books="books" :authors="authors" :genres="genres" />',
-  template: '<comment-table :comments="comments" :books="books" />'
+  template:
+
+  '<comment-table :comments="comments" :books="books" />'
 };
