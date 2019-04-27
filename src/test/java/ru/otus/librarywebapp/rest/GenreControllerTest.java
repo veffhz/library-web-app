@@ -37,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DisplayName("Test for genre Controller")
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(controllers = GenreController.class)
+@WebMvcTest(controllers = GenreApi.class)
 class GenreControllerTest {
 
     @Autowired
@@ -118,7 +118,7 @@ class GenreControllerTest {
                 .accept(MediaType.TEXT_PLAIN))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/genres"));
-        verify(this.genreService, times(1)).save(any(Genre.class));
+        verify(this.genreService, times(1)).insert(any(Genre.class));
     }
 
     @Test

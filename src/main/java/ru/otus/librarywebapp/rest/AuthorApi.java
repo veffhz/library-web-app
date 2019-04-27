@@ -29,27 +29,27 @@ public class AuthorApi {
 
     @GetMapping("/api/author/{id}")
     public Author getById(@PathVariable String id) {
-        log.info("get author by id {}",  id);
+        log.info("get author by id {}", id);
         return authorService.getById(id).orElseThrow(AuthorNotFoundException::new);
     }
 
     @PutMapping("/api/author")
     public ResponseEntity<Author> update(@Valid @RequestBody Author author) {
-        log.info("update author {} by id {}",  author, author.getId());
+        log.info("update author {} by id {}", author, author.getId());
         Author updatedAuthor = authorService.update(author);
         return new ResponseEntity<>(updatedAuthor, HttpStatus.OK);
     }
 
     @PostMapping("/api/author")
     public ResponseEntity<Author> create(@Valid @RequestBody Author author) {
-        log.info("create author {}",  author);
+        log.info("create author {}", author);
         Author savedAuthor = authorService.insert(author);
         return new ResponseEntity<>(savedAuthor, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/api/author/{id}")
     public ResponseEntity delete(@PathVariable String id) {
-        log.info("delete author by id {}",  id);
+        log.info("delete author by id {}", id);
         authorService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
