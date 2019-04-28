@@ -9,23 +9,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import ru.otus.librarywebapp.dao.AuthorRepository;
-import ru.otus.librarywebapp.dao.BookRepository;
-import ru.otus.librarywebapp.dao.CommentRepository;
-import ru.otus.librarywebapp.dao.GenreRepository;
 import ru.otus.librarywebapp.domain.Author;
 import ru.otus.librarywebapp.service.AuthorService;
-import ru.otus.librarywebapp.service.BookService;
-import ru.otus.librarywebapp.service.CommentService;
-import ru.otus.librarywebapp.service.GenreService;
-import ru.otus.librarywebapp.utils.Helper;
 
+import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,36 +34,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("Test for author Controller")
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = AuthorApi.class)
+@Import(AuthorApi.class)
 class AuthorControllerTest {
+
+    private static final String DATE = "2019-04-27";
+
+    @Autowired
+    private ObjectMapper mapper;
 
     @Autowired
     private MockMvc mvc;
 
-    //Все бины нужны, потому что иначе spring начинает искать mongoTemplate bean, и не находит
-    @MockBean
-    private BookService bookService;
-    @MockBean
-    private BookRepository bookRepository;
     @MockBean
     private AuthorService authorService;
-    @MockBean
-    private AuthorRepository authorRepository;
-    @MockBean
-    private GenreService genreService;
-    @MockBean
-    private GenreRepository genreRepository;
-    @MockBean
-    private CommentService commentService;
-    @MockBean
-    private CommentRepository commentRepository;
 
     @Test
     @DisplayName("Test get all authors page on /api/author")
     void shouldGetAllAuthors() throws Exception {
-        Date date = Helper.toDate("2019-04-27");
         List<Author> authors = Arrays.asList(
-                new Author("test", date, "test"),
-                new Author("test", date, "test"));
+                new Author("test", date(), "test"),
+                new Author("test", date(), "test"));
 
         given(this.authorService.getAll()).willReturn(authors);
 
@@ -86,8 +69,7 @@ class AuthorControllerTest {
     @Test
     @DisplayName("Test get author on /api/author/{id}")
     void shouldGetAuthor() throws Exception {
-        Date date = Helper.toDate("2019-04-27");
-        Author author = new Author("test", date, "test");
+        Author author = new Author("test", date(), "test");
 
         given(this.authorService.getById("123")).willReturn(Optional.of(author));
 
@@ -102,12 +84,9 @@ class AuthorControllerTest {
     @Test
     @DisplayName("Test update author on /api/author")
     void shouldUpdateAuthor() throws Exception {
-        Date date = Helper.toDate("2019-04-27");
-        Author author = new Author("test", date, "test");
+        Author author = new Author("test", date(), "test");
 
         given(this.authorService.update(author)).willReturn(author);
-
-        ObjectMapper mapper = new ObjectMapper();
 
         String responseBody = "{\"id\":null,\"firstName\":\"test\",\"birthDate\":\"2019-04-27\",\"lastName\":\"test\",\"fullName\":\"test test\"}";
 
@@ -124,13 +103,11 @@ class AuthorControllerTest {
     @Test
     @DisplayName("Test create author on post /api/author")
     void shouldCreateAuthor() throws Exception {
-        Date date = Helper.toDate("2019-04-27");
-        Author author = new Author("test", date, "test");
+        Author author = new Author("test", date(), "test");
+
         given(this.authorService.insert(author)).willReturn(author);
 
         String responseBody = "{\"id\":null,\"firstName\":\"test\",\"birthDate\":\"2019-04-27\",\"lastName\":\"test\",\"fullName\":\"test test\"}";
-
-        ObjectMapper mapper = new ObjectMapper();
 
         this.mvc.perform(post("/api/author")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -148,6 +125,10 @@ class AuthorControllerTest {
                 .accept(MediaType.TEXT_PLAIN))
                 .andExpect(status().isNoContent());
         verify(this.authorService, times(1)).deleteById("123");
+    }
+
+    private LocalDate date(){
+        return mapper.convertValue(DATE, LocalDate.class);
     }
 
 }

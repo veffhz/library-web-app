@@ -66,22 +66,22 @@ public class DatabaseChangelog {
         DBRef refBook1 = new DBRef("books", book1.get("_id"));
 
         createDbObject(db, "comments", Arrays.asList(Pair.of("author", "Me"),
-                Pair.of("date", Helper.toDate("2018-01-01")), Pair.of("content", "Очень"),
+                Pair.of("date", Helper.toDateTime("2018-01-01 00:00")), Pair.of("content", "Очень"),
                 Pair.of("book", refBook1)));
 
         createDbObject(db, "comments", Arrays.asList(Pair.of("author", "Anonymous"),
-                Pair.of("date", Helper.toDate("2019-01-01")), Pair.of("content", "Cool!"),
+                Pair.of("date", Helper.toDateTime("2018-01-01 00:00")), Pair.of("content", "Cool!"),
                 Pair.of("book", refBook1)));
 
         DBObject book2 = booksCollection.findOne(new BasicDBObject("bookName", "Десять негритят"));
         DBRef refBook2 = new DBRef("books", book2.get("_id"));
 
         createDbObject(db, "comments", Arrays.asList(Pair.of("author", "Me"),
-                Pair.of("date", Helper.toDate("2018-01-01")), Pair.of("content", "Хорошо"),
+                Pair.of("date", Helper.toDateTime("2018-01-01 00:00")), Pair.of("content", "Хорошо"),
                 Pair.of("book", refBook2)));
 
         createDbObject(db, "comments", Arrays.asList(Pair.of("author", "Anonymous"),
-                Pair.of("date", Helper.toDate("2019-01-01")), Pair.of("content", "Nice!"),
+                Pair.of("date", Helper.toDateTime("2018-01-01 00:00")), Pair.of("content", "Nice!"),
                 Pair.of("book", refBook2)));
     }
 

@@ -12,7 +12,7 @@ import ru.otus.librarywebapp.exception.CommentNotFoundException;
 import ru.otus.librarywebapp.service.CommentService;
 
 import javax.validation.Valid;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -47,7 +47,7 @@ public class CommentApi {
 
     @PostMapping("/api/comment")
     public ResponseEntity<Comment> create(@Valid @RequestBody Comment comment) {
-        comment.setDate(new Date());
+        comment.setDate(LocalDateTime.now());
         log.info("create comment {}", comment);
         Comment savedComment = commentService.insert(comment);
         return new ResponseEntity<>(savedComment, HttpStatus.CREATED);

@@ -4,8 +4,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import org.mockito.ArgumentMatchers;
-
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -19,7 +17,7 @@ import ru.otus.librarywebapp.domain.Genre;
 import ru.otus.librarywebapp.service.impl.BookServiceImpl;
 import ru.otus.librarywebapp.service.impl.GenreServiceImpl;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -50,7 +48,7 @@ class BookServiceImplTest {
     void shouldGetBookById() {
         Book bookMock = new Book(new Author("", null, ""),
                 new Genre(""), "Book",
-                new Date(), "russian",
+                LocalDate.now(), "russian",
                 "Test", "Test", "555-555");
         when(bookRepository.findById(any(String.class))).thenReturn(Optional.of(bookMock));
 
@@ -77,12 +75,11 @@ class BookServiceImplTest {
     @Test
     @DisplayName("Test invoke insert new book")
     void shouldInsertNewBook() {
-        when(authorRepository.findById("000")).thenReturn(Optional.of(new Author()));
-        when(genreService.getById("000")).thenReturn(Optional.of(new Genre()));
-
-        bookService.insert("000", "000", "Book",
-                "1901-01-01", "russian",
+        Book book = new Book(new Author("", null, ""),
+                new Genre(""), "Book",
+                LocalDate.now(), "russian",
                 "Test", "Test", "555-555");
-        verify(bookRepository, times(1)).save(ArgumentMatchers.any());
+        bookService.insert(book);
+        verify(bookRepository, times(1)).insert(book);
     }
 }

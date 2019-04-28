@@ -2,12 +2,14 @@ package ru.otus.librarywebapp.dao;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.ComponentScan;
+
 import ru.otus.librarywebapp.domain.Book;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,7 +40,7 @@ class BookRepositoryTest {
     void shouldInsertNewBook() {
         bookRepository.save(
                 new Book(authorRepository.findAll().get(0), genreRepository.findAll().get(0),
-                        "Best", new Date(), "russian",
+                        "Best", LocalDate.now(), "russian",
                         "Test", "Test", "555-555"));
         assertEquals(bookRepository.count(), 3);
     }

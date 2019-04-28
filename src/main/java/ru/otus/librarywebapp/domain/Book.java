@@ -10,7 +10,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
+
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -27,8 +28,8 @@ public class Book {
     @Indexed
     private String bookName;
     @NotNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd", timezone = "Europe/Moscow")
-    private Date publishDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
+    private LocalDate publishDate;
     @NotBlank
     private String language;
     @NotBlank
@@ -39,7 +40,7 @@ public class Book {
     private String isbn;
 
     public Book(Author author, Genre genre, String bookName,
-                Date publishDate, String language,
+                LocalDate publishDate, String language,
                 String publishingHouse, String city, String isbn) {
         this.author = author;
         this.genre = genre;

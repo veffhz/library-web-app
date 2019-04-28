@@ -2,12 +2,14 @@ package ru.otus.librarywebapp.domain;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -20,17 +22,17 @@ class CommentTest {
 
     @Test
     public void saveAndGet() {
-        Author author = new Author("FirstName", new Date(), "LastName");
+        Author author = new Author("FirstName", LocalDate.now(), "LastName");
         mongoTemplate.insert(author, "authors");
 
         Genre genre = new Genre("Genre");
         mongoTemplate.insert(genre, "genres");
 
-        Book book = new Book(author, genre, "Best", new Date(), "russian",
+        Book book = new Book(author, genre, "Best", LocalDate.now(), "russian",
                 "Test", "Test", "555-555");
         mongoTemplate.insert(book);
 
-        Comment comment = new Comment( "Best", new Date(), "russian");
+        Comment comment = new Comment( "Best", LocalDateTime.now(), "russian");
         comment.setBook(book);
         mongoTemplate.insert(comment);
 

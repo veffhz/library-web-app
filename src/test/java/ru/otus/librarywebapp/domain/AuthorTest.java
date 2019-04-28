@@ -2,12 +2,13 @@ package ru.otus.librarywebapp.domain;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -20,7 +21,7 @@ class AuthorTest {
 
     @Test
     public void saveAndGet() {
-        Author author = new Author("FirstName", new Date(), "LastName");
+        Author author = new Author("FirstName", LocalDate.now(), "LastName");
         mongoTemplate.insert(author, "authors");
 
         Author authorFromDb = mongoTemplate.findById(author.getId(), Author.class,"authors");

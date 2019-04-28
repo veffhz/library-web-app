@@ -2,9 +2,11 @@ package ru.otus.librarywebapp.dao;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.ComponentScan;
+
 import ru.otus.librarywebapp.domain.Genre;
 
 import java.util.List;

@@ -47,13 +47,6 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    public String insert(String genreName) {
-        Genre genre = new Genre(genreName);
-        Genre genreDb = repository.save(genre);
-        return Objects.nonNull(genreDb) ? genreDb.getId() : null;
-    }
-
-    @Override
     public Genre insert(Genre genre) {
         return repository.insert(genre);
     }

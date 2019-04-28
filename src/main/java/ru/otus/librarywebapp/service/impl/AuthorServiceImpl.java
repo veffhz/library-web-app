@@ -8,9 +8,7 @@ import ru.otus.librarywebapp.dao.BookRepository;
 import ru.otus.librarywebapp.domain.Author;
 import ru.otus.librarywebapp.service.AuthorService;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -49,13 +47,6 @@ public class AuthorServiceImpl implements AuthorService {
     public void deleteById(String id) {
         bookRepository.deleteByAuthorId(id);
         repository.deleteById(id);
-    }
-
-    @Override
-    public String insert(String firstName, Date birthDate, String lastName) {
-        Author author = new Author(firstName, birthDate, lastName);
-        Author authorDb = repository.save(author);
-        return Objects.nonNull(authorDb) ? authorDb.getId() : null;
     }
 
     @Override

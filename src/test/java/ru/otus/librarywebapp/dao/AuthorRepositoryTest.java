@@ -2,12 +2,14 @@ package ru.otus.librarywebapp.dao;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.ComponentScan;
+
 import ru.otus.librarywebapp.domain.Author;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,7 +32,7 @@ class AuthorRepositoryTest {
     @Test
     @DisplayName("Test insert new author")
     void shouldInsertNewAuthor() {
-        authorRepository.save(new Author("test", new Date(), "test"));
+        authorRepository.save(new Author("test", LocalDate.now(), "test"));
         assertEquals(authorRepository.count(), 3);
     }
 

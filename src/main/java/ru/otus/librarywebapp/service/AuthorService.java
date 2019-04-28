@@ -12,7 +12,6 @@ public interface AuthorService {
     List<Author> getByLastName(String name);
     List<Author> getAll();
     void deleteById(String id);
-    String insert(String firstName, Date birthDate, String lastName);
     Author insert(Author author);
     Author update(Author author);
 }

@@ -57,7 +57,8 @@ class GenreServiceImplTest {
     @Test
     @DisplayName("Test invoke insert new genre")
     void shouldInsertNewGenre() {
-        genreService.insert("test");
-        verify(genreRepository, times(1)).save(any());
+        Genre genre = new Genre("test");
+        genreService.insert(genre);
+        verify(genreRepository, times(1)).insert(genre);
     }
 }

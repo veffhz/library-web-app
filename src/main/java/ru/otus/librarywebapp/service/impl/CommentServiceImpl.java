@@ -6,15 +6,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ru.otus.librarywebapp.dao.BookRepository;
 import ru.otus.librarywebapp.dao.CommentRepository;
-import ru.otus.librarywebapp.domain.Book;
 import ru.otus.librarywebapp.domain.Comment;
 import ru.otus.librarywebapp.service.CommentService;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-
-import static ru.otus.librarywebapp.utils.Helper.toDate;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -42,15 +38,6 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public List<Comment> getByBookId(String bookId) {
         return repository.findByBookId(bookId);
-    }
-
-    @Override
-    public String insert(String author, String date, String content, String bookId) {
-        Comment comment = new Comment(author, toDate(date), content);
-        Book book = bookRepository.findById(bookId).get(); // TODO get
-        comment.setBook(book);
-        Comment commentDb = repository.save(comment);
-        return Objects.nonNull(commentDb) ? commentDb.getId() : null;
     }
 
     @Override
