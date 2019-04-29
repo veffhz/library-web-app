@@ -1,33 +1,33 @@
 package ru.otus.librarywebapp.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @ToString(exclude = "book")
 @Document(collection = "comments")
-@EqualsAndHashCode
 public class Comment {
 
     @Id
     private String id;
-    @Setter
     @DBRef
     private Book book;
+    @NotBlank
     private String author;
-    @DateTimeFormat(pattern="yyyy-MM-dd")
-    private Date date;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm")
+    private LocalDateTime date;
+    @NotBlank
     private String content;
 
-    public Comment(String author, Date date, String content) {
+    public Comment(String author, LocalDateTime date, String content) {
         this.author = author;
         this.date = date;
         this.content = content;

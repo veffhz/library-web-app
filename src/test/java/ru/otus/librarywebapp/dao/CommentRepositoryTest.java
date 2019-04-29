@@ -2,13 +2,15 @@ package ru.otus.librarywebapp.dao;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.ComponentScan;
+
 import ru.otus.librarywebapp.domain.Book;
 import ru.otus.librarywebapp.domain.Comment;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,7 +29,7 @@ class CommentRepositoryTest {
     @Test
     @DisplayName("Test add comment")
     void shouldAddCommentToBook() {
-        Comment comment = new Comment("author", new Date(), "content");
+        Comment comment = new Comment("author", LocalDateTime.now(), "content");
         Book book = bookRepository.findAll().get(0);
 
         comment.setBook(book);

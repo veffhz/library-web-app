@@ -1,32 +1,36 @@
 package ru.otus.librarywebapp.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.*;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+import java.time.LocalDate;
 import java.util.Objects;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-@ToString
 @Document(collection = "authors")
-@EqualsAndHashCode
 public class Author {
 
     @Id
     private String id;
+    @NotBlank
     private String firstName;
-    @DateTimeFormat(pattern="yyyy-MM-dd")
-    private Date birthDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
+    @NotNull
+    private LocalDate birthDate;
     @Indexed
+    @NotBlank
     private String lastName;
 
-    public Author(String firstName, Date birthDate, String lastName) {
+    public Author(String firstName, LocalDate birthDate, String lastName) {
         this.firstName = firstName;
         this.birthDate = birthDate;
         this.lastName = lastName;

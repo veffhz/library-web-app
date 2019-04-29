@@ -9,9 +9,9 @@ public interface CommentService {
     long count();
     Optional<Comment> getById(String id);
     List<Comment> getByBookId(String bookId);
-    String insert(String author, String date, String content, String bookId);
     List<Comment> getAll();
     void deleteById(String id);
     List<Comment> deleteByBookId(String bookId);
-    String save(Comment comment);
+    Comment update(Comment comment);
+    Comment insert(Comment comment);
 }

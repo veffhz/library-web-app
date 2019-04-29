@@ -11,6 +11,6 @@ public interface GenreService {
     List<Genre> getByGenreName(String genreName);
     List<Genre> getAll();
     void deleteById(String id);
-    String insert(String genreName);
-    String save(Genre genre);
+    Genre insert(Genre genre);
+    Genre update(Genre genre);
 }

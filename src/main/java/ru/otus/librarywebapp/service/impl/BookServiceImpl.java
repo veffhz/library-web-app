@@ -1,8 +1,5 @@
 package ru.otus.librarywebapp.service.impl;
 
-import lombok.extern.java.Log;
-
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +18,6 @@ import java.util.Optional;
 
 import static ru.otus.librarywebapp.utils.Helper.toDate;
 
-@Log
 @Service
 public class BookServiceImpl implements BookService {
 
@@ -76,24 +72,13 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public String insert(String authorId, String genreId, String bookName, String publishDate, String language,
-                      String publishingHouse, String city, String isbn) {
-        Optional<Author> author = authorRepository.findById(authorId);
-        Optional<Genre> genre = genreService.getById(genreId);
-        Book book = new Book(author.orElse(new Author()), genre.orElse(new Genre()), bookName, toDate(publishDate), language, publishingHouse, city, isbn);
-        Book bookDb = repository.save(book);
-        return Objects.nonNull(bookDb) ? bookDb.getId() : null;
+    public Book insert(Book book) {
+        return repository.insert(book);
     }
 
     @Override
-    public String save(Book book) {
-        Book bookDb;
-        if (Strings.isNotEmpty(book.getId())) {
-            bookDb = repository.save(book);
-        } else {
-            bookDb = repository.insert(book);
-        }
-        return Objects.nonNull(bookDb) ? bookDb.getId() : null;
+    public Book update(Book book) {
+        return repository.save(book);
     }
 
 }

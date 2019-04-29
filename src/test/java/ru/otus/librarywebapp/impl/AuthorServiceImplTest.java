@@ -13,7 +13,7 @@ import ru.otus.librarywebapp.dao.BookRepository;
 import ru.otus.librarywebapp.domain.Author;
 import ru.otus.librarywebapp.service.impl.AuthorServiceImpl;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,7 +36,7 @@ class AuthorServiceImplTest {
     @Test
     @DisplayName("Test invoke get author by id")
     void shouldGetAuthorById() {
-        Author authorMock = new Author("test", new Date(), "test");
+        Author authorMock = new Author("test", LocalDate.now(), "test");
         when(authorRepository.findById(any(String.class))).thenReturn(Optional.of(authorMock));
 
         Author author = authorService.getById("000").get();
@@ -62,10 +62,9 @@ class AuthorServiceImplTest {
     @Test
     @DisplayName("Test invoke insert new author")
     void shouldInsertNewAuthor() {
-        Date date = new Date();
-        Author author = new Author("test", date,"test");
+        Author author = new Author("test", LocalDate.now(),"test");
         when(authorRepository.save(author)).thenReturn(author);
-        authorService.insert("test", date, "test");
-        verify(authorRepository, times(1)).save(author);
+        authorService.insert(author);
+        verify(authorRepository, times(1)).insert(author);
     }
 }

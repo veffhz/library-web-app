@@ -1,5 +1,7 @@
 package ru.otus.librarywebapp.controller;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +12,9 @@ import ru.otus.librarywebapp.service.BookService;
 import ru.otus.librarywebapp.service.CommentService;
 import ru.otus.librarywebapp.service.GenreService;
 
+import java.util.HashMap;
+
+@Slf4j
 @Controller
 public class HomeController {
 
@@ -28,21 +33,15 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public String index() {
-        return "redirect:/info";
-    }
-
-    @GetMapping("/info")
-    public String info(Model model) {
-        long authors = authorService.count();
-        model.addAttribute("authors", authors);
-        long genres = genreService.count();
-        model.addAttribute("genres", genres);
-        long books = bookService.count();
-        model.addAttribute("books", books);
-        long comments = commentService.count();
-        model.addAttribute("comments", comments);
-        return "info";
+    public String main(Model model) {
+        log.info("get /");
+        HashMap<Object, Object> data = new HashMap<>();
+        data.put("authors", authorService.getAll());
+        data.put("genres", genreService.getAll());
+        data.put("books", bookService.getAll());
+        data.put("comments", commentService.getAll());
+        model.addAttribute("frontendData", data);
+        return "index";
     }
 
 }

@@ -17,10 +17,10 @@ public class DatabaseChangelog {
     @ChangeSet(order = "001", id = "addAuthors", author = "veffhz")
     public void insertAuthors(DB db) {
         createDbObject(db, "authors", Arrays.asList(Pair.of("firstName", "Роберт"),
-                Pair.of("birthDate", Helper.toDate("01-01-1985")),
+                Pair.of("birthDate", Helper.toDate("1985-01-01")),
                 Pair.of("lastName", "Шекли")));
         createDbObject(db, "authors", Arrays.asList(Pair.of("firstName", "Агата"),
-                Pair.of("birthDate", Helper.toDate("02-02-1985")),
+                Pair.of("birthDate", Helper.toDate("1985-02-02")),
                 Pair.of("lastName", "Кристи")));
     }
 
@@ -66,22 +66,22 @@ public class DatabaseChangelog {
         DBRef refBook1 = new DBRef("books", book1.get("_id"));
 
         createDbObject(db, "comments", Arrays.asList(Pair.of("author", "Me"),
-                Pair.of("date", Helper.toDate("01-01-2018")), Pair.of("content", "Очень"),
+                Pair.of("date", Helper.toDateTime("2018-01-01 00:00")), Pair.of("content", "Очень"),
                 Pair.of("book", refBook1)));
 
         createDbObject(db, "comments", Arrays.asList(Pair.of("author", "Anonymous"),
-                Pair.of("date", Helper.toDate("01-01-2019")), Pair.of("content", "Cool!"),
+                Pair.of("date", Helper.toDateTime("2018-01-01 00:00")), Pair.of("content", "Cool!"),
                 Pair.of("book", refBook1)));
 
         DBObject book2 = booksCollection.findOne(new BasicDBObject("bookName", "Десять негритят"));
         DBRef refBook2 = new DBRef("books", book2.get("_id"));
 
         createDbObject(db, "comments", Arrays.asList(Pair.of("author", "Me"),
-                Pair.of("date", Helper.toDate("01-01-2018")), Pair.of("content", "Хорошо"),
+                Pair.of("date", Helper.toDateTime("2018-01-01 00:00")), Pair.of("content", "Хорошо"),
                 Pair.of("book", refBook2)));
 
         createDbObject(db, "comments", Arrays.asList(Pair.of("author", "Anonymous"),
-                Pair.of("date", Helper.toDate("01-01-2019")), Pair.of("content", "Nice!"),
+                Pair.of("date", Helper.toDateTime("2018-01-01 00:00")), Pair.of("content", "Nice!"),
                 Pair.of("book", refBook2)));
     }
 
