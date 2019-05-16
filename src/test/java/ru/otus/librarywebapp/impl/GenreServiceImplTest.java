@@ -8,13 +8,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import reactor.core.publisher.Mono;
+
 import ru.otus.librarywebapp.dao.GenreRepository;
 import ru.otus.librarywebapp.domain.Genre;
 import ru.otus.librarywebapp.service.impl.GenreServiceImpl;
 
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -31,10 +32,10 @@ class GenreServiceImplTest {
     @Test
     @DisplayName("Test invoke get genre by id")
     void shouldGetGenreById() {
-        Genre genreMock = new Genre("test");
-        when(genreRepository.findById(any(String.class))).thenReturn(Optional.of(genreMock));
+        Mono<Genre> genreMock = Mono.just(new Genre("test"));
+        when(genreRepository.findById(any(String.class))).thenReturn(genreMock);
 
-        Genre genre = genreService.getById("000").get();
+        Mono<Genre> genre = genreService.getById("000");
 
         verify(genreRepository, times(1)).findById("000");
         assertEquals(genreMock, genre);
