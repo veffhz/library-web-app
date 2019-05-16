@@ -3,13 +3,12 @@ package ru.otus.librarywebapp.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 import ru.otus.librarywebapp.dao.GenreRepository;
 import ru.otus.librarywebapp.domain.Genre;
 import ru.otus.librarywebapp.service.GenreService;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class GenreServiceImpl implements GenreService {
@@ -22,37 +21,37 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    public long count() {
+    public Mono<Long> count() {
         return repository.count();
     }
 
     @Override
-    public Optional<Genre> getById(String id) {
+    public Mono<Genre> getById(String id) {
         return repository.findById(id);
     }
 
     @Override
-    public List<Genre> getByGenreName(String genreName) {
+    public Flux<Genre> getByGenreName(String genreName) {
         return repository.findByGenreName(genreName);
     }
 
     @Override
-    public List<Genre> getAll() {
+    public Flux<Genre> getAll() {
         return repository.findAll();
     }
 
     @Override
-    public void deleteById(String id) {
-        repository.deleteById(id);
+    public Mono<Void> deleteById(String id) {
+        return repository.deleteById(id);
     }
 
     @Override
-    public Genre insert(Genre genre) {
+    public Mono<Genre> insert(Genre genre) {
         return repository.insert(genre);
     }
 
     @Override
-    public Genre update(Genre genre) {
+    public Mono<Genre> update(Genre genre) {
         return repository.save(genre);
     }
 

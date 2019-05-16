@@ -1,11 +1,11 @@
 package ru.otus.librarywebapp.dao;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+
+import reactor.core.publisher.Flux;
 
 import ru.otus.librarywebapp.domain.Genre;
 
-import java.util.List;
-
-public interface GenreRepository extends MongoRepository<Genre, String> {
-    List<Genre> findByGenreName(String genreName);
+public interface GenreRepository extends ReactiveMongoRepository<Genre, String> {
+    Flux<Genre> findByGenreName(String genreName);
 }

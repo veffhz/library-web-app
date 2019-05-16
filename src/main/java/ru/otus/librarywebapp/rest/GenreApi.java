@@ -7,12 +7,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 import ru.otus.librarywebapp.domain.Genre;
 import ru.otus.librarywebapp.exception.GenreNotFoundException;
 import ru.otus.librarywebapp.service.GenreService;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -26,36 +28,37 @@ public class GenreApi {
     }
 
     @GetMapping("/api/genre")
-    public List<Genre> getAll() {
+    public Flux<Genre> getAll() {
         log.info("get all genres");
         return genreService.getAll();
     }
 
     @GetMapping("/api/genre/{id}")
-    public Genre getById(@PathVariable String id) {
+    public Mono<Genre> getById(@PathVariable String id) {
         log.info("get genre by id {}", id);
-        return genreService.getById(id).orElseThrow(GenreNotFoundException::new);
+        return genreService.getById(id).
+                switchIfEmpty(Mono.error((GenreNotFoundException::new)));
     }
 
     @PutMapping("/api/genre")
-    public ResponseEntity<Genre> update(@Valid @RequestBody Genre genre) {
+    public Mono<ResponseEntity<Genre>> update(@Valid @RequestBody Genre genre) {
         log.info("update genre {} by id {}", genre, genre.getId());
-        Genre updatedGenre = genreService.update(genre);
-        return new ResponseEntity<>(updatedGenre, HttpStatus.OK);
+        return genreService.update(genre)
+                .map(updatedGenre -> new ResponseEntity<>(updatedGenre, HttpStatus.OK));
     }
 
     @PostMapping("/api/genre")
-    public ResponseEntity<Genre> create(@Valid @RequestBody Genre genre) {
+    public Mono<ResponseEntity<Genre>> create(@Valid @RequestBody Genre genre) {
         log.info("create genre {}", genre);
-        Genre savedGenre = genreService.insert(genre);
-        return new ResponseEntity<>(savedGenre, HttpStatus.CREATED);
+        return genreService.insert(genre)
+                .map(savedGenre -> new ResponseEntity<>(savedGenre, HttpStatus.CREATED));
     }
 
     @DeleteMapping("/api/genre/{id}")
-    public ResponseEntity delete(@PathVariable String id) {
+    public Mono<ResponseEntity<Void>> delete(@PathVariable String id) {
         log.info("delete genre by id {}", id);
-        genreService.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return genreService.deleteById(id)
+                .then(Mono.just(new ResponseEntity<>(HttpStatus.NO_CONTENT)));
     }
 
 }

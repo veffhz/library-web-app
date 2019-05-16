@@ -7,13 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.ComponentScan;
 
+import reactor.test.StepVerifier;
+
 import ru.otus.librarywebapp.domain.Book;
 import ru.otus.librarywebapp.domain.Comment;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DisplayName("Test for CommentRepository")
 @DataMongoTest
@@ -30,13 +31,15 @@ class CommentRepositoryTest {
     @DisplayName("Test add comment")
     void shouldAddCommentToBook() {
         Comment comment = new Comment("author", LocalDateTime.now(), "content");
-        Book book = bookRepository.findAll().get(0);
+        Book book = bookRepository.findAll().blockFirst();
 
         comment.setBook(book);
-        commentRepository.save(comment);
 
-        List<Comment> comments = commentRepository.findAll();
-
-        assertEquals(comments.size(), 1);
+        StepVerifier
+                .create(commentRepository.save(comment))
+                .assertNext(c -> assertNotNull(c.getId()))
+                .expectComplete()
+                .verify();
     }
+
 }

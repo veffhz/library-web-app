@@ -1,17 +1,16 @@
 package ru.otus.librarywebapp.service;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 import ru.otus.librarywebapp.domain.Author;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
 public interface AuthorService {
-    long count();
-    Optional<Author> getById(String id);
-    List<Author> getByLastName(String name);
-    List<Author> getAll();
-    void deleteById(String id);
-    Author insert(Author author);
-    Author update(Author author);
+    Mono<Long> count();
+    Mono<Author> getById(String id);
+    Flux<Author> getByLastName(String name);
+    Flux<Author> getAll();
+    Mono<Void> deleteById(String id);
+    Mono<Author> insert(Author author);
+    Mono<Author> update(Author author);
 }

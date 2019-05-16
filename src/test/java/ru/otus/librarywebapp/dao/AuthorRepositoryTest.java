@@ -7,12 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.ComponentScan;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+
 import ru.otus.librarywebapp.domain.Author;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DisplayName("Test for AuthorRepository")
 @DataMongoTest
@@ -25,65 +30,79 @@ class AuthorRepositoryTest {
     @Test
     @DisplayName("Test return count authors")
     void shouldReturnCorrectCount() {
-        long count = authorRepository.count();
-        assertEquals(count, 2);
+        Mono<Long> count = authorRepository.count();
+
+        StepVerifier
+                .create(count)
+                .assertNext(c -> assertEquals(c.longValue(), 2))
+                .expectComplete()
+                .verify();
     }
 
     @Test
     @DisplayName("Test insert new author")
     void shouldInsertNewAuthor() {
-        authorRepository.save(new Author("test", LocalDate.now(), "test"));
-        assertEquals(authorRepository.count(), 3);
+        Author author = new Author("test", LocalDate.now(), "test");
+
+        StepVerifier
+                .create(authorRepository.save(author))
+                .assertNext(a -> assertNotNull(a.getId()))
+                .expectComplete()
+                .verify();
     }
 
     @Test
     @DisplayName("Test get author by id")
     void shouldGetAuthorById() {
-        Author author = authorRepository.findById("5").get();
-        assertEquals(author.getFirstName(), "FirstName");
-        assertEquals(author.getLastName(), "LastName");
+        Mono<Author> author = authorRepository.findById("5");
+
+        StepVerifier
+                .create(author)
+                .assertNext(a -> assertEquals(a.getFirstName(), "FirstName"))
+                .expectComplete()
+                .verify();
     }
 
     @Test
     @DisplayName("Test get author by last name")
     void shouldGetAuthorsByLastName() {
-        List<Author> authors = authorRepository.findByLastName("LastName");
+        Flux<Author> authors = authorRepository.findByLastName("LastName");
 
-        assertEquals(authors.size(), 1);
-
-        Author author = authors.get(0);
-
-        assertEquals(author.getFirstName(), "FirstName");
-        assertEquals(author.getLastName(), "LastName");
+        StepVerifier
+                .create(authors)
+                .assertNext(b -> assertEquals(b.getFirstName(), "FirstName"))
+                .expectComplete()
+                .verify();
     }
 
     @Test
     @DisplayName("Test get all authors")
     void shouldGetAllAuthors() {
-        List<Author> authors = authorRepository.findAll();
-        Author author = authors.get(0);
+        Flux<Author> authors = authorRepository.findAll();
 
-        assertEquals(author.getFirstName(), "FirstName");
-        assertEquals(author.getLastName(), "LastName");
-
-        author = authors.get(1);
-
-        assertEquals(author.getFirstName(), "FirstName7");
-        assertEquals(author.getLastName(), "LastName7");
+        StepVerifier
+                .create(authors)
+                .assertNext(b -> assertEquals(b.getFirstName(), "FirstName"))
+                .assertNext(b -> assertEquals(b.getFirstName(), "FirstName7"))
+                .expectComplete()
+                .verify();
     }
 
     @Test
     @DisplayName("Test delete author by id")
     void shouldDeleteAuthorById() {
-        authorRepository.deleteById("9");
-        assertEquals(authorRepository.count(), 2);
+        StepVerifier.create(authorRepository.deleteById("9"))
+                .verifyComplete();
     }
 
     @Test
     @DisplayName("Test delete author")
     void shouldDeleteAuthor() {
-        Author author = authorRepository.findById("7").get();
-        authorRepository.delete(author);
-        assertEquals(authorRepository.count(), 2);
+        Author author = authorRepository.findById("7").block();
+
+        Objects.requireNonNull(author);
+
+        StepVerifier.create(authorRepository.delete(author))
+                .verifyComplete();
     }
 }
