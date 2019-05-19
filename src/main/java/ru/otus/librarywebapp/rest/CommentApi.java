@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import reactor.core.publisher.Flux;
@@ -15,7 +14,6 @@ import ru.otus.librarywebapp.exception.CommentNotFoundException;
 import ru.otus.librarywebapp.service.CommentService;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
 
 @Slf4j
 @RestController
@@ -51,7 +49,6 @@ public class CommentApi {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/api/comment")
     public Mono<Comment> create(@Valid @RequestBody Comment comment) {
-        comment.setDate(LocalDateTime.now());
         log.info("create comment {}", comment);
         return commentService.insert(comment);
     }
