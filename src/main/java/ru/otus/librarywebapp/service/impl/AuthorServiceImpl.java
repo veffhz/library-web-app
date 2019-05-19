@@ -45,7 +45,8 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public Mono<Void> deleteById(String id) {
-        bookRepository.deleteByAuthorId(id);
+        // TODO это правильно?
+        //return bookRepository.deleteByAuthorId(id).then(repository.deleteById(id));
         return repository.deleteById(id);
     }
 

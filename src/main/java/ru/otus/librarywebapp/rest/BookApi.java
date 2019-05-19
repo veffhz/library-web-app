@@ -37,28 +37,28 @@ public class BookApi {
     public Mono<Book> getById(@PathVariable String id) {
         log.info("get books by id {}", id);
         return bookService.getById(id)
-                .switchIfEmpty(Mono.error((BookNotFoundException::new)));
+                .switchIfEmpty(Mono.error(BookNotFoundException::new));
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @PutMapping("/api/book")
-    public Mono<ResponseEntity<Book>> update(@Valid @RequestBody Book book) {
+    public Mono<Book> update(@Valid @RequestBody Book book) {
         log.info("update book {} by id {}", book, book.getId());
-        return bookService.update(book)
-                .map(updatedBook -> new ResponseEntity<>(updatedBook, HttpStatus.OK));
+        return bookService.update(book);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/api/book")
-    public Mono<ResponseEntity<Book>> create(@Valid @RequestBody Book book) {
+    public Mono<Book> create(@Valid @RequestBody Book book) {
         log.info("create book {}", book);
-        return bookService.insert(book)
-                .map(savedBook -> new ResponseEntity<>(savedBook, HttpStatus.CREATED));
+        return bookService.insert(book);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/api/book/{id}")
-    public Mono<ResponseEntity<Void>> delete(@PathVariable String id) {
+    public Mono<Void> delete(@PathVariable String id) {
         log.info("delete book by id {}", id);
-        return bookService.deleteById(id)
-                .then(Mono.just(new ResponseEntity<>(HttpStatus.NO_CONTENT)));
+        return bookService.deleteById(id);
     }
 
 }

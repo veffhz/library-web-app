@@ -1,6 +1,6 @@
 export default {
   name: 'BookTr',
-  props: ['book', 'editMethod', 'books'],
+  props: ['book', 'editMethod', 'deleteMethod', 'books'],
   template: `
       <tr>
           <td>{{ book.id }}</td>
@@ -23,11 +23,7 @@ export default {
             this.editMethod(this.book);
         },
         del: function() {
-            this.$resource('/api/book{/id}').remove({id: this.book.id}).then(result => {
-              if (result.ok) {
-                this.books.splice(this.books.indexOf(this.book), 1)
-              }
-            })
+            this.deleteMethod(this.book);
         }
     }
 };

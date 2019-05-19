@@ -38,29 +38,29 @@ public class CommentApi {
     public Mono<Comment> getById(@PathVariable String id) {
         log.info("get comment by id {}", id);
         return commentService.getById(id)
-                .switchIfEmpty(Mono.error((CommentNotFoundException::new)));
+                .switchIfEmpty(Mono.error(CommentNotFoundException::new));
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @PutMapping("/api/comment")
-    public Mono<ResponseEntity<Comment>> update(@Valid @RequestBody Comment comment) {
+    public Mono<Comment> update(@Valid @RequestBody Comment comment) {
         log.info("update comment {} by id {}", comment, comment.getId());
-        return commentService.update(comment)
-                .map(updatedComment -> new ResponseEntity<>(updatedComment, HttpStatus.OK));
+        return commentService.update(comment);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/api/comment")
-    public Mono<ResponseEntity<Comment>> create(@Valid @RequestBody Comment comment) {
+    public Mono<Comment> create(@Valid @RequestBody Comment comment) {
         comment.setDate(LocalDateTime.now());
         log.info("create comment {}", comment);
-        return commentService.insert(comment)
-                .map(savedComment -> new ResponseEntity<>(savedComment, HttpStatus.CREATED));
+        return commentService.insert(comment);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/api/comment/{id}")
-    public Mono<ResponseEntity<Void>> delete(@PathVariable String id) {
+    public Mono<Void> delete(@PathVariable String id) {
         log.info("delete comment by id {}", id);
-        return commentService.deleteById(id)
-                .then(Mono.just(new ResponseEntity<>(HttpStatus.NO_CONTENT)));
+        return commentService.deleteById(id);
     }
 
 }

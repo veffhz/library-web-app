@@ -1,6 +1,6 @@
 export default {
   name: 'CommentTr',
-  props: ['comment', 'editMethod', 'comments'],
+  props: ['comment', 'editMethod', 'deleteMethod', 'comments'],
   template: `
       <tr>
           <td>{{ comment.id }}</td>
@@ -19,11 +19,7 @@ export default {
             this.editMethod(this.comment);
         },
         del: function() {
-            this.$resource('/api/comment{/id}').remove({id: this.comment.id}).then(result => {
-              if (result.ok) {
-                this.comments.splice(this.comments.indexOf(this.comment), 1)
-              }
-            })
+            this.deleteMethod(this.comment);
         }
     }
 };

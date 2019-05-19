@@ -1,6 +1,6 @@
 export default {
   name: 'GenreTr',
-  props: ['genre', 'editMethod', 'genres'],
+  props: ['genre', 'editMethod', 'deleteMethod', 'genres'],
   template: `
       <tr>
           <td>{{ genre.id }}</td>
@@ -16,11 +16,7 @@ export default {
             this.editMethod(this.genre);
         },
         del: function() {
-            this.$resource('/api/genre{/id}').remove({id: this.genre.id}).then(result => {
-              if (result.ok) {
-                this.genres.splice(this.genres.indexOf(this.genre), 1)
-              }
-            })
+            this.deleteMethod(this.genre);
         }
     }
 };

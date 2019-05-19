@@ -37,28 +37,28 @@ public class GenreApi {
     public Mono<Genre> getById(@PathVariable String id) {
         log.info("get genre by id {}", id);
         return genreService.getById(id).
-                switchIfEmpty(Mono.error((GenreNotFoundException::new)));
+                switchIfEmpty(Mono.error(GenreNotFoundException::new));
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @PutMapping("/api/genre")
-    public Mono<ResponseEntity<Genre>> update(@Valid @RequestBody Genre genre) {
+    public Mono<Genre> update(@Valid @RequestBody Genre genre) {
         log.info("update genre {} by id {}", genre, genre.getId());
-        return genreService.update(genre)
-                .map(updatedGenre -> new ResponseEntity<>(updatedGenre, HttpStatus.OK));
+        return genreService.update(genre);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/api/genre")
-    public Mono<ResponseEntity<Genre>> create(@Valid @RequestBody Genre genre) {
+    public Mono<Genre> create(@Valid @RequestBody Genre genre) {
         log.info("create genre {}", genre);
-        return genreService.insert(genre)
-                .map(savedGenre -> new ResponseEntity<>(savedGenre, HttpStatus.CREATED));
+        return genreService.insert(genre);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/api/genre/{id}")
-    public Mono<ResponseEntity<Void>> delete(@PathVariable String id) {
+    public Mono<Void> delete(@PathVariable String id) {
         log.info("delete genre by id {}", id);
-        return genreService.deleteById(id)
-                .then(Mono.just(new ResponseEntity<>(HttpStatus.NO_CONTENT)));
+        return genreService.deleteById(id);
     }
 
 }

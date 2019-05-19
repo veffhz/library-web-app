@@ -26,7 +26,7 @@ export default {
                 </thead>
                 <tbody>
                 <author-tr v-for="author in authors" :key="author.id" :author="author"
-                    :editMethod="editMethod" :authors="authors" />
+                    :editMethod="editMethod" :deleteMethod="deleteMethod" :authors="authors" />
                 </tbody>
             </table>
             <div class="gap-30"></div>
@@ -37,6 +37,13 @@ export default {
       methods: {
           editMethod: function(author) {
               this.author = author;
-          }
+          },
+          deleteMethod: function(author) {
+              this.$resource('/api/author{/id}').remove({id: this.author.id}).then(result => {
+                  if (result.ok) {
+                      this.authors.splice(this.authors.indexOf(this.author), 1)
+                  }
+              })
+          },
       }
 };

@@ -26,7 +26,7 @@ export default {
                 </thead>
                 <tbody>
                 <genre-tr v-for="genre in genres" :key="genre.id" :genre="genre"
-                    :editMethod="editMethod" :genres="genres" />
+                    :editMethod="editMethod" :deleteMethod="deleteMethod" :genres="genres" />
                 </tbody>
             </table>
             <div class="gap-30"></div>
@@ -37,6 +37,13 @@ export default {
       methods: {
           editMethod: function(genre) {
               this.genre = genre;
+          },
+          deleteMethod: function(genre) {
+              this.$resource('/api/genre{/id}').remove({id: this.genre.id}).then(result => {
+                if (result.ok) {
+                  this.genres.splice(this.genres.indexOf(this.genre), 1)
+                }
+              })
           }
       }
 };

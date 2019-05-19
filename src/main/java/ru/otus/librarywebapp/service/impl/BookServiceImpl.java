@@ -6,28 +6,20 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import ru.otus.librarywebapp.dao.AuthorRepository;
 import ru.otus.librarywebapp.dao.BookRepository;
 import ru.otus.librarywebapp.dao.CommentRepository;
 import ru.otus.librarywebapp.domain.Book;
 import ru.otus.librarywebapp.service.BookService;
-import ru.otus.librarywebapp.service.GenreService;
 
 @Service
 public class BookServiceImpl implements BookService {
 
     private final BookRepository repository;
-
-    private final AuthorRepository authorRepository;
-    private final GenreService genreService;
     private final CommentRepository commentRepository;
 
     @Autowired
-    public BookServiceImpl(BookRepository repository, AuthorRepository authorRepository,
-                           GenreService genreService, CommentRepository commentRepository) {
+    public BookServiceImpl(BookRepository repository, CommentRepository commentRepository) {
         this.repository = repository;
-        this.authorRepository = authorRepository;
-        this.genreService = genreService;
         this.commentRepository = commentRepository;
     }
 
@@ -62,7 +54,8 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Mono<Void> deleteById(String id) {
-        commentRepository.deleteByBookId(id);
+        // TODO это правильно?
+        //return commentRepository.deleteByBookId(id).then(repository.deleteById(id));
         return repository.deleteById(id);
     }
 

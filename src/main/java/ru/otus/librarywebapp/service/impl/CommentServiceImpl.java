@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import ru.otus.librarywebapp.dao.BookRepository;
 import ru.otus.librarywebapp.dao.CommentRepository;
 import ru.otus.librarywebapp.domain.Comment;
 import ru.otus.librarywebapp.service.CommentService;
@@ -17,12 +16,9 @@ public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository repository;
 
-    private final BookRepository bookRepository;
-
     @Autowired
-    public CommentServiceImpl(CommentRepository repository, BookRepository bookRepository) {
+    public CommentServiceImpl(CommentRepository repository) {
         this.repository = repository;
-        this.bookRepository = bookRepository;
     }
 
     @Override

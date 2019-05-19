@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import reactor.core.publisher.Flux;
@@ -27,38 +26,40 @@ public class AuthorApi {
         this.authorService = authorService;
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/api/author")
     public Flux<Author> getAll() {
         log.info("get all authors");
         return authorService.getAll();
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/api/author/{id}")
     public Mono<Author> getById(@PathVariable String id) {
         log.info("get author by id {}", id);
         return authorService.getById(id)
-                .switchIfEmpty(Mono.error((AuthorNotFoundException::new)));
+                .switchIfEmpty(Mono.error(AuthorNotFoundException::new));
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @PutMapping("/api/author")
-    public Mono<ResponseEntity<Author>> update(@Valid @RequestBody Author author) {
+    public Mono<Author> update(@Valid @RequestBody Author author) {
         log.info("update author {} by id {}", author, author.getId());
-        return authorService.update(author)
-                .map(updatedAuthor -> new ResponseEntity<>(updatedAuthor, HttpStatus.OK));
+        return authorService.update(author);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/api/author")
-    public Mono<ResponseEntity<Author>> create(@Valid @RequestBody Author author) {
+    public Mono<Author> create(@Valid @RequestBody Author author) {
         log.info("create author {}", author);
-        return authorService.insert(author).
-                map(savedAuthor -> new ResponseEntity<>(savedAuthor, HttpStatus.CREATED));
+        return authorService.insert(author);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/api/author/{id}")
-    public Mono<ResponseEntity<Void>> delete(@PathVariable String id) {
+    public Mono<Void> delete(@PathVariable String id) {
         log.info("delete author by id {}", id);
-        return authorService.deleteById(id)
-                .then(Mono.just(new ResponseEntity<>(HttpStatus.NO_CONTENT)));
+        return authorService.deleteById(id);
     }
 
 }
