@@ -10,8 +10,10 @@ export default {
           <td>{{ book.publishingHouse }}</td>
           <td>{{ book.city }}</td>
           <td>{{ book.isbn }}</td>
-          <td>{{ book.author.fullName }}</td>
-          <td>{{ book.genre.genreName }}</td>
+          <td v-if="book.author != null">{{ book.author.fullName }}</td>
+          <td class="gray" v-else>Not found!</td>
+          <td v-if="book.genre != null">{{ book.genre.genreName }}</td>
+          <td class="gray" v-else>Not found!</td>
           <td>
               <input type="button" value="edit" @click="edit">
               <input type="button" value="x" @click="del"/>

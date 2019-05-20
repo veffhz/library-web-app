@@ -7,7 +7,8 @@ export default {
           <td>{{ comment.author }}</td>
           <td>{{ comment.date }}</td>
           <td>{{ comment.content }}</td>
-          <td>{{ comment.book.bookName }}</td>
+          <td v-if="comment.book != null">{{ comment.book.bookName }}</td>
+          <td class="gray" v-else>Not found!</td>
           <td>
               <input type="button" value="edit" @click="edit">
               <input type="button" value="x" @click="del"/>
