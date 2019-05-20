@@ -38,13 +38,13 @@ export default {
         </div>
     `,
       methods: {
-          editMethod: function(comment) {
+          editMethod(comment) {
               this.comment = comment;
           },
-          deleteMethod: function(comment) {
-              this.$resource('/api/comment{/id}').remove({id: this.comment.id}).then(result => {
+          deleteMethod(comment) {
+              this.$resource('/api/comment{/id}').remove({id: comment.id}).then(result => {
                 if (result.ok) {
-                  this.comments.splice(this.comments.indexOf(this.comment), 1)
+                  this.comments.splice(this.comments.indexOf(comment), 1)
                 }
               })
           }

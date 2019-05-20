@@ -12,10 +12,10 @@ export default {
       </tr>
   `,
   methods: {
-        edit: function() {
+        edit() {
             this.editMethod(this.genre);
         },
-        del: function() {
+        del() {
             this.deleteMethod(this.genre);
         }
     }

@@ -35,13 +35,13 @@ export default {
         </div>
     `,
       methods: {
-          editMethod: function(genre) {
+          editMethod(genre) {
               this.genre = genre;
           },
-          deleteMethod: function(genre) {
-              this.$resource('/api/genre{/id}').remove({id: this.genre.id}).then(result => {
+          deleteMethod(genre) {
+              this.$resource('/api/genre{/id}').remove({id: genre.id}).then(result => {
                 if (result.ok) {
-                  this.genres.splice(this.genres.indexOf(this.genre), 1)
+                  this.genres.splice(this.genres.indexOf(genre), 1)
                 }
               })
           }

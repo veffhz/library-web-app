@@ -12,10 +12,10 @@ export default {
       </tr>
   `,
   methods: {
-        edit: function() {
+        edit() {
             this.editMethod(this.author);
         },
-        del: function() {
+        del() {
             this.deleteMethod(this.author);
         }
     }

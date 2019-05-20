@@ -15,10 +15,10 @@ export default {
       </tr>
   `,
   methods: {
-        edit: function() {
+        edit() {
             this.editMethod(this.comment);
         },
-        del: function() {
+        del() {
             this.deleteMethod(this.comment);
         }
     }

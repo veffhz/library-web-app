@@ -19,10 +19,10 @@ export default {
       </tr>
   `,
   methods: {
-        edit: function() {
+        edit() {
             this.editMethod(this.book);
         },
-        del: function() {
+        del() {
             this.deleteMethod(this.book);
         }
     }

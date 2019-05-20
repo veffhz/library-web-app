@@ -42,13 +42,13 @@ export default {
         </div>
     `,
       methods: {
-          editMethod: function(book) {
+          editMethod(book) {
               this.book = book;
           },
-          deleteMethod: function(book) {
-              this.$resource('/api/book{/id}').remove({id: this.book.id}).then(result => {
+          deleteMethod(book) {
+              this.$resource('/api/book{/id}').remove({id: book.id}).then(result => {
                 if (result.ok) {
-                  this.books.splice(this.books.indexOf(this.book), 1)
+                  this.books.splice(this.books.indexOf(book), 1)
                 }
               })
           }

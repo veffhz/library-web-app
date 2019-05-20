@@ -35,13 +35,13 @@ export default {
         </div>
     `,
       methods: {
-          editMethod: function(author) {
+          editMethod(author) {
               this.author = author;
           },
-          deleteMethod: function(author) {
-              this.$resource('/api/author{/id}').remove({id: this.author.id}).then(result => {
+          deleteMethod(author) {
+              this.$resource('/api/author{/id}').remove({id: author.id}).then(result => {
                   if (result.ok) {
-                      this.authors.splice(this.authors.indexOf(this.author), 1)
+                      this.authors.splice(this.authors.indexOf(author), 1)
                   }
               })
           },
