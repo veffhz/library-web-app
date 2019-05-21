@@ -3,6 +3,7 @@ package ru.otus.librarywebapp.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -23,6 +24,7 @@ public class Comment {
     @NotBlank
     private String author;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm")
+    @CreatedDate
     private LocalDateTime date;
     @NotBlank
     private String content;

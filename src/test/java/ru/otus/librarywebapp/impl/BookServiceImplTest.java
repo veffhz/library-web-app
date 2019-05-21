@@ -8,6 +8,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import reactor.core.publisher.Mono;
+
 import ru.otus.librarywebapp.dao.AuthorRepository;
 import ru.otus.librarywebapp.dao.BookRepository;
 import ru.otus.librarywebapp.dao.CommentRepository;
@@ -18,9 +20,9 @@ import ru.otus.librarywebapp.service.impl.BookServiceImpl;
 import ru.otus.librarywebapp.service.impl.GenreServiceImpl;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -46,13 +48,13 @@ class BookServiceImplTest {
     @Test
     @DisplayName("Test invoke get book by id")
     void shouldGetBookById() {
-        Book bookMock = new Book(new Author("", null, ""),
+        Mono<Book> bookMock = Mono.just(new Book(new Author("", null, ""),
                 new Genre(""), "Book",
                 LocalDate.now(), "russian",
-                "Test", "Test", "555-555");
-        when(bookRepository.findById(any(String.class))).thenReturn(Optional.of(bookMock));
+                "Test", "Test", "555-555"));
+        when(bookRepository.findById(any(String.class))).thenReturn(bookMock);
 
-        Book book = bookService.getById("000").get();
+        Mono<Book> book = bookService.getById("000");
 
         verify(bookRepository, times(1)).findById("000");
         assertEquals(bookMock, book);

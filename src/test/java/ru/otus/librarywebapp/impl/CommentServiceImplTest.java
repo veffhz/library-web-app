@@ -8,15 +8,17 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import reactor.core.publisher.Mono;
+
 import ru.otus.librarywebapp.dao.BookRepository;
 import ru.otus.librarywebapp.dao.CommentRepository;
 import ru.otus.librarywebapp.domain.Comment;
 import ru.otus.librarywebapp.service.impl.CommentServiceImpl;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -36,10 +38,10 @@ class CommentServiceImplTest {
     @Test
     @DisplayName("Test invoke get comment by id")
     void shouldGetGenreById() {
-        Comment commentMock = new Comment("test", LocalDateTime.now(), "test");
-        when(commentRepository.findById(any(String.class))).thenReturn(Optional.of(commentMock));
+        Mono<Comment> commentMock = Mono.just(new Comment("test", LocalDateTime.now(), "test"));
+        when(commentRepository.findById(any(String.class))).thenReturn(commentMock);
 
-        Comment comment = commentService.getById("000").get();
+        Mono<Comment> comment = commentService.getById("000");
 
         verify(commentRepository, times(1)).findById("000");
         assertEquals(commentMock, comment);

@@ -3,13 +3,13 @@ package ru.otus.librarywebapp.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 import ru.otus.librarywebapp.dao.AuthorRepository;
 import ru.otus.librarywebapp.dao.BookRepository;
 import ru.otus.librarywebapp.domain.Author;
 import ru.otus.librarywebapp.service.AuthorService;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AuthorServiceImpl implements AuthorService {
@@ -24,38 +24,39 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public long count() {
+    public Mono<Long> count() {
         return repository.count();
     }
 
     @Override
-    public Optional<Author> getById(String id) {
+    public Mono<Author> getById(String id) {
         return repository.findById(id);
     }
 
     @Override
-    public List<Author> getByLastName(String lastName) {
+    public Flux<Author> getByLastName(String lastName) {
         return repository.findByLastName(lastName);
     }
 
     @Override
-    public List<Author> getAll() {
+    public Flux<Author> getAll() {
         return repository.findAll();
     }
 
     @Override
-    public void deleteById(String id) {
-        bookRepository.deleteByAuthorId(id);
-        repository.deleteById(id);
+    public Mono<Void> deleteById(String id) {
+        // TODO это правильно?
+        //return bookRepository.deleteByAuthorId(id).then(repository.deleteById(id));
+        return repository.deleteById(id);
     }
 
     @Override
-    public Author insert(Author author) {
+    public Mono<Author> insert(Author author) {
         return repository.insert(author);
     }
 
     @Override
-    public Author update(Author author) {
+    public Mono<Author> update(Author author) {
         return repository.save(author);
     }
 

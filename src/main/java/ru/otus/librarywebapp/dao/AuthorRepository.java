@@ -1,11 +1,12 @@
 package ru.otus.librarywebapp.dao;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+
+import reactor.core.publisher.Flux;
 
 import ru.otus.librarywebapp.domain.Author;
 
-import java.util.List;
 
-public interface AuthorRepository extends MongoRepository<Author, String> {
-    List<Author> findByLastName(String lastName);
+public interface AuthorRepository extends ReactiveMongoRepository<Author, String> {
+    Flux<Author> findByLastName(String lastName);
 }

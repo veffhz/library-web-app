@@ -34,3 +34,7 @@ div.block input[type="text"] {
 input:invalid {
     box-shadow: none;
 }
+
+td.gray {
+    color:#D0D0D0
+}

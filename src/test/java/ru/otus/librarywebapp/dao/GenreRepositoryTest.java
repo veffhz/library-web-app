@@ -7,11 +7,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.ComponentScan;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+
 import ru.otus.librarywebapp.domain.Genre;
 
-import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DisplayName("Test for GenreRepository")
 @DataMongoTest
@@ -24,50 +29,71 @@ class GenreRepositoryTest {
     @Test
     @DisplayName("Test return count genres")
     void shouldReturnCorrectCount() {
-        long count = genreRepository.count();
-        assertEquals(count, 2);
+        Mono<Long> count = genreRepository.count();
+
+        StepVerifier
+                .create(count)
+                .assertNext(c -> assertEquals(c.longValue(), 2))
+                .expectComplete()
+                .verify();
     }
 
     @Test
     @DisplayName("Test insert new genre")
     void shouldInsertNewGenre() {
-        genreRepository.save(new Genre("test"));
-        assertEquals(genreRepository.count(), 3);
+        Genre genre = new Genre("test");
+
+        StepVerifier
+                .create(genreRepository.save(genre))
+                .assertNext(g -> assertNotNull(g.getId()))
+                .expectComplete()
+                .verify();
     }
 
     @Test
     @DisplayName("Test get genre by id")
     void shouldGetGenreById() {
-        Genre genre = genreRepository.findAll().get(0);
-        assertEquals(genre.getGenreName(), "Genre");
+        Mono<Genre> genre = genreRepository.findAll().elementAt(0);
+
+        StepVerifier
+                .create(genre)
+                .assertNext(g -> assertEquals(g.getGenreName(), "Genre"))
+                .expectComplete()
+                .verify();
     }
 
     @Test
     @DisplayName("Test get all genre")
     void shouldGetAllGenres() {
-        List<Genre> genres = genreRepository.findAll();
-        Genre genre = genres.get(0);
+        Flux<Genre> genres = genreRepository.findAll();
 
-        assertEquals(genre.getGenreName(), "Genre7");
-
-        genre = genres.get(1);
-
-        assertEquals(genre.getGenreName(), "Genre9");
+        StepVerifier
+                .create(genres)
+                .assertNext(g -> assertEquals(g.getGenreName(), "Genre7"))
+                .assertNext(g -> assertEquals(g.getGenreName(), "Genre9"))
+                .expectComplete()
+                .verify();
     }
 
     @Test
     @DisplayName("Test delete genre by id")
     void shouldDeleteGenreById() {
-        Genre genre = genreRepository.findAll().get(0);
-        genreRepository.deleteById(genre.getId());
-        assertEquals(genreRepository.count(), 2);
+        Genre genre = genreRepository.findAll().blockFirst();
+
+        Objects.requireNonNull(genre);
+
+        StepVerifier.create(genreRepository.deleteById(genre.getId()))
+                .verifyComplete();
     }
 
     @Test
     @DisplayName("Test delete genre")
     void shouldDeleteGenre() {
-        Genre genre = genreRepository.findAll().get(0);
-        genreRepository.delete(genre);
-        assertEquals(genreRepository.count(), 3);
+        Genre genre = genreRepository.findAll().blockFirst();
+
+        Objects.requireNonNull(genre);
+
+        StepVerifier.create(genreRepository.delete(genre))
+                .verifyComplete();
     }
 }

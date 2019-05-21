@@ -1,17 +1,17 @@
 package ru.otus.librarywebapp.service;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 import ru.otus.librarywebapp.domain.Comment;
 
-import java.util.List;
-import java.util.Optional;
-
 public interface CommentService {
-    long count();
-    Optional<Comment> getById(String id);
-    List<Comment> getByBookId(String bookId);
-    List<Comment> getAll();
-    void deleteById(String id);
-    List<Comment> deleteByBookId(String bookId);
-    Comment update(Comment comment);
-    Comment insert(Comment comment);
+    Mono<Long> count();
+    Mono<Comment> getById(String id);
+    Flux<Comment> getByBookId(String bookId);
+    Flux<Comment> getAll();
+    Mono<Void> deleteById(String id);
+    Flux<Comment> deleteByBookId(String bookId);
+    Mono<Comment> update(Comment comment);
+    Mono<Comment> insert(Comment comment);
 }

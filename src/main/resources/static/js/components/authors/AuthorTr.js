@@ -1,6 +1,6 @@
 export default {
   name: 'AuthorTr',
-  props: ['author', 'editMethod', 'authors'],
+  props: ['author', 'editMethod', 'deleteMethod', 'authors'],
   template: `
       <tr>
           <td>{{ author.id }}</td>
@@ -12,15 +12,11 @@ export default {
       </tr>
   `,
   methods: {
-        edit: function() {
+        edit() {
             this.editMethod(this.author);
         },
-        del: function() {
-            this.$resource('/api/author{/id}').remove({id: this.author.id}).then(result => {
-              if (result.ok) {
-                this.authors.splice(this.authors.indexOf(this.author), 1)
-              }
-            })
+        del() {
+            this.deleteMethod(this.author);
         }
     }
 };

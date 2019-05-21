@@ -7,12 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.ComponentScan;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+
 import ru.otus.librarywebapp.domain.Book;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DisplayName("Test for BookRepository")
 @DataMongoTest
@@ -31,70 +36,101 @@ class BookRepositoryTest {
     @Test
     @DisplayName("Test return count books")
     void shouldReturnCorrectCount() {
-        long count = bookRepository.count();
-        assertEquals(count, 2);
+        Mono<Long> count = bookRepository.count();
+
+        StepVerifier
+                .create(count)
+                .assertNext(c -> assertEquals(c.longValue(), 2))
+                .expectComplete()
+                .verify();
     }
 
     @Test
     @DisplayName("Test insert new book")
     void shouldInsertNewBook() {
-        bookRepository.save(
-                new Book(authorRepository.findAll().get(0), genreRepository.findAll().get(0),
-                        "Best", LocalDate.now(), "russian",
-                        "Test", "Test", "555-555"));
-        assertEquals(bookRepository.count(), 3);
+        Book book = new Book(
+                authorRepository.findAll().blockFirst(),
+                genreRepository.findAll().blockFirst(),
+                "Best", LocalDate.now(), "russian",
+                "Test", "Test", "555-555"
+        );
+
+        StepVerifier
+                .create(bookRepository.save(book))
+                .assertNext(b -> assertNotNull(b.getId()))
+                .expectComplete()
+                .verify();
     }
 
     @Test
     @DisplayName("Test get book by id")
     void shouldGetBookById() {
-        Book book = bookRepository.findAll().get(0);
-        assertEquals(book.getBookName(), "Best7");
+        Mono<Book> book = bookRepository.findAll().elementAt(0);
+
+        StepVerifier
+                .create(book)
+                .assertNext(b -> assertEquals(b.getBookName(), "Best7"))
+                .expectComplete()
+                .verify();
     }
 
     @Test
     @DisplayName("Test get book by name")
     void shouldGetBookByName() {
-        List<Book> books = bookRepository.findByBookName("Best");
-        assertEquals(books.size(), 1);
+        Flux<Book> books = bookRepository.findByBookName("Best");
 
-        Book book = books.get(0);
-        assertEquals(book.getBookName(), "Best");
+        StepVerifier
+                .create(books)
+                .assertNext(b -> assertEquals(b.getBookName(), "Best"))
+                .expectComplete()
+                .verify();
     }
 
     @Test
     @DisplayName("Test get books by part name")
     void shouldGetBooksByPartName() {
-        List<Book> books = bookRepository.findByBookNameContaining("est");
-        assertEquals(books.size(), 3);
+        Flux<Book> books = bookRepository.findByBookNameContaining("est");
+
+        StepVerifier
+                .create(books)
+                .expectNextCount(3)
+                .expectComplete()
+                .verify();
     }
 
     @Test
     @DisplayName("Test get all books")
     void shouldGetAllBooks() {
-        List<Book> books = bookRepository.findAll();
-        Book book = books.get(0);
+        Flux<Book> books = bookRepository.findAll();
 
-        assertEquals(book.getBookName(), "Best7");
-
-        book = books.get(1);
-
-        assertEquals(book.getBookName(), "Best9");
+        StepVerifier
+                .create(books)
+                .assertNext(b -> assertEquals(b.getBookName(), "Best7"))
+                .assertNext(b -> assertEquals(b.getBookName(), "Best9"))
+                .assertNext(b -> assertEquals(b.getBookName(), "Best"))
+                .expectComplete()
+                .verify();
     }
 
     @Test
     @DisplayName("Test delete book by id")
     void shouldDeleteBookById() {
-        Book book = bookRepository.findAll().get(0);
-        bookRepository.deleteById(book.getId());
-        assertEquals(bookRepository.count(), 2);
+        Book book = bookRepository.findAll().blockFirst();
+
+        Objects.requireNonNull(book);
+
+        StepVerifier.create(bookRepository.deleteById(book.getId()))
+                .verifyComplete();
     }
 
     @Test
     @DisplayName("Test delete book")
     void shouldDeleteBook() {
-        Book book = bookRepository.findAll().get(0);
-        bookRepository.delete(book);
-        assertEquals(bookRepository.count(), 2);
+        Book book = bookRepository.findAll().blockFirst();
+
+        Objects.requireNonNull(book);
+
+        StepVerifier.create(bookRepository.delete(book))
+                .verifyComplete();
     }
 }

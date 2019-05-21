@@ -1,13 +1,14 @@
 package ru.otus.librarywebapp.dao;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+
+import reactor.core.publisher.Flux;
 
 import ru.otus.librarywebapp.domain.Book;
 
-import java.util.List;
 
-public interface BookRepository extends MongoRepository<Book, String> {
-    List<Book> findByBookName(String bookName);
-    List<Book> findByBookNameContaining(String bookName);
-    List<Book> deleteByAuthorId(String authorId);
+public interface BookRepository extends ReactiveMongoRepository<Book, String> {
+    Flux<Book> findByBookName(String bookName);
+    Flux<Book> findByBookNameContaining(String bookName);
+    Flux<Book> deleteByAuthorId(String authorId);
 }

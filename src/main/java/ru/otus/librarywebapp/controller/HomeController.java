@@ -4,15 +4,16 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.reactive.result.view.Rendering;
 
+import reactor.core.publisher.Mono;
+
+import ru.otus.librarywebapp.domain.*;
 import ru.otus.librarywebapp.service.AuthorService;
 import ru.otus.librarywebapp.service.BookService;
 import ru.otus.librarywebapp.service.CommentService;
 import ru.otus.librarywebapp.service.GenreService;
-
-import java.util.HashMap;
 
 @Slf4j
 @Controller
@@ -33,15 +34,21 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public String main(Model model) {
+    public Rendering main() {
         log.info("get /");
-        HashMap<Object, Object> data = new HashMap<>();
-        data.put("authors", authorService.getAll());
-        data.put("genres", genreService.getAll());
-        data.put("books", bookService.getAll());
-        data.put("comments", commentService.getAll());
-        model.addAttribute("frontendData", data);
-        return "index";
+
+        Mono<FrontendData> frontendData = authorService.getAll().collectList()
+                .map(authors -> new FrontendData().withAuthors(authors))
+                .zipWith(genreService.getAll().collectList())
+                .map(data -> data.getT1().withGenres(data.getT2()))
+                .zipWith(bookService.getAll().collectList())
+                .map(data -> data.getT1().withBooks(data.getT2()))
+                .zipWith(commentService.getAll().collectList())
+                .map(data -> data.getT1().withComments(data.getT2()));
+
+        return Rendering.view("index")
+                .modelAttribute("frontendData", frontendData)
+                .build();
     }
 
 }

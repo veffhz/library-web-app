@@ -1,6 +1,6 @@
 export default {
   name: 'BookTr',
-  props: ['book', 'editMethod', 'books'],
+  props: ['book', 'editMethod', 'deleteMethod', 'books'],
   template: `
       <tr>
           <td>{{ book.id }}</td>
@@ -10,8 +10,10 @@ export default {
           <td>{{ book.publishingHouse }}</td>
           <td>{{ book.city }}</td>
           <td>{{ book.isbn }}</td>
-          <td>{{ book.author.fullName }}</td>
-          <td>{{ book.genre.genreName }}</td>
+          <td v-if="book.author != null">{{ book.author.fullName }}</td>
+          <td class="gray" v-else>Not found!</td>
+          <td v-if="book.genre != null">{{ book.genre.genreName }}</td>
+          <td class="gray" v-else>Not found!</td>
           <td>
               <input type="button" value="edit" @click="edit">
               <input type="button" value="x" @click="del"/>
@@ -19,15 +21,11 @@ export default {
       </tr>
   `,
   methods: {
-        edit: function() {
+        edit() {
             this.editMethod(this.book);
         },
-        del: function() {
-            this.$resource('/api/book{/id}').remove({id: this.book.id}).then(result => {
-              if (result.ok) {
-                this.books.splice(this.books.indexOf(this.book), 1)
-              }
-            })
+        del() {
+            this.deleteMethod(this.book);
         }
     }
 };

@@ -8,15 +8,17 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import reactor.core.publisher.Mono;
+
 import ru.otus.librarywebapp.dao.AuthorRepository;
 import ru.otus.librarywebapp.dao.BookRepository;
 import ru.otus.librarywebapp.domain.Author;
 import ru.otus.librarywebapp.service.impl.AuthorServiceImpl;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -36,10 +38,10 @@ class AuthorServiceImplTest {
     @Test
     @DisplayName("Test invoke get author by id")
     void shouldGetAuthorById() {
-        Author authorMock = new Author("test", LocalDate.now(), "test");
-        when(authorRepository.findById(any(String.class))).thenReturn(Optional.of(authorMock));
+        Mono<Author> authorMock = Mono.just(new Author("test", LocalDate.now(), "test"));
+        when(authorRepository.findById(any(String.class))).thenReturn(authorMock);
 
-        Author author = authorService.getById("000").get();
+        Mono<Author> author = authorService.getById("000");
 
         verify(authorRepository, times(1)).findById("000");
         assertEquals(authorMock, author);
@@ -63,7 +65,7 @@ class AuthorServiceImplTest {
     @DisplayName("Test invoke insert new author")
     void shouldInsertNewAuthor() {
         Author author = new Author("test", LocalDate.now(),"test");
-        when(authorRepository.save(author)).thenReturn(author);
+        when(authorRepository.save(author)).thenReturn(Mono.just(author));
         authorService.insert(author);
         verify(authorRepository, times(1)).insert(author);
     }
