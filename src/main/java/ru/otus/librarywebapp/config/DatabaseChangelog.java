@@ -2,11 +2,16 @@ package ru.otus.librarywebapp.config;
 
 import com.github.mongobee.changeset.ChangeLog;
 import com.github.mongobee.changeset.ChangeSet;
+
 import com.mongodb.*;
+
 import org.springframework.data.util.Pair;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import ru.otus.librarywebapp.utils.Helper;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -83,6 +88,39 @@ public class DatabaseChangelog {
         createDbObject(db, "comments", Arrays.asList(Pair.of("author", "Anonymous"),
                 Pair.of("date", Helper.toDateTime("2018-01-01 00:00")), Pair.of("content", "Nice!"),
                 Pair.of("book", refBook2)));
+    }
+
+    @ChangeSet(order = "005", id = "addRoles", author = "veffhz")
+    public void insertRoles(DB db) {
+        createDbObject(db, "roles", Arrays.asList(Pair.of("name", "ROLE_ADMIN"),
+                Pair.of("description", "Администратор"), Pair.of("createdDate", LocalDateTime.now())));
+        createDbObject(db, "roles", Arrays.asList(Pair.of("name", "ROLE_USER"),
+                Pair.of("description", "Пользователь"), Pair.of("createdDate", LocalDateTime.now())));
+    }
+
+    @ChangeSet(order = "006", id = "addUsers", author = "veffhz")
+    public void insertUsers(DB db) {
+
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(); // TODO Bean?
+
+        DBCollection rolesCollection = db.getCollection("roles");
+
+        DBObject roleAdmin = rolesCollection.findOne(new BasicDBObject("name", "ROLE_ADMIN"));
+        DBRef refRoleAdmin = new DBRef("roles", roleAdmin.get("_id"));
+
+        createDbObject(db, "users", Arrays.asList(Pair.of("username", "adm"),
+                Pair.of("password", passwordEncoder.encode("password")),
+                Pair.of("roles", Collections.singletonList(refRoleAdmin)),
+                Pair.of("active", true), Pair.of("createdDate", LocalDateTime.now())));
+
+
+        DBObject roleUser = rolesCollection.findOne(new BasicDBObject("name", "ROLE_USER"));
+        DBRef refRoleUser = new DBRef("roles", roleUser.get("_id"));
+
+        createDbObject(db, "users", Arrays.asList(Pair.of("username", "usr"),
+                Pair.of("password", passwordEncoder.encode("password")),
+                Pair.of("roles", Collections.singletonList(refRoleUser)),
+                Pair.of("active", true), Pair.of("createdDate", LocalDateTime.now())));
     }
 
     private void createDbObject(DB db, String collectionName, List<Pair<String, Object>> fields) {
