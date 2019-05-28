@@ -92,9 +92,9 @@ public class DatabaseChangelog {
 
     @ChangeSet(order = "005", id = "addRoles", author = "veffhz")
     public void insertRoles(DB db) {
-        createDbObject(db, "roles", Arrays.asList(Pair.of("name", "ROLE_ADMIN"),
+        createDbObject(db, "roles", Arrays.asList(Pair.of("roleName", "ROLE_ADMIN"),
                 Pair.of("description", "Администратор"), Pair.of("createdDate", LocalDateTime.now())));
-        createDbObject(db, "roles", Arrays.asList(Pair.of("name", "ROLE_USER"),
+        createDbObject(db, "roles", Arrays.asList(Pair.of("roleName", "ROLE_USER"),
                 Pair.of("description", "Пользователь"), Pair.of("createdDate", LocalDateTime.now())));
     }
 
@@ -105,7 +105,7 @@ public class DatabaseChangelog {
 
         DBCollection rolesCollection = db.getCollection("roles");
 
-        DBObject roleAdmin = rolesCollection.findOne(new BasicDBObject("name", "ROLE_ADMIN"));
+        DBObject roleAdmin = rolesCollection.findOne(new BasicDBObject("roleName", "ROLE_ADMIN"));
         DBRef refRoleAdmin = new DBRef("roles", roleAdmin.get("_id"));
 
         createDbObject(db, "users", Arrays.asList(Pair.of("username", "adm"),
@@ -114,7 +114,7 @@ public class DatabaseChangelog {
                 Pair.of("active", true), Pair.of("createdDate", LocalDateTime.now())));
 
 
-        DBObject roleUser = rolesCollection.findOne(new BasicDBObject("name", "ROLE_USER"));
+        DBObject roleUser = rolesCollection.findOne(new BasicDBObject("roleName", "ROLE_USER"));
         DBRef refRoleUser = new DBRef("roles", roleUser.get("_id"));
 
         createDbObject(db, "users", Arrays.asList(Pair.of("username", "usr"),
