@@ -25,9 +25,9 @@ export default {
               </li>
             </ul>
           </div>
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="/logout">Log Out</a></li>
-          </ul>
+          <form method="post" action="/logout">
+            <button class="button-cosmo btn btn-link" type="submit">Log Out</button>
+          </form>
           </div>
         </div>
         <div class="container">
