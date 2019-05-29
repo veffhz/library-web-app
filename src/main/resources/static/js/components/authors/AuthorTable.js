@@ -1,5 +1,6 @@
 import AuthorTr from './AuthorTr.js'
 import AuthorForm from './AuthorForm.js'
+import { showAlert } from '../Utils.js';
 
 export default {
     name: 'AuthorTable',
@@ -32,6 +33,13 @@ export default {
             <div class="gap-30"></div>
             <p>Edit:</p>
             <author-form :authors="authors" :authorAttr="author" />
+            <div class="gap-30"></div>
+            <div class="alert alert-danger" id="authorError" style="display:none;">
+              <strong>Error!</strong> Access Denied! You not have permission to delete author!
+            </div>
+            <div class="alert alert-success" id="authorSuccess" style="display:none;">
+              <strong>Success!</strong> Author deleted successfully.
+            </div>
         </div>
     `,
       methods: {
@@ -41,9 +49,12 @@ export default {
           deleteMethod(author) {
               this.$resource('/api/author{/id}').remove({id: author.id}).then(result => {
                   if (result.ok) {
-                      this.authors.splice(this.authors.indexOf(author), 1)
+                      this.authors.splice(this.authors.indexOf(author), 1);
+                      showAlert('#authorSuccess');
                   }
+              }, error => {
+                  showAlert('#authorError');
               })
-          },
+          }
       }
 };

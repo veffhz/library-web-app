@@ -1,5 +1,6 @@
 import BookTr from './BookTr.js'
 import BookForm from './BookForm.js'
+import { showAlert } from '../Utils.js';
 
 export default {
     name: 'BookTable',
@@ -39,6 +40,13 @@ export default {
             <div class="gap-30"></div>
             <p>Edit:</p>
             <book-form :books="books" :bookAttr="book" :authors="authors" :genres="genres" />
+            <div class="gap-30"></div>
+            <div class="alert alert-danger" id="bookError" style="display:none;">
+              <strong>Error!</strong> Access Denied! You not have permission to delete book!
+            </div>
+            <div class="alert alert-success" id="bookSuccess" style="display:none;">
+              <strong>Success!</strong> Book deleted successfully.
+            </div>
         </div>
     `,
       methods: {
@@ -47,9 +55,12 @@ export default {
           },
           deleteMethod(book) {
               this.$resource('/api/book{/id}').remove({id: book.id}).then(result => {
-                if (result.ok) {
-                  this.books.splice(this.books.indexOf(book), 1)
-                }
+                  if (result.ok) {
+                      this.books.splice(this.books.indexOf(book), 1);
+                      showAlert('#bookSuccess');
+                  }
+              }, error => {
+                  showAlert('#bookError');
               })
           }
       }
