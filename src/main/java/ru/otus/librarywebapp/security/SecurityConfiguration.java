@@ -27,11 +27,13 @@ public class SecurityConfiguration  {
         return http
                 .csrf().disable()
                 .authorizeExchange()
+                .pathMatchers(HttpMethod.GET, "/api/**").hasAuthority("ROLE_USER") // eq hasRole("USER")
                 .pathMatchers(HttpMethod.PUT, "/api/**").hasAuthority("ROLE_USER")
                 .pathMatchers(HttpMethod.POST, "/api/**").hasAuthority("ROLE_USER")
                 .pathMatchers(HttpMethod.DELETE, "/api/**").hasAuthority("ROLE_ADMIN")
                 .anyExchange().authenticated()
-                .and().formLogin().authenticationManager(authenticationManager())
+                .and().formLogin()
+                .authenticationManager(authenticationManager())
                 .securityContextRepository(securityContextRepository())
                 .and().build();
     }

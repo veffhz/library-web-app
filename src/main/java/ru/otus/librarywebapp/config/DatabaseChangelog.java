@@ -3,6 +3,8 @@ package ru.otus.librarywebapp.config;
 import com.github.mongobee.changeset.ChangeLog;
 import com.github.mongobee.changeset.ChangeSet;
 
+import com.google.common.collect.ImmutableList;
+
 import com.mongodb.*;
 
 import org.springframework.data.util.Pair;
@@ -12,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.otus.librarywebapp.utils.Helper;
 
 import java.time.LocalDateTime;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -108,14 +111,14 @@ public class DatabaseChangelog {
         DBObject roleAdmin = rolesCollection.findOne(new BasicDBObject("roleName", "ROLE_ADMIN"));
         DBRef refRoleAdmin = new DBRef("roles", roleAdmin.get("_id"));
 
-        createDbObject(db, "users", Arrays.asList(Pair.of("username", "adm"),
-                Pair.of("password", passwordEncoder.encode("password")),
-                Pair.of("roles", Collections.singletonList(refRoleAdmin)),
-                Pair.of("active", true), Pair.of("createdDate", LocalDateTime.now())));
-
-
         DBObject roleUser = rolesCollection.findOne(new BasicDBObject("roleName", "ROLE_USER"));
         DBRef refRoleUser = new DBRef("roles", roleUser.get("_id"));
+
+
+        createDbObject(db, "users", Arrays.asList(Pair.of("username", "adm"),
+                Pair.of("password", passwordEncoder.encode("password")),
+                Pair.of("roles", ImmutableList.of(refRoleUser, refRoleAdmin)),
+                Pair.of("active", true), Pair.of("createdDate", LocalDateTime.now())));
 
         createDbObject(db, "users", Arrays.asList(Pair.of("username", "usr"),
                 Pair.of("password", passwordEncoder.encode("password")),
