@@ -21,6 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
 
 @DisplayName("Test for book api")
 @WebFluxTest(controllers = BookApi.class)
@@ -73,7 +74,9 @@ class BookControllerTest extends BaseTest {
                 "\"genre\":{\"id\":null,\"genreName\":null},\"bookName\":\"Best\",\"publishDate\":\"2019-04-27\",\"language\":\"russian\"," +
                 "\"publishingHouse\":\"Test\",\"city\":\"Test\",\"isbn\":\"555-555\"}";
 
-        this.webClient.put().uri("/api/book")
+        this.webClient
+                .mutateWith(csrf())
+                .put().uri("/api/book")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromObject(book))
                 .accept(MediaType.APPLICATION_JSON)
@@ -95,7 +98,9 @@ class BookControllerTest extends BaseTest {
                 "\"genre\":{\"id\":null,\"genreName\":null},\"bookName\":\"Best\",\"publishDate\":\"2019-04-27\",\"language\":\"russian\"," +
                 "\"publishingHouse\":\"Test\",\"city\":\"Test\",\"isbn\":\"555-555\"}";
 
-        this.webClient.post().uri("/api/book")
+        this.webClient
+                .mutateWith(csrf())
+                .post().uri("/api/book")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromObject(book))
                 .accept(MediaType.APPLICATION_JSON)
@@ -111,7 +116,9 @@ class BookControllerTest extends BaseTest {
     void shouldDeleteBookById() {
         given(this.bookService.deleteById("123")).willReturn(Mono.empty());
 
-        this.webClient.delete().uri("/api/book/123")
+        this.webClient
+                .mutateWith(csrf())
+                .delete().uri("/api/book/123")
                 .exchange()
                 .expectStatus().isNoContent();
 

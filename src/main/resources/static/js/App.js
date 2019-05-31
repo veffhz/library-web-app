@@ -6,9 +6,11 @@ export default {
   <!-- navbar -->
         <div class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
           <div class="container">
-          <router-link to="/" class="navbar-brand">Home</router-link>
           <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav">
+              <li class="nav-item">
+                <router-link class="nav-link" to="/">Home</router-link>
+              </li>
               <li class="nav-item">
                 <router-link class="nav-link" to="/author">Author</router-link>
               </li>
@@ -23,6 +25,9 @@ export default {
               </li>
             </ul>
           </div>
+          <form method="post" action="/logout">
+            <button class="button-cosmo btn btn-link" type="submit">Log Out</button>
+          </form>
           </div>
         </div>
         <div class="container">

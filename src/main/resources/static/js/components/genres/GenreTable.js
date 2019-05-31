@@ -1,5 +1,6 @@
 import GenreTr from './GenreTr.js'
 import GenreForm from './GenreForm.js'
+import { showAlert } from '../Utils.js';
 
 export default {
     name: 'GenreTable',
@@ -32,6 +33,13 @@ export default {
             <div class="gap-30"></div>
             <p>Edit:</p>
             <genre-form :genres="genres" :genreAttr="genre" />
+            <div class="gap-30"></div>
+            <div class="alert alert-danger" id="genreError" style="display:none;">
+              <strong>Error!</strong> Access Denied! You not have permission to delete genre!
+            </div>
+            <div class="alert alert-success" id="genreSuccess" style="display:none;">
+              <strong>Success!</strong> Genre deleted successfully.
+            </div>
         </div>
     `,
       methods: {
@@ -40,9 +48,12 @@ export default {
           },
           deleteMethod(genre) {
               this.$resource('/api/genre{/id}').remove({id: genre.id}).then(result => {
-                if (result.ok) {
-                  this.genres.splice(this.genres.indexOf(genre), 1)
+                  if (result.ok) {
+                      this.genres.splice(this.genres.indexOf(genre), 1);
+                      showAlert('#genreSuccess');
                 }
+              }, error => {
+                  showAlert('#genreError');
               })
           }
       }

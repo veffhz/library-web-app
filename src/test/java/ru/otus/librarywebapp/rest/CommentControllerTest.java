@@ -19,6 +19,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
 
 @DisplayName("Test for comment api")
 @WebFluxTest(controllers = CommentApi.class)
@@ -65,7 +66,9 @@ class CommentControllerTest extends BaseTest {
 
         String responseBody = "{\"id\":null,\"book\":null,\"author\":\"test\",\"date\":\"2019-04-27 00:00\",\"content\":\"test\"}";
 
-        this.webClient.put().uri("/api/comment")
+        this.webClient
+                .mutateWith(csrf())
+                .put().uri("/api/comment")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromObject(comment))
                 .accept(MediaType.APPLICATION_JSON)
@@ -86,7 +89,9 @@ class CommentControllerTest extends BaseTest {
 
         String responseBody = "{\"id\":null,\"book\":null,\"author\":\"test\",\"date\":\"2019-04-27 00:00\",\"content\":\"test\"}";
 
-        this.webClient.post().uri("/api/comment")
+        this.webClient
+                .mutateWith(csrf())
+                .post().uri("/api/comment")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromObject(comment))
                 .accept(MediaType.APPLICATION_JSON)
@@ -102,7 +107,9 @@ class CommentControllerTest extends BaseTest {
     void shouldDeleteCommentById() {
         given(this.commentService.deleteById("123")).willReturn(Mono.empty());
 
-        this.webClient.delete().uri("/api/comment/123")
+        this.webClient
+                .mutateWith(csrf())
+                .delete().uri("/api/comment/123")
                 .exchange()
                 .expectStatus().isNoContent();
 

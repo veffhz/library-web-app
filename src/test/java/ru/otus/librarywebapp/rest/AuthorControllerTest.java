@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.web.reactive.function.BodyInserters;
 
 import reactor.core.publisher.Flux;
@@ -19,7 +20,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-
+import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
 
 @DisplayName("Test for author api")
 @WebFluxTest(controllers = AuthorApi.class)
@@ -67,7 +68,9 @@ class AuthorControllerTest extends BaseTest {
 
         String responseBody = "{\"id\":null,\"firstName\":\"test\",\"birthDate\":\"2019-04-27\",\"lastName\":\"test\",\"fullName\":\"test test\"}";
 
-        this.webClient.put().uri("/api/author")
+        this.webClient
+                .mutateWith(csrf())
+                .put().uri("/api/author")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromObject(author))
                 .accept(MediaType.APPLICATION_JSON)
@@ -87,7 +90,9 @@ class AuthorControllerTest extends BaseTest {
 
         String responseBody = "{\"id\":null,\"firstName\":\"test\",\"birthDate\":\"2019-04-27\",\"lastName\":\"test\",\"fullName\":\"test test\"}";
 
-        this.webClient.post().uri("/api/author")
+        this.webClient
+                .mutateWith(csrf())
+                .post().uri("/api/author")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromObject(author))
                 .accept(MediaType.APPLICATION_JSON)
@@ -100,10 +105,13 @@ class AuthorControllerTest extends BaseTest {
 
     @Test
     @DisplayName("Test delete author on /api/author/{id}")
+    @WithMockUser(username = "adm", authorities = "ROLE_ADMIN") // TODO check admin
     void shouldDeleteAuthorById() {
         given(this.authorService.deleteById("123")).willReturn(Mono.empty());
 
-        this.webClient.delete().uri("/api/author/123")
+        this.webClient
+                .mutateWith(csrf())
+                .delete().uri("/api/author/123")
                 .exchange()
                 .expectStatus().isNoContent();
 

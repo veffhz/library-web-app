@@ -19,6 +19,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
 
 @DisplayName("Test for genre api")
 @WebFluxTest(controllers = GenreApi.class)
@@ -65,7 +66,9 @@ class GenreControllerTest extends BaseTest {
 
         String responseBody = "{\"id\":null,\"genreName\":\"test\"}";
 
-        this.webClient.put().uri("/api/genre")
+        this.webClient
+                .mutateWith(csrf())
+                .put().uri("/api/genre")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromObject(genre))
                 .accept(MediaType.APPLICATION_JSON)
@@ -85,7 +88,9 @@ class GenreControllerTest extends BaseTest {
 
         String responseBody = "{\"id\":null,\"genreName\":\"test\"}";
 
-        this.webClient.post().uri("/api/genre")
+        this.webClient
+                .mutateWith(csrf())
+                .post().uri("/api/genre")
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromObject(genre))
                 .accept(MediaType.APPLICATION_JSON)
@@ -101,7 +106,9 @@ class GenreControllerTest extends BaseTest {
     void shouldDeleteGenreById() {
         given(this.genreService.deleteById("123")).willReturn(Mono.empty());
 
-        this.webClient.delete().uri("/api/genre/123")
+        this.webClient
+                .mutateWith(csrf())
+                .delete().uri("/api/genre/123")
                 .exchange()
                 .expectStatus().isNoContent();
 

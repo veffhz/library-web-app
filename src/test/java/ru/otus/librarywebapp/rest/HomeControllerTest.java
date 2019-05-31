@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import reactor.core.publisher.Flux;
@@ -41,7 +42,17 @@ class HomeControllerTest {
     private CommentService commentService;
 
     @Test
+    @DisplayName("Test redirect on / ")
+    public void shouldRedirectToLogin() {
+        this.webClient.get()
+                .uri("/")
+                .exchange()
+                .expectStatus().isUnauthorized();
+    }
+
+    @Test
     @DisplayName("Test get info page on / ")
+    @WithMockUser
     void shouldGetInfoPage() {
         given(this.authorService.getAll()).willReturn(Flux.just(new Author()));
         given(this.genreService.getAll()).willReturn(Flux.just(new Genre()));
