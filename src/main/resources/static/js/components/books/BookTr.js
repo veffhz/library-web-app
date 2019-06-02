@@ -1,6 +1,6 @@
 export default {
   name: 'BookTr',
-  props: ['book', 'editMethod', 'deleteMethod', 'books'],
+  props: ['book', 'editBook', 'deleteBook', 'books'],
   template: `
       <tr>
           <td>{{ book.id }}</td>
@@ -22,10 +22,10 @@ export default {
   `,
   methods: {
         edit() {
-            this.editMethod(this.book);
+            this.editBook(this.book);
         },
         del() {
-            this.deleteMethod(this.book);
+            this.deleteBook(this.book);
         }
     }
 };

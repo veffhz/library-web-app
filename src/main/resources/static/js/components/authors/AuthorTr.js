@@ -1,6 +1,6 @@
 export default {
   name: 'AuthorTr',
-  props: ['author', 'editMethod', 'deleteMethod', 'authors'],
+  props: ['author', 'editAuthor', 'deleteAuthor', 'authors'],
   template: `
       <tr>
           <td>{{ author.id }}</td>
@@ -13,10 +13,10 @@ export default {
   `,
   methods: {
         edit() {
-            this.editMethod(this.author);
+            this.editAuthor(this.author);
         },
         del() {
-            this.deleteMethod(this.author);
+            this.deleteAuthor(this.author);
         }
     }
 };

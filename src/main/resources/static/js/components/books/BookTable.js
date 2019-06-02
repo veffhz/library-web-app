@@ -34,7 +34,7 @@ export default {
                 </thead>
                 <tbody>
                 <book-tr v-for="book in books" :key="book.id" :book="book"
-                    :editMethod="editMethod" :deleteMethod="deleteMethod" :books="books" />
+                    :editBook="editBook" :deleteBook="deleteBook" :books="books" />
                 </tbody>
             </table>
             <div class="gap-30"></div>
@@ -50,10 +50,10 @@ export default {
         </div>
     `,
       methods: {
-          editMethod(book) {
+          editBook(book) {
               this.book = book;
           },
-          deleteMethod(book) {
+          deleteBook(book) {
               this.$resource('/api/book{/id}').remove({id: book.id}).then(result => {
                   if (result.ok) {
                       this.books.splice(this.books.indexOf(book), 1);

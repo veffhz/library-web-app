@@ -1,6 +1,6 @@
 export default {
   name: 'GenreTr',
-  props: ['genre', 'editMethod', 'deleteMethod', 'genres'],
+  props: ['genre', 'editGenre', 'deleteGenre', 'genres'],
   template: `
       <tr>
           <td>{{ genre.id }}</td>
@@ -13,10 +13,10 @@ export default {
   `,
   methods: {
         edit() {
-            this.editMethod(this.genre);
+            this.editGenre(this.genre);
         },
         del() {
-            this.deleteMethod(this.genre);
+            this.deleteGenre(this.genre);
         }
     }
 };

@@ -30,7 +30,7 @@ export default {
                 </thead>
                 <tbody>
                 <comment-tr v-for="comment in comments" :key="comment.id" :comment="comment"
-                    :editMethod="editMethod" :deleteMethod="deleteMethod" :comments="comments" />
+                    :editComment="editComment" :deleteComment="deleteComment" :comments="comments" />
                 </tbody>
             </table>
             <div class="gap-30"></div>
@@ -46,10 +46,10 @@ export default {
         </div>
     `,
       methods: {
-          editMethod(comment) {
+          editComment(comment) {
               this.comment = comment;
           },
-          deleteMethod(comment) {
+          deleteComment(comment) {
               this.$resource('/api/comment{/id}').remove({id: comment.id}).then(result => {
                   if (result.ok) {
                       this.comments.splice(this.comments.indexOf(comment), 1);

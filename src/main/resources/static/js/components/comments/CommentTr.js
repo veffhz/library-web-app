@@ -1,6 +1,6 @@
 export default {
   name: 'CommentTr',
-  props: ['comment', 'editMethod', 'deleteMethod', 'comments'],
+  props: ['comment', 'editComment', 'deleteComment', 'comments'],
   template: `
       <tr>
           <td>{{ comment.id }}</td>
@@ -17,10 +17,10 @@ export default {
   `,
   methods: {
         edit() {
-            this.editMethod(this.comment);
+            this.editComment(this.comment);
         },
         del() {
-            this.deleteMethod(this.comment);
+            this.deleteComment(this.comment);
         }
     }
 };
