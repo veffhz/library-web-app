@@ -1,6 +1,6 @@
 import BookTr from './BookTr.js'
 import BookForm from './BookForm.js'
-import { showAlert } from '../Utils.js';
+import { showAlert } from '../Utils.js'
 
 export default {
     name: 'BookTable',

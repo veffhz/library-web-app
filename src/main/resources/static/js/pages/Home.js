@@ -1,14 +1,6 @@
-
 export default {
   name: 'Home',
-  data() {
-      return {
-        authors: frontendData.authors,
-        genres: frontendData.genres,
-        books: frontendData.books,
-        comments: frontendData.comments
-      }
-  },
+  computed: Vuex.mapState(['authors', 'genres', 'books', 'comments']),
   template: `
   <div>
       <h1>Info</h1>

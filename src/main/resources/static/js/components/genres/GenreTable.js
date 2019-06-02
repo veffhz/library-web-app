@@ -1,6 +1,6 @@
 import GenreTr from './GenreTr.js'
 import GenreForm from './GenreForm.js'
-import { showAlert } from '../Utils.js';
+import { showAlert } from '../Utils.js'
 
 export default {
     name: 'GenreTable',

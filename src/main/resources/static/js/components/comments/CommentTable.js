@@ -1,6 +1,6 @@
 import CommentTr from './CommentTr.js'
 import CommentForm from './CommentForm.js'
-import { showAlert } from '../Utils.js';
+import { showAlert } from '../Utils.js'
 
 export default {
     name: 'CommentTable',

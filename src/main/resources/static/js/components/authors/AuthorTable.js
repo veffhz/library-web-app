@@ -1,6 +1,6 @@
 import AuthorTr from './AuthorTr.js'
 import AuthorForm from './AuthorForm.js'
-import { showAlert } from '../Utils.js';
+import { showAlert } from '../Utils.js'
 
 export default {
     name: 'AuthorTable',
