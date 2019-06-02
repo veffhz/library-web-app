@@ -1,6 +1,7 @@
 export default {
   name: 'GenreForm',
-  props: ['genres', 'genreAttr'],
+  computed: Vuex.mapState(['genres']),
+  props: ['genreAttr'],
   data: function() {
       return {
           genreName: '',

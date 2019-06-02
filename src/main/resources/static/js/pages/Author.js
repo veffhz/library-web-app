@@ -5,10 +5,5 @@ export default {
   components: {
         AuthorTable
   },
-  data() {
-      return {
-        authors: frontendData.authors
-      }
-  },
-  template: '<author-table :authors="authors" />'
+  template: '<author-table />'
 };

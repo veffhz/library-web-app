@@ -4,7 +4,7 @@ import { showAlert } from '../Utils.js'
 
 export default {
     name: 'CommentTable',
-    props: ['comments', 'books'],
+    computed: Vuex.mapState(['comments', 'books']),
     components: {
                 CommentTr,
                 CommentForm
@@ -30,12 +30,12 @@ export default {
                 </thead>
                 <tbody>
                 <comment-tr v-for="comment in comments" :key="comment.id" :comment="comment"
-                    :editComment="editComment" :deleteComment="deleteComment" :comments="comments" />
+                    :editComment="editComment" :deleteComment="deleteComment" />
                 </tbody>
             </table>
             <div class="gap-30"></div>
             <p>Edit:</p>
-            <comment-form :comments="comments" :commentAttr="comment" :books="books" />
+            <comment-form :commentAttr="comment" />
             <div class="gap-30"></div>
             <div class="alert alert-danger" id="commentError" style="display:none;">
               <strong>Error!</strong> Access Denied! You not have permission to delete comment!

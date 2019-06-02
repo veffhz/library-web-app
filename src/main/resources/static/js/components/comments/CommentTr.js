@@ -1,6 +1,6 @@
 export default {
   name: 'CommentTr',
-  props: ['comment', 'editComment', 'deleteComment', 'comments'],
+  props: ['comment', 'editComment', 'deleteComment'],
   template: `
       <tr>
           <td>{{ comment.id }}</td>

@@ -1,6 +1,6 @@
 export default {
   name: 'AuthorTr',
-  props: ['author', 'editAuthor', 'deleteAuthor', 'authors'],
+  props: ['author', 'editAuthor', 'deleteAuthor'],
   template: `
       <tr>
           <td>{{ author.id }}</td>

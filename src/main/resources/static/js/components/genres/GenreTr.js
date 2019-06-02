@@ -1,6 +1,6 @@
 export default {
   name: 'GenreTr',
-  props: ['genre', 'editGenre', 'deleteGenre', 'genres'],
+  props: ['genre', 'editGenre', 'deleteGenre'],
   template: `
       <tr>
           <td>{{ genre.id }}</td>

@@ -1,6 +1,7 @@
 export default {
   name: 'CommentForm',
-  props: ['comments', 'commentAttr', 'books'],
+  computed: Vuex.mapState(['books', 'comments']),
+  props: ['commentAttr'],
   data: function() {
       return {
           author: '',

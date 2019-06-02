@@ -1,6 +1,7 @@
 export default {
   name: 'AuthorForm',
-  props: ['authors', 'authorAttr'],
+  computed: Vuex.mapState(['authors']),
+  props: ['authorAttr'],
   data: function() {
       return {
           firstName: '',

@@ -1,6 +1,7 @@
 export default {
   name: 'BookForm',
-  props: ['books', 'bookAttr', 'authors', 'genres'],
+  computed: Vuex.mapState(['books', 'genres', 'authors']),
+  props: ['bookAttr'],
   data: function() {
       return {
           bookName: '',

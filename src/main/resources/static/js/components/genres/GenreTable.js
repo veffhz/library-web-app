@@ -4,7 +4,7 @@ import { showAlert } from '../Utils.js'
 
 export default {
     name: 'GenreTable',
-    props: ['genres'],
+    computed: Vuex.mapState(['genres']),
     components: {
                 GenreTr,
                 GenreForm
@@ -27,12 +27,12 @@ export default {
                 </thead>
                 <tbody>
                 <genre-tr v-for="genre in genres" :key="genre.id" :genre="genre"
-                    :editGenre="editGenre" :deleteGenre="deleteGenre" :genres="genres" />
+                    :editGenre="editGenre" :deleteGenre="deleteGenre" />
                 </tbody>
             </table>
             <div class="gap-30"></div>
             <p>Edit:</p>
-            <genre-form :genres="genres" :genreAttr="genre" />
+            <genre-form :genreAttr="genre" />
             <div class="gap-30"></div>
             <div class="alert alert-danger" id="genreError" style="display:none;">
               <strong>Error!</strong> Access Denied! You not have permission to delete genre!

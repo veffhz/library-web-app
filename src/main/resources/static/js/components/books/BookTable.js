@@ -4,7 +4,7 @@ import { showAlert } from '../Utils.js'
 
 export default {
     name: 'BookTable',
-    props: ['books', 'authors', 'genres'],
+    computed: Vuex.mapState(['books', 'authors', 'genres']),
     components: {
                 BookTr,
                 BookForm
@@ -34,12 +34,12 @@ export default {
                 </thead>
                 <tbody>
                 <book-tr v-for="book in books" :key="book.id" :book="book"
-                    :editBook="editBook" :deleteBook="deleteBook" :books="books" />
+                    :editBook="editBook" :deleteBook="deleteBook" />
                 </tbody>
             </table>
             <div class="gap-30"></div>
             <p>Edit:</p>
-            <book-form :books="books" :bookAttr="book" :authors="authors" :genres="genres" />
+            <book-form :bookAttr="book" />
             <div class="gap-30"></div>
             <div class="alert alert-danger" id="bookError" style="display:none;">
               <strong>Error!</strong> Access Denied! You not have permission to delete book!

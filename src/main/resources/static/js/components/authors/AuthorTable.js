@@ -4,7 +4,7 @@ import { showAlert } from '../Utils.js'
 
 export default {
     name: 'AuthorTable',
-    props: ['authors'],
+    computed: Vuex.mapState(['authors']),
     components: {
                 AuthorTr,
                 AuthorForm
@@ -27,12 +27,12 @@ export default {
                 </thead>
                 <tbody>
                 <author-tr v-for="author in authors" :key="author.id" :author="author"
-                    :editAuthor="editAuthor" :deleteAuthor="deleteAuthor" :authors="authors" />
+                    :editAuthor="editAuthor" :deleteAuthor="deleteAuthor" />
                 </tbody>
             </table>
             <div class="gap-30"></div>
             <p>Edit:</p>
-            <author-form :authors="authors" :authorAttr="author" />
+            <author-form :authorAttr="author" />
             <div class="gap-30"></div>
             <div class="alert alert-danger" id="authorError" style="display:none;">
               <strong>Error!</strong> Access Denied! You not have permission to delete author!
