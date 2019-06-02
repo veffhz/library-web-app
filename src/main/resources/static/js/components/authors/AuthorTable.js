@@ -1,6 +1,5 @@
 import AuthorTr from './AuthorTr.js'
 import AuthorForm from './AuthorForm.js'
-import { showAlert } from '../Utils.js'
 
 export default {
     name: 'AuthorTable',
@@ -26,8 +25,8 @@ export default {
                 </tr>
                 </thead>
                 <tbody>
-                <author-tr v-for="author in authors" :key="author.id" :author="author"
-                    :editAuthor="editAuthor" :deleteAuthor="deleteAuthor" />
+                <author-tr v-for="author in authors" :key="author.id"
+                :author="author" :editAuthor="editAuthor" />
                 </tbody>
             </table>
             <div class="gap-30"></div>
@@ -45,16 +44,6 @@ export default {
       methods: {
           editAuthor(author) {
               this.author = author;
-          },
-          deleteAuthor(author) {
-              this.$resource('/api/author{/id}').remove({id: author.id}).then(result => {
-                  if (result.ok) {
-                      this.authors.splice(this.authors.indexOf(author), 1);
-                      showAlert('#authorSuccess');
-                  }
-              }, error => {
-                  showAlert('#authorError');
-              })
           }
       }
 };

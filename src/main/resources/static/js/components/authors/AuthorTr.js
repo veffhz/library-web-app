@@ -1,6 +1,8 @@
+import { showAlert } from '../Utils.js'
+
 export default {
   name: 'AuthorTr',
-  props: ['author', 'editAuthor', 'deleteAuthor'],
+  props: ['author', 'editAuthor'],
   template: `
       <tr>
           <td>{{ author.id }}</td>
@@ -12,11 +14,16 @@ export default {
       </tr>
   `,
   methods: {
+        ...Vuex.mapActions(['remove']),
         edit() {
             this.editAuthor(this.author);
         },
         del() {
-            this.deleteAuthor(this.author);
+            this.remove(this.author)
+            .then(result => {
+              if (result.ok) {
+                  showAlert('#authorSuccess');
+              }}, error => showAlert('#authorError'));
         }
     }
 };
