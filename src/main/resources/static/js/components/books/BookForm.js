@@ -1,6 +1,9 @@
 export default {
   name: 'BookForm',
-  computed: Vuex.mapState(['books', 'genres', 'authors']),
+  computed: {
+      ...Vuex.mapState('authorModule', ['authors']),
+      ...Vuex.mapState('genreModule', ['genres'])
+  },
   props: ['bookAttr'],
   data: function() {
       return {
@@ -61,6 +64,7 @@ export default {
       </div>
   `,
   methods: {
+      ...Vuex.mapActions('bookModule', ['addBook', 'updateBook']),
       save: function() {
           var inputs = document.getElementsByTagName('input');
 
@@ -75,37 +79,20 @@ export default {
                         author: this.author, genre: this.genre };
 
           if (this.id) {
-              this.$resource('/api/book{/id}').update({}, book)
-              .then(response => response.json())
-              .then(data => {
-                  var index = this.books.findIndex(function(item) { return item.id == data.id; });
-                  this.books.splice(index, 1, data);
-                  this.bookName = '';
-                  this.publishDate = '';
-                  this.language = '';
-                  this.publishingHouse = '';
-                  this.city = '';
-                  this.isbn = '';
-                  this.author = '';
-                  this.genre = '';
-                  this.id = null
-              });
-           } else {
-              this.$resource('/api/book{/id}').save({}, book)
-              .then(response => response.json())
-              .then(data => {
-                  this.books.push(data);
-                  this.bookName = '';
-                  this.publishDate = '';
-                  this.language = '';
-                  this.publishingHouse = '';
-                  this.city = '';
-                  this.isbn = '';
-                  this.author = '';
-                  this.genre = '';
-                  this.id = null
-              });
+              this.updateBook(book);
+          } else {
+              this.addBook(book);
           }
+
+          this.bookName = '';
+          this.publishDate = '';
+          this.language = '';
+          this.publishingHouse = '';
+          this.city = '';
+          this.isbn = '';
+          this.author = '';
+          this.genre = '';
+          this.id = null;
       }
   }
 };

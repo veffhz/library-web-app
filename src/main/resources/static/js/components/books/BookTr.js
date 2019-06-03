@@ -1,6 +1,8 @@
+import { showAlert } from '../Utils.js'
+
 export default {
   name: 'BookTr',
-  props: ['book', 'editBook', 'deleteBook'],
+  props: ['book', 'editBook'],
   template: `
       <tr>
           <td>{{ book.id }}</td>
@@ -21,11 +23,16 @@ export default {
       </tr>
   `,
   methods: {
+        ...Vuex.mapActions('bookModule',['removeBook']),
         edit() {
             this.editBook(this.book);
         },
         del() {
-            this.deleteBook(this.book);
+            this.removeBook(this.book)
+            .then(result => {
+              if (result.ok) {
+                  showAlert('#bookSuccess');
+              }}, error => showAlert('#bookError'));
         }
     }
 };

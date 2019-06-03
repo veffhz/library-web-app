@@ -1,14 +1,9 @@
 import BookTr from './BookTr.js'
 import BookForm from './BookForm.js'
-import { showAlert } from '../Utils.js'
 
 export default {
     name: 'BookTable',
-    computed: {
-        ...Vuex.mapState('authorModule', ['authors']),
-        ...Vuex.mapState('bookModule', ['books']),
-        ...Vuex.mapState('genreModule', ['genres'])
-    },
+    computed: Vuex.mapState('bookModule', ['books']),
     components: {
                 BookTr,
                 BookForm
@@ -37,8 +32,8 @@ export default {
                 </tr>
                 </thead>
                 <tbody>
-                <book-tr v-for="book in books" :key="book.id" :book="book"
-                    :editBook="editBook" :deleteBook="deleteBook" />
+                <book-tr v-for="book in books" :key="book.id"
+                :book="book" :editBook="editBook" />
                 </tbody>
             </table>
             <div class="gap-30"></div>
@@ -56,16 +51,6 @@ export default {
       methods: {
           editBook(book) {
               this.book = book;
-          },
-          deleteBook(book) {
-              this.$resource('/api/book{/id}').remove({id: book.id}).then(result => {
-                  if (result.ok) {
-                      this.books.splice(this.books.indexOf(book), 1);
-                      showAlert('#bookSuccess');
-                  }
-              }, error => {
-                  showAlert('#bookError');
-              })
           }
       }
 };
