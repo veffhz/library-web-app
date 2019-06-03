@@ -1,13 +1,9 @@
 import CommentTr from './CommentTr.js'
 import CommentForm from './CommentForm.js'
-import { showAlert } from '../Utils.js'
 
 export default {
     name: 'CommentTable',
-    computed: {
-        ...Vuex.mapState('bookModule', ['books']),
-        ...Vuex.mapState('commentModule', ['comments']),
-    },
+    computed: Vuex.mapState('commentModule', ['comments']),
     components: {
                 CommentTr,
                 CommentForm
@@ -32,8 +28,8 @@ export default {
                 </tr>
                 </thead>
                 <tbody>
-                <comment-tr v-for="comment in comments" :key="comment.id" :comment="comment"
-                    :editComment="editComment" :deleteComment="deleteComment" />
+                <comment-tr v-for="comment in comments" :key="comment.id"
+                :comment="comment" :editComment="editComment" />
                 </tbody>
             </table>
             <div class="gap-30"></div>
@@ -51,16 +47,6 @@ export default {
       methods: {
           editComment(comment) {
               this.comment = comment;
-          },
-          deleteComment(comment) {
-              this.$resource('/api/comment{/id}').remove({id: comment.id}).then(result => {
-                  if (result.ok) {
-                      this.comments.splice(this.comments.indexOf(comment), 1);
-                      showAlert('#commentSuccess');
-                }
-              }, error => {
-                  showAlert('#commentError');
-              })
           }
       }
 };
