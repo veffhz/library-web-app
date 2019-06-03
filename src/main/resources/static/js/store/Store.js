@@ -1,16 +1,18 @@
 Vue.use(Vuex)
 
 import { authorModule } from './modules/Author.js'
+import { bookModule } from './modules/Book.js'
+import { commentModule } from './modules/Comment.js'
+import { genreModule } from './modules/Genre.js'
 
 export default new Vuex.Store({
-  state: {
-        genres: frontendData.genres,
-        books: frontendData.books,
-        comments: frontendData.comments
-  },
+  state: {},
   mutations: {},
   actions: {},
   modules: {
-    authorModule
+    authorModule,
+    bookModule,
+    commentModule,
+    genreModule
   }
 })

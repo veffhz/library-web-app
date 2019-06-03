@@ -4,7 +4,7 @@ import { showAlert } from '../Utils.js'
 
 export default {
     name: 'GenreTable',
-    computed: Vuex.mapState(['genres']),
+    computed: Vuex.mapState('genreModule', ['genres']),
     components: {
                 GenreTr,
                 GenreForm

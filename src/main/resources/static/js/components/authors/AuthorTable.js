@@ -3,7 +3,7 @@ import AuthorForm from './AuthorForm.js'
 
 export default {
     name: 'AuthorTable',
-    computed: Vuex.mapState(['authors']),
+    computed: Vuex.mapState('authorModule', ['authors']),
     components: {
                 AuthorTr,
                 AuthorForm

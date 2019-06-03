@@ -9,11 +9,11 @@ export const authorModule = {
 
   mutations: {
 
-    addAuthor(state, author) {
+    addAuthorMutation(state, author) {
       state.authors = [...state.authors, author]
     },
 
-    updateAuthor(state, author) {
+    updateAuthorMutation(state, author) {
       var indexUpdated = state.authors.findIndex(item => item.id === author.id);
 
       state.authors = [
@@ -23,7 +23,7 @@ export const authorModule = {
       ]
     },
 
-    removeAuthor(state, author) {
+    removeAuthorMutation(state, author) {
       var indexDeleted = state.authors.findIndex(item => item.id === author.id);
 
       if (indexDeleted > -1) {
@@ -37,22 +37,22 @@ export const authorModule = {
 
   actions: {
 
-        async add({commit, state}, author) {
+        async addAuthor({commit, state}, author) {
             const result = await Vue.resource('/api/author{/id}').save({}, author);
             const data = await result.json();
-            commit('addAuthor', data);
+            commit('addAuthorMutation', data);
         },
 
-        async update({commit}, author) {
+        async updateAuthor({commit}, author) {
             const result = await Vue.resource('/api/author{/id}').update({}, author)
             const data = await result.json()
-            commit('updateAuthor', data)
+            commit('updateAuthorMutation', data)
         },
 
-        async remove({commit}, author) {
+        async removeAuthor({commit}, author) {
             const result = await Vue.resource('/api/author{/id}').remove({id: author.id})
             if (result.ok) {
-                commit('removeAuthor', author);
+                commit('removeAuthorMutation', author);
             }
             return result
         },

@@ -4,7 +4,10 @@ import { showAlert } from '../Utils.js'
 
 export default {
     name: 'CommentTable',
-    computed: Vuex.mapState(['comments', 'books']),
+    computed: {
+        ...Vuex.mapState('bookModule', ['books']),
+        ...Vuex.mapState('commentModule', ['comments']),
+    },
     components: {
                 CommentTr,
                 CommentForm

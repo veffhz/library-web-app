@@ -1,0 +1,60 @@
+Vue.use(Vuex)
+
+export const bookModule = {
+  namespaced: true,
+
+  state: {
+      books: frontendData.books
+  },
+
+  mutations: {
+
+    addBookMutation(state, book) {
+      state.books = [...state.books, book]
+    },
+
+    updateBookMutation(state, book) {
+      var indexUpdated = state.books.findIndex(item => item.id === book.id);
+
+      state.books = [
+          ...state.books.slice(0, indexUpdated),
+          book,
+          ...state.books.slice(indexUpdated + 1)
+      ]
+    },
+
+    removeBookMutation(state, book) {
+      var indexDeleted = state.books.findIndex(item => item.id === book.id);
+
+      if (indexDeleted > -1) {
+          state.books = [
+              ...state.books.slice(0, indexDeleted),
+              ...state.books.slice(indexDeleted + 1)
+          ]
+      }
+    }
+  },
+
+  actions: {
+
+        async addBook({commit, state}, book) {
+            const result = await Vue.resource('/api/book{/id}').save({}, book);
+            const data = await result.json();
+            commit('addBookMutation', data);
+        },
+
+        async updateBook({commit}, book) {
+            const result = await Vue.resource('/api/book{/id}').update({}, book)
+            const data = await result.json()
+            commit('updateBookMutation', data)
+        },
+
+        async removeBook({commit}, book) {
+            const result = await Vue.resource('/api/book{/id}').remove({id: book.id})
+            if (result.ok) {
+                commit('removeBookMutation', book);
+            }
+            return result
+        },
+  }
+}

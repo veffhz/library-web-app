@@ -2,7 +2,9 @@ export default {
   name: 'Home',
   computed: {
       ...Vuex.mapState('authorModule', ['authors']),
-      ...Vuex.mapState(['genres', 'books', 'comments'])
+      ...Vuex.mapState('bookModule', ['books']),
+      ...Vuex.mapState('commentModule', ['comments']),
+      ...Vuex.mapState('genreModule', ['genres'])
   },
   template: `
   <div>

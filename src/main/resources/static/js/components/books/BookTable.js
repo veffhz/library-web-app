@@ -4,7 +4,11 @@ import { showAlert } from '../Utils.js'
 
 export default {
     name: 'BookTable',
-    computed: Vuex.mapState(['books', 'authors', 'genres']),
+    computed: {
+        ...Vuex.mapState('authorModule', ['authors']),
+        ...Vuex.mapState('bookModule', ['books']),
+        ...Vuex.mapState('genreModule', ['genres'])
+    },
     components: {
                 BookTr,
                 BookForm
