@@ -14,12 +14,12 @@ export default {
       </tr>
   `,
   methods: {
-        ...Vuex.mapActions(['remove']),
+        ...Vuex.mapActions('authorModule',['removeAuthor']),
         edit() {
             this.editAuthor(this.author);
         },
         del() {
-            this.remove(this.author)
+            this.removeAuthor(this.author)
             .then(result => {
               if (result.ok) {
                   showAlert('#authorSuccess');

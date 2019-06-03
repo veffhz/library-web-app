@@ -1,6 +1,8 @@
+import { showAlert } from '../Utils.js'
+
 export default {
   name: 'GenreTr',
-  props: ['genre', 'editGenre', 'deleteGenre'],
+  props: ['genre', 'editGenre'],
   template: `
       <tr>
           <td>{{ genre.id }}</td>
@@ -12,11 +14,16 @@ export default {
       </tr>
   `,
   methods: {
+        ...Vuex.mapActions('genreModule',['removeGenre']),
         edit() {
             this.editGenre(this.genre);
         },
         del() {
-            this.deleteGenre(this.genre);
+            this.removeGenre(this.genre)
+            .then(result => {
+              if (result.ok) {
+                  showAlert('#genreSuccess');
+              }}, error => showAlert('#genreError'));
         }
     }
 };

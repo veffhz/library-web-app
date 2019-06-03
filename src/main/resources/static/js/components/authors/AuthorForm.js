@@ -1,6 +1,5 @@
 export default {
   name: 'AuthorForm',
-  computed: Vuex.mapState(['authors']),
   props: ['authorAttr'],
   data: function() {
       return {
@@ -33,7 +32,7 @@ export default {
       </div>
   `,
   methods: {
-      ...Vuex.mapActions(['add', 'update']),
+      ...Vuex.mapActions('authorModule', ['addAuthor', 'updateAuthor']),
       save: function() {
           var inputs = document.getElementsByTagName('input');
 
@@ -46,9 +45,9 @@ export default {
           var author = { id: this.id, firstName: this.firstName, birthDate: this.birthDate, lastName: this.lastName };
 
           if (this.id) {
-              this.update(author);
+              this.updateAuthor(author);
            } else {
-              this.add(author);
+              this.addAuthor(author);
           }
 
           this.firstName = '';
