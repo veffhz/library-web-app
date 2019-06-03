@@ -1,6 +1,9 @@
 export default {
   name: 'Home',
-  computed: Vuex.mapState(['authors', 'genres', 'books', 'comments']),
+  computed: {
+      ...Vuex.mapState('authorModule', ['authors']),
+      ...Vuex.mapState(['genres', 'books', 'comments'])
+  },
   template: `
   <div>
       <h1>Info</h1>
