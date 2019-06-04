@@ -61,7 +61,14 @@ export const bookModule = {
         async removeBookByAuthorId({commit, state}, authorId) {
             var booksToBeDeleted = state.books.filter(book => authorId === book.author.id);
             booksToBeDeleted.forEach(function(book) {
-                console.log(book);
+                commit('removeBookMutation', book);
+                commit('commentModule/removeCommentByBookIdMutation', book.id, { root: true });
+            });
+        },
+
+        async removeBookByGenreId({commit, state}, genreId) {
+            var booksToBeDeleted = state.books.filter(book => genreId === book.genre.id);
+            booksToBeDeleted.forEach(function(book) {
                 commit('removeBookMutation', book);
                 commit('commentModule/removeCommentByBookIdMutation', book.id, { root: true });
             });

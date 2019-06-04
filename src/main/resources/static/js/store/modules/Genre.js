@@ -49,10 +49,11 @@ export const genreModule = {
             commit('updateGenreMutation', data)
         },
 
-        async removeGenre({commit}, genre) {
+        async removeGenre({dispatch, commit}, genre) {
             const result = await Vue.resource('/api/genre{/id}').remove({id: genre.id})
             if (result.ok) {
                 commit('removeGenreMutation', genre);
+                dispatch('bookModule/removeBookByGenreId', genre.id, { root: true });
             }
             return result
         },
