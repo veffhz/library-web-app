@@ -53,8 +53,18 @@ export const bookModule = {
             const result = await Vue.resource('/api/book{/id}').remove({id: book.id})
             if (result.ok) {
                 commit('removeBookMutation', book);
+                commit('commentModule/removeCommentByBookIdMutation', book.id, { root: true });
             }
-            return result
+            return result;
+        },
+
+        async removeBookByAuthorId({commit, state}, authorId) {
+            var booksToBeDeleted = state.books.filter(book => authorId === book.author.id);
+            booksToBeDeleted.forEach(function(book) {
+                console.log(book);
+                commit('removeBookMutation', book);
+                commit('commentModule/removeCommentByBookIdMutation', book.id, { root: true });
+            });
         },
   }
 }

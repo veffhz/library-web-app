@@ -49,14 +49,14 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Flux<Book> deleteByAuthorId(String authorId) {
-        return repository.deleteByAuthorId(authorId);
+        return repository.findByAuthorId(authorId)
+                .flatMap(book -> commentRepository.deleteByBookId(book.getId()))
+                .thenMany(repository.deleteByAuthorId(authorId));
     }
 
     @Override
     public Mono<Void> deleteById(String id) {
-        // TODO это правильно?
-        //return commentRepository.deleteByBookId(id).then(repository.deleteById(id));
-        return repository.deleteById(id);
+        return commentRepository.deleteByBookId(id).then(repository.deleteById(id));
     }
 
     @Override

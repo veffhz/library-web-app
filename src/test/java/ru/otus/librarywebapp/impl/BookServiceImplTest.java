@@ -8,6 +8,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import ru.otus.librarywebapp.dao.AuthorRepository;
@@ -15,11 +16,13 @@ import ru.otus.librarywebapp.dao.BookRepository;
 import ru.otus.librarywebapp.dao.CommentRepository;
 import ru.otus.librarywebapp.domain.Author;
 import ru.otus.librarywebapp.domain.Book;
+import ru.otus.librarywebapp.domain.Comment;
 import ru.otus.librarywebapp.domain.Genre;
 import ru.otus.librarywebapp.service.impl.BookServiceImpl;
 import ru.otus.librarywebapp.service.impl.GenreServiceImpl;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -70,7 +73,13 @@ class BookServiceImplTest {
     @Test
     @DisplayName("Test invoke delete book by id")
     void shouldDeleteBookById() {
+        Comment comment = new Comment("test", LocalDateTime.now(), "test");
+
+        when(commentRepository.deleteByBookId(any(String.class))).thenReturn(Flux.just(comment));
+        when(bookRepository.deleteById(any(String.class))).thenReturn(Mono.empty());
+
         bookService.deleteById("000");
+        verify(commentRepository, times(1)).deleteByBookId("000");
         verify(bookRepository, times(1)).deleteById("000");
     }
 

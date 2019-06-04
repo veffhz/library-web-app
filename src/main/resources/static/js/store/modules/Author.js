@@ -49,12 +49,13 @@ export const authorModule = {
             commit('updateAuthorMutation', data)
         },
 
-        async removeAuthor({commit}, author) {
+        async removeAuthor({dispatch, commit}, author) {
             const result = await Vue.resource('/api/author{/id}').remove({id: author.id})
             if (result.ok) {
                 commit('removeAuthorMutation', author);
+                dispatch('bookModule/removeBookByAuthorId', author.id, { root: true });
             }
-            return result
+            return result;
         },
   }
 }

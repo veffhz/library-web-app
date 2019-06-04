@@ -11,6 +11,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import ru.otus.librarywebapp.domain.Author;
 import ru.otus.librarywebapp.domain.Book;
 
 import java.time.LocalDate;
@@ -78,6 +79,21 @@ class BookRepositoryTest {
     @DisplayName("Test get book by name")
     void shouldGetBookByName() {
         Flux<Book> books = bookRepository.findByBookName("Best");
+
+        StepVerifier
+                .create(books)
+                .assertNext(b -> assertEquals(b.getBookName(), "Best"))
+                .expectComplete()
+                .verify();
+    }
+
+    @Test
+    @DisplayName("Test get book by authorId")
+    void shouldGetBookByAuthorId() {
+        Author author = authorRepository.findAll().blockFirst();
+        Objects.requireNonNull(author);
+
+        Flux<Book> books = bookRepository.findByAuthorId(author.getId());
 
         StepVerifier
                 .create(books)

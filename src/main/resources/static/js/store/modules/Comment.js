@@ -32,6 +32,13 @@ export const commentModule = {
               ...state.comments.slice(indexDeleted + 1)
           ]
       }
+    },
+
+    removeCommentByBookIdMutation(state, bookId) {
+      if (bookId) {
+          var comments = state.comments.filter(comment => bookId != comment.book.id);
+          state.comments = comments;
+      }
     }
   },
 
@@ -54,7 +61,7 @@ export const commentModule = {
             if (result.ok) {
                 commit('removeCommentMutation', comment);
             }
-            return result
+            return result;
         },
   }
 }
