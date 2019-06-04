@@ -1,10 +1,9 @@
 import AuthorTr from './AuthorTr.js'
 import AuthorForm from './AuthorForm.js'
-import { showAlert } from '../Utils.js';
 
 export default {
     name: 'AuthorTable',
-    props: ['authors'],
+    computed: Vuex.mapState('authorModule', ['authors']),
     components: {
                 AuthorTr,
                 AuthorForm
@@ -26,13 +25,13 @@ export default {
                 </tr>
                 </thead>
                 <tbody>
-                <author-tr v-for="author in authors" :key="author.id" :author="author"
-                    :editMethod="editMethod" :deleteMethod="deleteMethod" :authors="authors" />
+                <author-tr v-for="author in authors" :key="author.id"
+                :author="author" :editAuthor="editAuthor" />
                 </tbody>
             </table>
             <div class="gap-30"></div>
             <p>Edit:</p>
-            <author-form :authors="authors" :authorAttr="author" />
+            <author-form :authorAttr="author" />
             <div class="gap-30"></div>
             <div class="alert alert-danger" id="authorError" style="display:none;">
               <strong>Error!</strong> Access Denied! You not have permission to delete author!
@@ -43,18 +42,8 @@ export default {
         </div>
     `,
       methods: {
-          editMethod(author) {
+          editAuthor(author) {
               this.author = author;
-          },
-          deleteMethod(author) {
-              this.$resource('/api/author{/id}').remove({id: author.id}).then(result => {
-                  if (result.ok) {
-                      this.authors.splice(this.authors.indexOf(author), 1);
-                      showAlert('#authorSuccess');
-                  }
-              }, error => {
-                  showAlert('#authorError');
-              })
           }
       }
 };

@@ -7,20 +7,20 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import ru.otus.librarywebapp.dao.AuthorRepository;
-import ru.otus.librarywebapp.dao.BookRepository;
 import ru.otus.librarywebapp.domain.Author;
 import ru.otus.librarywebapp.service.AuthorService;
+import ru.otus.librarywebapp.service.BookService;
 
 @Service
 public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorRepository repository;
-    private final BookRepository bookRepository;
+    private final BookService bookService;
 
     @Autowired
-    public AuthorServiceImpl(AuthorRepository repository, BookRepository bookRepository) {
+    public AuthorServiceImpl(AuthorRepository repository, BookService bookService) {
         this.repository = repository;
-        this.bookRepository = bookRepository;
+        this.bookService = bookService;
     }
 
     @Override
@@ -45,9 +45,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public Mono<Void> deleteById(String id) {
-        // TODO это правильно?
-        //return bookRepository.deleteByAuthorId(id).then(repository.deleteById(id));
-        return repository.deleteById(id);
+        return bookService.deleteByAuthorId(id).then(repository.deleteById(id));
     }
 
     @Override

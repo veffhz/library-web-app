@@ -1,6 +1,7 @@
 export default {
   name: 'CommentForm',
-  props: ['comments', 'commentAttr', 'books'],
+  computed: Vuex.mapState('bookModule', ['books']),
+  props: ['commentAttr'],
   data: function() {
       return {
           author: '',
@@ -38,6 +39,7 @@ export default {
       </div>
   `,
   methods: {
+      ...Vuex.mapActions('commentModule', ['addComment', 'updateComment']),
       save: function() {
           var inputs = document.getElementsByTagName('input');
 
@@ -50,27 +52,15 @@ export default {
           var comment = { id: this.id, author: this.author, date: this.date, content: this.content, book: this.book };
 
           if (this.id) {
-              this.$resource('/api/comment{/id}').update({}, comment)
-              .then(response => response.json())
-              .then(data => {
-                  var index = this.comments.findIndex(function(item) { return item.id == data.id; });
-                  this.comments.splice(index, 1, data);
-                  this.author = '';
-                  this.content = '';
-                  this.book = '';
-                  this.id = null
-              });
-           } else {
-              this.$resource('/api/comment{/id}').save({}, comment)
-              .then(response => response.json())
-              .then(data => {
-                  this.comments.push(data);
-                  this.author = '';
-                  this.content = '';
-                  this.book = '';
-                  this.id = null
-              });
+              this.updateComment(comment);
+          } else {
+              this.addComment(comment);
           }
+
+          this.author = '';
+          this.content = '';
+          this.book = '';
+          this.id = null;
       }
   }
 };

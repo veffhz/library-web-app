@@ -1,6 +1,6 @@
 export default {
   name: 'AuthorForm',
-  props: ['authors', 'authorAttr'],
+  props: ['authorAttr'],
   data: function() {
       return {
           firstName: '',
@@ -32,6 +32,7 @@ export default {
       </div>
   `,
   methods: {
+      ...Vuex.mapActions('authorModule', ['addAuthor', 'updateAuthor']),
       save: function() {
           var inputs = document.getElementsByTagName('input');
 
@@ -44,27 +45,15 @@ export default {
           var author = { id: this.id, firstName: this.firstName, birthDate: this.birthDate, lastName: this.lastName };
 
           if (this.id) {
-              this.$resource('/api/author{/id}').update({}, author)
-              .then(response => response.json())
-              .then(data => {
-                  var index = this.authors.findIndex(function(item) { return item.id == data.id; });
-                  this.authors.splice(index, 1, data);
-                  this.firstName = '';
-                  this.birthDate = '';
-                  this.lastName = '';
-                  this.id = null
-              });
+              this.updateAuthor(author);
            } else {
-              this.$resource('/api/author{/id}').save({}, author)
-              .then(response => response.json())
-              .then(data => {
-                  this.authors.push(data);
-                  this.firstName = '';
-                  this.birthDate = '';
-                  this.lastName = '';
-                  this.id = null
-              });
+              this.addAuthor(author);
           }
+
+          this.firstName = '';
+          this.birthDate = '';
+          this.lastName = '';
+          this.id = null;
       }
   }
 };

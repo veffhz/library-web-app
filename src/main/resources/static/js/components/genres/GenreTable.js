@@ -1,10 +1,9 @@
 import GenreTr from './GenreTr.js'
 import GenreForm from './GenreForm.js'
-import { showAlert } from '../Utils.js';
 
 export default {
     name: 'GenreTable',
-    props: ['genres'],
+    computed: Vuex.mapState('genreModule', ['genres']),
     components: {
                 GenreTr,
                 GenreForm
@@ -26,13 +25,13 @@ export default {
                 </tr>
                 </thead>
                 <tbody>
-                <genre-tr v-for="genre in genres" :key="genre.id" :genre="genre"
-                    :editMethod="editMethod" :deleteMethod="deleteMethod" :genres="genres" />
+                <genre-tr v-for="genre in genres" :key="genre.id"
+                :genre="genre" :editGenre="editGenre" />
                 </tbody>
             </table>
             <div class="gap-30"></div>
             <p>Edit:</p>
-            <genre-form :genres="genres" :genreAttr="genre" />
+            <genre-form :genreAttr="genre" />
             <div class="gap-30"></div>
             <div class="alert alert-danger" id="genreError" style="display:none;">
               <strong>Error!</strong> Access Denied! You not have permission to delete genre!
@@ -43,18 +42,8 @@ export default {
         </div>
     `,
       methods: {
-          editMethod(genre) {
+          editGenre(genre) {
               this.genre = genre;
-          },
-          deleteMethod(genre) {
-              this.$resource('/api/genre{/id}').remove({id: genre.id}).then(result => {
-                  if (result.ok) {
-                      this.genres.splice(this.genres.indexOf(genre), 1);
-                      showAlert('#genreSuccess');
-                }
-              }, error => {
-                  showAlert('#genreError');
-              })
           }
       }
 };

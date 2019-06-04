@@ -1,6 +1,8 @@
+import { showAlert } from '../Utils.js'
+
 export default {
   name: 'CommentTr',
-  props: ['comment', 'editMethod', 'deleteMethod', 'comments'],
+  props: ['comment', 'editComment', 'deleteComment'],
   template: `
       <tr>
           <td>{{ comment.id }}</td>
@@ -16,11 +18,16 @@ export default {
       </tr>
   `,
   methods: {
+        ...Vuex.mapActions('commentModule',['removeComment']),
         edit() {
-            this.editMethod(this.comment);
+            this.editComment(this.comment);
         },
         del() {
-            this.deleteMethod(this.comment);
+            this.removeComment(this.comment)
+            .then(result => {
+              if (result.ok) {
+                  showAlert('#commentSuccess');
+              }}, error => showAlert('#commentError'));
         }
     }
 };

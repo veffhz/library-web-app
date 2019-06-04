@@ -5,10 +5,5 @@ export default {
   components: {
         GenreTable,
   },
-  data() {
-      return {
-        genres: frontendData.genres
-      }
-  },
-  template: '<genre-table :genres="genres" />'
+  template: '<genre-table />'
 };

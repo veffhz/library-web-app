@@ -1,6 +1,6 @@
 export default {
   name: 'GenreForm',
-  props: ['genres', 'genreAttr'],
+  props: ['genreAttr'],
   data: function() {
       return {
           genreName: '',
@@ -24,6 +24,7 @@ export default {
       </div>
   `,
   methods: {
+      ...Vuex.mapActions('genreModule', ['addGenre', 'updateGenre']),
       save: function() {
           var inputs = document.getElementsByTagName('input');
           for (var index = 0; index < inputs.length; ++index) {
@@ -34,24 +35,14 @@ export default {
 
           var genre = { id: this.id, genreName: this.genreName };
 
-          if (this.id) {
-              this.$resource('/api/genre{/id}').update({}, genre)
-              .then(response => response.json())
-              .then(data => {
-                  var index = this.genres.findIndex(function(item) { return item.id == data.id; });
-                  this.genres.splice(index, 1, data);
-                  this.genreName = '';
-                  this.id = null
-              });
+           if (this.id) {
+              this.updateGenre(genre);
            } else {
-              this.$resource('/api/genre{/id}').save({}, genre)
-              .then(response => response.json())
-              .then(data => {
-                  this.genres.push(data);
-                  this.genreName = '';
-                  this.id = null
-              });
+              this.addGenre(genre);
           }
+
+          this.genreName = '';
+          this.id = null
       }
   }
 };

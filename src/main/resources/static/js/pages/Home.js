@@ -1,13 +1,10 @@
-
 export default {
   name: 'Home',
-  data() {
-      return {
-        authors: frontendData.authors,
-        genres: frontendData.genres,
-        books: frontendData.books,
-        comments: frontendData.comments
-      }
+  computed: {
+      ...Vuex.mapState('authorModule', ['authors']),
+      ...Vuex.mapState('bookModule', ['books']),
+      ...Vuex.mapState('commentModule', ['comments']),
+      ...Vuex.mapState('genreModule', ['genres'])
   },
   template: `
   <div>

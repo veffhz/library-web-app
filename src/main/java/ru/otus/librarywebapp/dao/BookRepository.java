@@ -10,5 +10,8 @@ import ru.otus.librarywebapp.domain.Book;
 public interface BookRepository extends ReactiveMongoRepository<Book, String> {
     Flux<Book> findByBookName(String bookName);
     Flux<Book> findByBookNameContaining(String bookName);
-    Flux<Book> deleteByAuthorId(String authorId);
+    Flux<Book> findByAuthorId(String authorId);
+    Flux<Book> findByGenreId(String genreId);
+    Flux<Book> deleteByAuthorId(String authorId); //TODO test
+    Flux<Book> deleteByGenreId(String genreId);   //TODO test
 }
