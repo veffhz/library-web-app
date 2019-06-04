@@ -8,16 +8,19 @@ import reactor.core.publisher.Mono;
 
 import ru.otus.librarywebapp.dao.GenreRepository;
 import ru.otus.librarywebapp.domain.Genre;
+import ru.otus.librarywebapp.service.BookService;
 import ru.otus.librarywebapp.service.GenreService;
 
 @Service
 public class GenreServiceImpl implements GenreService {
 
     private final GenreRepository repository;
+    private final BookService bookService;
 
     @Autowired
-    public GenreServiceImpl(GenreRepository repository) {
+    public GenreServiceImpl(GenreRepository repository, BookService bookService) {
         this.repository = repository;
+        this.bookService = bookService;
     }
 
     @Override
@@ -42,7 +45,7 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public Mono<Void> deleteById(String id) {
-        return repository.deleteById(id);
+        return bookService.deleteByGenreId(id).then(repository.deleteById(id));
     }
 
     @Override

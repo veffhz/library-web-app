@@ -14,12 +14,12 @@ import reactor.core.publisher.Mono;
 import ru.otus.librarywebapp.dao.AuthorRepository;
 import ru.otus.librarywebapp.dao.BookRepository;
 import ru.otus.librarywebapp.dao.CommentRepository;
+import ru.otus.librarywebapp.dao.GenreRepository;
 import ru.otus.librarywebapp.domain.Author;
 import ru.otus.librarywebapp.domain.Book;
 import ru.otus.librarywebapp.domain.Comment;
 import ru.otus.librarywebapp.domain.Genre;
 import ru.otus.librarywebapp.service.impl.BookServiceImpl;
-import ru.otus.librarywebapp.service.impl.GenreServiceImpl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,7 +40,7 @@ class BookServiceImplTest {
     private AuthorRepository authorRepository;
 
     @MockBean
-    private GenreServiceImpl genreService;
+    private GenreRepository genreRepository;
 
     @MockBean
     private CommentRepository commentRepository;

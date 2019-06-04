@@ -13,6 +13,7 @@ import reactor.test.StepVerifier;
 
 import ru.otus.librarywebapp.domain.Author;
 import ru.otus.librarywebapp.domain.Book;
+import ru.otus.librarywebapp.domain.Genre;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -94,6 +95,21 @@ class BookRepositoryTest {
         Objects.requireNonNull(author);
 
         Flux<Book> books = bookRepository.findByAuthorId(author.getId());
+
+        StepVerifier
+                .create(books)
+                .assertNext(b -> assertEquals(b.getBookName(), "Best"))
+                .expectComplete()
+                .verify();
+    }
+
+    @Test
+    @DisplayName("Test get book by genreId")
+    void shouldGetBookByGenreId() {
+        Genre genre = genreRepository.findAll().blockFirst();
+        Objects.requireNonNull(genre);
+
+        Flux<Book> books = bookRepository.findByGenreId(genre.getId());
 
         StepVerifier
                 .create(books)

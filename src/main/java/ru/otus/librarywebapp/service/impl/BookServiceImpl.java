@@ -8,6 +8,7 @@ import reactor.core.publisher.Mono;
 
 import ru.otus.librarywebapp.dao.BookRepository;
 import ru.otus.librarywebapp.dao.CommentRepository;
+import ru.otus.librarywebapp.dao.GenreRepository;
 import ru.otus.librarywebapp.domain.Book;
 import ru.otus.librarywebapp.service.BookService;
 
@@ -16,11 +17,15 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository repository;
     private final CommentRepository commentRepository;
+    private final GenreRepository genreRepository;
 
     @Autowired
-    public BookServiceImpl(BookRepository repository, CommentRepository commentRepository) {
+    public BookServiceImpl(BookRepository repository,
+                           CommentRepository commentRepository,
+                           GenreRepository genreRepository) {
         this.repository = repository;
         this.commentRepository = commentRepository;
+        this.genreRepository = genreRepository;
     }
 
     @Override
@@ -52,6 +57,13 @@ public class BookServiceImpl implements BookService {
         return repository.findByAuthorId(authorId)
                 .flatMap(book -> commentRepository.deleteByBookId(book.getId()))
                 .thenMany(repository.deleteByAuthorId(authorId));
+    }
+
+    @Override
+    public Flux<Book> deleteByGenreId(String genreId) {
+        return repository.findByGenreId(genreId)
+                .flatMap(book -> commentRepository.deleteByBookId(book.getId()))
+                .thenMany(repository.deleteByGenreId(genreId));
     }
 
     @Override

@@ -12,6 +12,7 @@ public interface BookService {
     Flux<Book> getByBookPartName(String bookName);
     Flux<Book> getAll();
     Flux<Book> deleteByAuthorId(String authorId);
+    Flux<Book> deleteByGenreId(String genreId);
     Mono<Void> deleteById(String id);
     Mono<Book> insert(Book author);
     Mono<Book> update(Book author);
