@@ -34,10 +34,10 @@ export default {
             <genre-form :genreAttr="genre" />
             <div class="gap-30"></div>
             <div class="alert alert-danger" id="genreError" style="display:none;">
-              <strong>Error!</strong> Access Denied! You not have permission to delete genre!
+              <strong>Error!</strong> Access Denied! You not have permission to <span id="genreToAction"></span> genre!
             </div>
             <div class="alert alert-success" id="genreSuccess" style="display:none;">
-              <strong>Success!</strong> Genre deleted successfully.
+              <strong>Success!</strong> Genre <span id="genreAction"></span> successfully.
             </div>
         </div>
     `,

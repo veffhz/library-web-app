@@ -1,3 +1,5 @@
+import { showAlert } from '../Utils.js'
+
 export default {
   name: 'BookForm',
   computed: {
@@ -79,9 +81,15 @@ export default {
                         author: this.author, genre: this.genre };
 
           if (this.id) {
-              this.updateBook(book);
+             this.updateBook(book).then(result => {
+              if (result.ok) {
+                  showAlert('#bookSuccess', '#bookAction', 'updated');
+              }}, error => showAlert('#bookError', '#bookToAction', 'update'));
           } else {
-              this.addBook(book);
+             this.addBook(book).then(result => {
+               if (result.ok) {
+                   showAlert('#bookSuccess', '#bookAction', 'created');
+               }}, error => showAlert('#bookError', '#bookToAction', 'create'));
           }
 
           this.bookName = '';

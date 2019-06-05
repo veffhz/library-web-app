@@ -1,3 +1,5 @@
+import { showAlert } from '../Utils.js'
+
 export default {
   name: 'AuthorForm',
   props: ['authorAttr'],
@@ -45,9 +47,15 @@ export default {
           var author = { id: this.id, firstName: this.firstName, birthDate: this.birthDate, lastName: this.lastName };
 
           if (this.id) {
-              this.updateAuthor(author);
-           } else {
-              this.addAuthor(author);
+             this.updateAuthor(author).then(result => {
+              if (result.ok) {
+                  showAlert('#authorSuccess', '#authorAction', 'updated');
+              }}, error => showAlert('#authorError', '#authorToAction', 'update'));
+          } else {
+             this.addAuthor(author).then(result => {
+               if (result.ok) {
+                   showAlert('#authorSuccess', '#authorAction', 'created');
+               }}, error => showAlert('#authorError', '#authorToAction', 'create'));
           }
 
           this.firstName = '';

@@ -3,8 +3,6 @@ package ru.otus.librarywebapp.config;
 import com.github.mongobee.changeset.ChangeLog;
 import com.github.mongobee.changeset.ChangeSet;
 
-import com.google.common.collect.ImmutableList;
-
 import com.mongodb.*;
 
 import org.springframework.data.util.Pair;
@@ -117,7 +115,7 @@ public class DatabaseChangelog {
 
         createDbObject(db, "users", Arrays.asList(Pair.of("username", "adm"),
                 Pair.of("password", passwordEncoder.encode("password")),
-                Pair.of("roles", ImmutableList.of(refRoleUser, refRoleAdmin)),
+                Pair.of("roles", Collections.singletonList(refRoleAdmin)),
                 Pair.of("active", true), Pair.of("createdDate", LocalDateTime.now())));
 
         createDbObject(db, "users", Arrays.asList(Pair.of("username", "usr"),

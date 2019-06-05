@@ -19,11 +19,10 @@ export default {
             this.editGenre(this.genre);
         },
         del() {
-            this.removeGenre(this.genre)
-            .then(result => {
+            this.removeGenre(this.genre).then(result => {
               if (result.ok) {
-                  showAlert('#genreSuccess');
-              }}, error => showAlert('#genreError'));
+                  showAlert('#genreSuccess', '#genreAction', 'deleted');
+              }}, error => showAlert('#genreError', '#genreToAction', 'delete'));
         }
     }
 };

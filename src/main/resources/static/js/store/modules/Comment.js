@@ -47,13 +47,19 @@ export const commentModule = {
         async addComment({commit, state}, comment) {
             const result = await Vue.resource('/api/comment{/id}').save({}, comment);
             const data = await result.json();
-            commit('addCommentMutation', data);
+            if (result.ok) {
+                commit('addCommentMutation', data);
+            }
+            return result;
         },
 
         async updateComment({commit}, comment) {
             const result = await Vue.resource('/api/comment{/id}').update({}, comment)
             const data = await result.json()
-            commit('updateCommentMutation', data)
+            if (result.ok) {
+                commit('updateCommentMutation', data);
+            }
+            return result;
         },
 
         async removeComment({commit}, comment) {

@@ -31,8 +31,8 @@ export default {
             this.removeBook(this.book)
             .then(result => {
               if (result.ok) {
-                  showAlert('#bookSuccess');
-              }}, error => showAlert('#bookError'));
+                  showAlert('#bookSuccess', '#bookAction', 'deleted');
+              }}, error => showAlert('#bookError', '#bookToAction', 'delete'));
         }
     }
 };

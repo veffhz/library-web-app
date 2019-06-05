@@ -34,10 +34,10 @@ export default {
             <author-form :authorAttr="author" />
             <div class="gap-30"></div>
             <div class="alert alert-danger" id="authorError" style="display:none;">
-              <strong>Error!</strong> Access Denied! You not have permission to delete author!
+              <strong>Error!</strong> Access Denied! You not have permission to <span id="authorToAction"></span> author!
             </div>
             <div class="alert alert-success" id="authorSuccess" style="display:none;">
-              <strong>Success!</strong> Author deleted successfully.
+              <strong>Success!</strong> Author <span id="authorAction"></span> successfully.
             </div>
         </div>
     `,
