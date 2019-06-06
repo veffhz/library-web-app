@@ -1,3 +1,5 @@
+import { showAlert } from '../Utils.js'
+
 export default {
   name: 'CommentForm',
   computed: Vuex.mapState('bookModule', ['books']),
@@ -52,9 +54,15 @@ export default {
           var comment = { id: this.id, author: this.author, date: this.date, content: this.content, book: this.book };
 
           if (this.id) {
-              this.updateComment(comment);
+             this.updateComment(comment).then(result => {
+              if (result.ok) {
+                  showAlert('#commentSuccess', '#commentAction', 'updated');
+              }}, error => showAlert('#commentError', '#commentToAction', 'update'));
           } else {
-              this.addComment(comment);
+             this.addComment(comment).then(result => {
+               if (result.ok) {
+                   showAlert('#commentSuccess', '#commentAction', 'created');
+               }}, error => showAlert('#commentError', '#commentToAction', 'create'));
           }
 
           this.author = '';

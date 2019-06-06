@@ -41,10 +41,10 @@ export default {
             <book-form :bookAttr="book" />
             <div class="gap-30"></div>
             <div class="alert alert-danger" id="bookError" style="display:none;">
-              <strong>Error!</strong> Access Denied! You not have permission to delete book!
+              <strong>Error!</strong> Access Denied! You not have permission to <span id="bookToAction"></span> book!
             </div>
             <div class="alert alert-success" id="bookSuccess" style="display:none;">
-              <strong>Success!</strong> Book deleted successfully.
+              <strong>Success!</strong> Book <span id="bookAction"></span> successfully.
             </div>
         </div>
     `,

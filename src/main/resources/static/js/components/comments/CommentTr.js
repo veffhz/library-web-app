@@ -26,8 +26,8 @@ export default {
             this.removeComment(this.comment)
             .then(result => {
               if (result.ok) {
-                  showAlert('#commentSuccess');
-              }}, error => showAlert('#commentError'));
+                  showAlert('#commentSuccess', '#commentAction', 'deleted');
+              }}, error => showAlert('#commentError', '#commentToAction', 'delete'));
         }
     }
 };

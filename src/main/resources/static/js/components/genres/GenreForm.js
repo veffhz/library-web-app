@@ -1,3 +1,5 @@
+import { showAlert } from '../Utils.js'
+
 export default {
   name: 'GenreForm',
   props: ['genreAttr'],
@@ -35,10 +37,16 @@ export default {
 
           var genre = { id: this.id, genreName: this.genreName };
 
-           if (this.id) {
-              this.updateGenre(genre);
-           } else {
-              this.addGenre(genre);
+          if (this.id) {
+             this.updateGenre(genre).then(result => {
+              if (result.ok) {
+                  showAlert('#genreSuccess', '#genreAction', 'updated');
+              }}, error => showAlert('#genreError', '#genreToAction', 'update'));
+          } else {
+             this.addGenre(genre).then(result => {
+               if (result.ok) {
+                   showAlert('#genreSuccess', '#genreAction', 'created');
+               }}, error => showAlert('#genreError', '#genreToAction', 'create'));
           }
 
           this.genreName = '';

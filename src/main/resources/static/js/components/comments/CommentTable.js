@@ -37,10 +37,10 @@ export default {
             <comment-form :commentAttr="comment" />
             <div class="gap-30"></div>
             <div class="alert alert-danger" id="commentError" style="display:none;">
-              <strong>Error!</strong> Access Denied! You not have permission to delete comment!
+              <strong>Error!</strong> Access Denied! You not have permission to <span id="commentToAction"></span> comment!
             </div>
             <div class="alert alert-success" id="commentSuccess" style="display:none;">
-              <strong>Success!</strong> Comment deleted successfully.
+              <strong>Success!</strong> Comment <span id="commentAction"></span> successfully.
             </div>
         </div>
     `,

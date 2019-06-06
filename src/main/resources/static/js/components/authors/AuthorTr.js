@@ -22,8 +22,8 @@ export default {
             this.removeAuthor(this.author)
             .then(result => {
               if (result.ok) {
-                  showAlert('#authorSuccess');
-              }}, error => showAlert('#authorError'));
+                  showAlert('#authorSuccess', '#authorAction', 'deleted');
+              }}, error => showAlert('#authorError', '#authorToAction', 'delete'));
         }
     }
 };

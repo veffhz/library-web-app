@@ -40,13 +40,19 @@ export const bookModule = {
         async addBook({commit, state}, book) {
             const result = await Vue.resource('/api/book{/id}').save({}, book);
             const data = await result.json();
-            commit('addBookMutation', data);
+            if (result.ok) {
+                commit('addBookMutation', data);
+            }
+            return result;
         },
 
         async updateBook({commit}, book) {
             const result = await Vue.resource('/api/book{/id}').update({}, book)
             const data = await result.json()
-            commit('updateBookMutation', data)
+            if (result.ok) {
+                commit('updateBookMutation', data);
+            }
+            return result;
         },
 
         async removeBook({commit}, book) {

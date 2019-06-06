@@ -40,13 +40,19 @@ export const authorModule = {
         async addAuthor({commit, state}, author) {
             const result = await Vue.resource('/api/author{/id}').save({}, author);
             const data = await result.json();
-            commit('addAuthorMutation', data);
+            if (result.ok) {
+                commit('addAuthorMutation', data);
+            }
+            return result;
         },
 
         async updateAuthor({commit}, author) {
             const result = await Vue.resource('/api/author{/id}').update({}, author)
             const data = await result.json()
-            commit('updateAuthorMutation', data)
+            if (result.ok) {
+                commit('updateAuthorMutation', data);
+            }
+            return result;
         },
 
         async removeAuthor({dispatch, commit}, author) {

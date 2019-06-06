@@ -40,13 +40,19 @@ export const genreModule = {
         async addGenre({commit, state}, genre) {
             const result = await Vue.resource('/api/genre{/id}').save({}, genre);
             const data = await result.json();
-            commit('addGenreMutation', data);
+            if (result.ok) {
+                commit('addGenreMutation', data);
+            }
+            return result;
         },
 
         async updateGenre({commit}, genre) {
             const result = await Vue.resource('/api/genre{/id}').update({}, genre)
             const data = await result.json()
-            commit('updateGenreMutation', data)
+            if (result.ok) {
+                commit('updateGenreMutation', data);
+            }
+            return result;
         },
 
         async removeGenre({dispatch, commit}, genre) {
@@ -55,7 +61,7 @@ export const genreModule = {
                 commit('removeGenreMutation', genre);
                 dispatch('bookModule/removeBookByGenreId', genre.id, { root: true });
             }
-            return result
+            return result;
         },
   }
 }

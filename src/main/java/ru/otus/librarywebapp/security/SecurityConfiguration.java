@@ -3,6 +3,9 @@ package ru.otus.librarywebapp.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
+
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
+import org.springframework.security.access.vote.RoleHierarchyVoter;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -23,14 +26,21 @@ public class SecurityConfiguration  {
     }
 
     @Bean
-    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
+    public RoleHierarchyVoter roleHierarchyVoter() {
+        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+        roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_USER");
+        return new RoleHierarchyVoter(roleHierarchy);
+    }
+
+    @Bean
+    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http, CustomAuthorizationDecisionManger authorizationDecisionManger) {
         return http
                 .csrf().disable()
                 .authorizeExchange()
-                .pathMatchers(HttpMethod.GET, "/api/**").hasAuthority("ROLE_USER") // eq hasRole("USER")
-                .pathMatchers(HttpMethod.PUT, "/api/**").hasAuthority("ROLE_USER")
-                .pathMatchers(HttpMethod.POST, "/api/**").hasAuthority("ROLE_USER")
-                .pathMatchers(HttpMethod.DELETE, "/api/**").hasAuthority("ROLE_ADMIN")
+                .pathMatchers(HttpMethod.GET, "/api/**").access(authorizationDecisionManger::isUser)
+                .pathMatchers(HttpMethod.PUT, "/api/**").access(authorizationDecisionManger::isUser)
+                .pathMatchers(HttpMethod.POST, "/api/**").access(authorizationDecisionManger::isUser)
+                .pathMatchers(HttpMethod.DELETE, "/api/**").access(authorizationDecisionManger::isAdmin)
                 .anyExchange().authenticated()
                 .and().formLogin()
                 .authenticationManager(authenticationManager())
