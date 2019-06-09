@@ -1,2 +1,2 @@
 # library-web-app
-simple CRUD application with Spring Boot, WebFlux, Spring Security and Vue.js.
+Simple CRUD application with Spring Boot, WebFlux, Spring Security and Vue.js.
