@@ -4,7 +4,7 @@ export default {
   template: `
   <div id="app">
   <!-- navbar -->
-        <div class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
+        <div class="navbar navbar-expand-lg fixed-top navbar-light bg-light navbar-expand-md navbar-expand-sm">
           <div class="container">
           <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav">
