@@ -31,21 +31,22 @@ import ru.otus.domain.LibraryDto;
 import ru.otus.domain.LibraryItem;
 
 @Slf4j
-@EnableBatchProcessing
 @Configuration
-public class BatchConfig {
+@EnableBatchProcessing
+public class BatchConfigImportCsv {
 
-    @Autowired
-    private JobBuilderFactory jobBuilderFactory;
-
-    @Autowired
-    private StepBuilderFactory stepBuilderFactory;
+    private final JobBuilderFactory jobBuilderFactory;
+    private final StepBuilderFactory stepBuilderFactory;
 
     private final String delimiter;
     private final String csvFile;
 
     @Autowired
-    public BatchConfig(AppProperties properties) {
+    public BatchConfigImportCsv(JobBuilderFactory jobBuilderFactory,
+                                StepBuilderFactory stepBuilderFactory,
+                                AppProperties properties) {
+        this.jobBuilderFactory = jobBuilderFactory;
+        this.stepBuilderFactory = stepBuilderFactory;
         this.delimiter = properties.getDelimiter();
         this.csvFile = properties.getCsvFile();
     }
@@ -71,8 +72,7 @@ public class BatchConfig {
 
     @Bean
     public LibraryItemWriter writer(AuthorJpaRepository authorRepository, GenreJpaRepository genreRepository, BookJpaRepository bookRepository) {
-        LibraryItemWriter jpaItemWriter = new LibraryItemWriter(authorRepository, genreRepository, bookRepository);
-        return jpaItemWriter;
+        return new LibraryItemWriter(authorRepository, genreRepository, bookRepository);
     }
 
     @Bean

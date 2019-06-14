@@ -8,15 +8,15 @@ import org.springframework.util.StringUtils;
 import ru.otus.domain.*;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 
 @Slf4j
 public class LibraryItemProcessor implements ItemProcessor<LibraryDto, LibraryItem> {
 
-    public static final String N_A = "n/a";
+    private static final String N_A = "n/a";
+    private LocalDate LocalDateMIN = LocalDate.of(1900, 1, 1);
 
     @Override
-    public LibraryItem process(final LibraryDto libraryDto) throws Exception {
+    public LibraryItem process(final LibraryDto libraryDto) {
 
         String bookName = libraryDto.getBookName();
         String strAuthor = libraryDto.getAuthor();
@@ -39,8 +39,6 @@ public class LibraryItemProcessor implements ItemProcessor<LibraryDto, LibraryIt
 
         return transformedDto;
     }
-
-    private LocalDate LocalDateMIN = LocalDate.of(1900, 1, 1);
 
     private Author parseAuthor(String strAuthor) {
         String author = strAuthor.trim();

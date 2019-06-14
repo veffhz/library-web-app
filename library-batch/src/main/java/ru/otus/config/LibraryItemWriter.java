@@ -24,7 +24,9 @@ public class LibraryItemWriter implements ItemWriter<LibraryItem> {
     private final GenreJpaRepository genreRepository;
     private final BookJpaRepository bookRepository;
 
-    public LibraryItemWriter(AuthorJpaRepository authorRepository, GenreJpaRepository genreRepository, BookJpaRepository bookRepository) {
+    public LibraryItemWriter(AuthorJpaRepository authorRepository,
+                             GenreJpaRepository genreRepository,
+                             BookJpaRepository bookRepository) {
         this.authorRepository = authorRepository;
         this.genreRepository = genreRepository;
         this.bookRepository = bookRepository;
