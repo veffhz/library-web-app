@@ -1,4 +1,4 @@
-separator: ;
+delimiter: ;
 csv-file: /raw_data-20160416T1130.csv
 
 spring:
@@ -15,3 +15,6 @@ spring:
   shell:
     interactive:
       enabled: false
+    command:
+      history:
+        enabled: false

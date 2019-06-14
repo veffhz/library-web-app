@@ -9,6 +9,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Setter
 @ConfigurationProperties
 public class AppProperties {
-    private String separator;
+    private String delimiter;
     private String csvFile;
 }

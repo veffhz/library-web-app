@@ -7,7 +7,7 @@ import ru.otus.domain.Book;
 
 import java.util.List;
 
-public interface BookJpaRepository extends CrudRepository<Book, Long> {
+public interface BookJpaRepository extends CrudRepository<Book, String> {
     List<Book> findByBookName(String bookName);
     List<Book> findByBookNameContaining(String bookName);
     @EntityGraph("bookGraph")
