@@ -1,4 +1,4 @@
-package ru.otus.config;
+package ru.otus.config.csv;
 
 import lombok.extern.slf4j.Slf4j;
 

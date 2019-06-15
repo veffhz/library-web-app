@@ -3,6 +3,10 @@ csv-file: /raw_data-20160416T1130.csv
 
 spring:
 
+  data:
+    mongodb:
+      database: library
+
   jpa:
     generate-ddl: false
     hibernate:
@@ -19,7 +23,7 @@ spring:
       exit:
         enabled: true
       history:
-        enabled: true
+        enabled: false
 
   batch:
     job:

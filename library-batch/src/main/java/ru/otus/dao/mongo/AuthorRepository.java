@@ -4,8 +4,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import ru.otus.domain.Author;
 
-import java.util.List;
+import java.util.Optional;
 
 public interface AuthorRepository extends MongoRepository<Author, String> {
-    List<Author> findByLastName(String lastName);
+    Optional<Author> findByFirstNameAndLastName(String firstName, String lastName);
 }

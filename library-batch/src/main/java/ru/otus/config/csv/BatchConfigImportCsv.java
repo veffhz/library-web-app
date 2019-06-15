@@ -1,4 +1,4 @@
-package ru.otus.config;
+package ru.otus.config.csv;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -86,16 +86,16 @@ public class BatchConfigImportCsv {
     }
 
     @Bean
-    public JobExecutionListener listener() {
+    public JobExecutionListener importListener() {
         return new JobExecutionListener() {
             @Override
             public void beforeJob(JobExecution jobExecution) {
-                log.info("Начало job");
+                log.info("Begin import job");
             }
 
             @Override
             public void afterJob(JobExecution jobExecution) {
-                log.info("Конец job");
+                log.info("End import job");
             }
         };
     }
@@ -104,7 +104,7 @@ public class BatchConfigImportCsv {
     public Job csvFileToDatabaseJob(Step csvFileToDatabaseStep) {
         return jobBuilderFactory.get("csvFileToDatabaseJob")
                 .incrementer(new RunIdIncrementer())
-                .listener(listener())
+                .listener(importListener())
                 .flow(csvFileToDatabaseStep)
                 .end()
                 .build();
