@@ -35,7 +35,7 @@ public class GenreBatchConfig {
     public RepositoryItemReader<Genre> genreReader() {
         RepositoryItemReader<Genre> reader = new RepositoryItemReader<>();
         reader.setRepository(genreRepository);
-        reader.setMethodName("findAll");
+        reader.setMethodName(genreRepository.FIND_ALL_METHOD);
         reader.setSort(Collections.singletonMap("id", Sort.Direction.ASC));
         reader.setPageSize(10000);
         return reader;
@@ -49,16 +49,21 @@ public class GenreBatchConfig {
         return writer;
     }
 
+    @Bean(name = "genreProcessor")
+    public ItemProcessor<Genre, Genre> genreProcessor() {
+        return genre -> {
+            log.info("Migrate {}", genre);
+            return new Genre(genre.getGenreName());
+        };
+    }
+
     @Bean
-    public Step genreJpaToMongoStep(MongoItemWriter<Genre> genreWriter) {
+    public Step genreJpaToMongoStep(MongoTemplate mongoTemplate) {
         return stepBuilderFactory.get("genreJpaToMongoStep")
                 .<Genre, Genre> chunk(10)
                 .reader(genreReader())
-                .processor((ItemProcessor<Genre, Genre>) genre -> {
-                    log.info("Migrate {}", genre);
-                    return new Genre(genre.getGenreName());
-                })
-                .writer(genreWriter)
+                .processor(genreProcessor())
+                .writer(genreWriter(mongoTemplate))
                 .build();
     }
 

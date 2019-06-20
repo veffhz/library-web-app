@@ -36,7 +36,7 @@ public class AuthorBatchConfig {
     public RepositoryItemReader<Author> authorReader() {
         RepositoryItemReader<Author> reader = new RepositoryItemReader<>();
         reader.setRepository(authorRepository);
-        reader.setMethodName("findAll");
+        reader.setMethodName(authorRepository.FIND_ALL_METHOD);
         reader.setSort(Collections.singletonMap("id", Sort.Direction.ASC));
         reader.setPageSize(10000);
         return reader;
@@ -50,16 +50,21 @@ public class AuthorBatchConfig {
         return writer;
     }
 
+    @Bean(name = "authorProcessor")
+    public ItemProcessor<Author, Author> authorProcessor() {
+        return author -> {
+            log.info("Migrate {}", author);
+            return new Author(author.getFirstName(), author.getBirthDate(), author.getLastName());
+        };
+    }
+
     @Bean
-    public Step authorJpaToMongoStep(MongoItemWriter<Author> authorWriter) {
+    public Step authorJpaToMongoStep(MongoTemplate mongoTemplate) {
         return stepBuilderFactory.get("authorJpaToMongoStep")
                 .<Author, Author> chunk(10)
                 .reader(authorReader())
-                .processor((ItemProcessor<Author, Author>) author -> {
-                    log.info("Migrate {}", author);
-                    return new Author(author.getFirstName(), author.getBirthDate(), author.getLastName());
-                })
-                .writer(authorWriter)
+                .processor(authorProcessor())
+                .writer(authorWriter(mongoTemplate))
                 .build();
     }
 

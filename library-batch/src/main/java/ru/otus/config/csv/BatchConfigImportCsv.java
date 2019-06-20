@@ -35,6 +35,14 @@ import ru.otus.domain.LibraryItem;
 @EnableBatchProcessing
 public class BatchConfigImportCsv {
 
+    private static final String BOOK_NAME = "bookName";
+    private static final String AUTHOR = "author";
+    private static final String YEAR = "year";
+    private static final String GENRE = "genre";
+    private static final String ISBN = "isbn";
+
+    private static final String[] NAMES = {BOOK_NAME, AUTHOR, YEAR, GENRE, ISBN};
+
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
 
@@ -58,7 +66,7 @@ public class BatchConfigImportCsv {
                 .resource(new ClassPathResource(csvFile))
                 .delimited()
                 .delimiter(delimiter)
-                .names(new String[]{"bookName", "author", "year", "genre", "isbn"})
+                .names(NAMES)
                 .fieldSetMapper(new BeanWrapperFieldSetMapper<LibraryDto>() {{
                     setTargetType(LibraryDto.class);
                 }})

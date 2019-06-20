@@ -7,7 +7,7 @@ import ru.otus.domain.Author;
 import java.util.List;
 import java.util.Optional;
 
-public interface AuthorJpaRepository extends JpaRepository<Author, String> {
+public interface AuthorJpaRepository extends JpaRepository<Author, String>, FindAllSupport {
     List<Author> findAll();
     Optional<Author> findByFirstNameAndLastName(String firstName, String lastName);
 }

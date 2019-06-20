@@ -7,7 +7,7 @@ import ru.otus.domain.Book;
 
 import java.util.List;
 
-public interface BookJpaRepository extends JpaRepository<Book, String> {
+public interface BookJpaRepository extends JpaRepository<Book, String>, FindAllSupport {
     @EntityGraph("bookGraph")
     List<Book> findAll();
 }

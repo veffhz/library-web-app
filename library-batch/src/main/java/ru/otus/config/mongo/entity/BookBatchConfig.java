@@ -47,7 +47,7 @@ public class BookBatchConfig {
     public RepositoryItemReader<Book> bookReader() {
         RepositoryItemReader<Book> reader = new RepositoryItemReader<>();
         reader.setRepository(bookRepository);
-        reader.setMethodName("findAll");
+        reader.setMethodName(bookRepository.FIND_ALL_METHOD);
         reader.setSort(Collections.singletonMap("id", Sort.Direction.ASC));
         reader.setPageSize(10000);
         return reader;
@@ -61,22 +61,27 @@ public class BookBatchConfig {
         return writer;
     }
 
+    @Bean(name = "bookProcessor")
+    public ItemProcessor<Book, Book> bookProcessor() {
+        return book -> {
+            log.info("Migrate {}", book.getBookName());
+            Optional<Author> author = authorRepository.findByFirstNameAndLastName(book.getAuthor().getFirstName(),
+                    book.getAuthor().getLastName());
+            Optional<Genre> genre = genreRepository.findOneByGenreName(book.getGenre().getGenreName());
+            return new Book(author.get(), genre.get(),
+                    book.getBookName(), book.getPublishDate(),
+                    book.getLanguage(), book.getPublishingHouse(),
+                    book.getCity(), book.getIsbn());
+        };
+    }
+
     @Bean
-    public Step bookJpaToMongoStep(MongoItemWriter<Book> bookWriter) {
+    public Step bookJpaToMongoStep(MongoTemplate mongoTemplate) {
         return stepBuilderFactory.get("bookJpaToMongoStep")
                 .<Book, Book> chunk(10)
                 .reader(bookReader())
-                .processor((ItemProcessor<Book, Book>) book -> {
-                    log.info("Migrate {}", book.getBookName());
-                    Optional<Author> author = authorRepository.findByFirstNameAndLastName(book.getAuthor().getFirstName(),
-                            book.getAuthor().getLastName());
-                    Optional<Genre> genre = genreRepository.findOneByGenreName(book.getGenre().getGenreName());
-                    return new Book(author.get(), genre.get(),
-                            book.getBookName(), book.getPublishDate(),
-                            book.getLanguage(), book.getPublishingHouse(),
-                            book.getCity(), book.getIsbn());
-                })
-                .writer(bookWriter)
+                .processor(bookProcessor())
+                .writer(bookWriter(mongoTemplate))
                 .build();
     }
 
