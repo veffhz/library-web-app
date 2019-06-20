@@ -8,7 +8,6 @@ import reactor.core.publisher.Mono;
 
 import ru.otus.librarywebapp.dao.BookRepository;
 import ru.otus.librarywebapp.dao.CommentRepository;
-import ru.otus.librarywebapp.dao.GenreRepository;
 
 import ru.otus.domain.Book;
 import ru.otus.librarywebapp.service.BookService;
@@ -18,15 +17,11 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository repository;
     private final CommentRepository commentRepository;
-    private final GenreRepository genreRepository;
 
     @Autowired
-    public BookServiceImpl(BookRepository repository,
-                           CommentRepository commentRepository,
-                           GenreRepository genreRepository) {
+    public BookServiceImpl(BookRepository repository, CommentRepository commentRepository) {
         this.repository = repository;
         this.commentRepository = commentRepository;
-        this.genreRepository = genreRepository;
     }
 
     @Override

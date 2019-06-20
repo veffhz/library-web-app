@@ -1,0 +1,30 @@
+delimiter: ;
+csv-file: /raw_data-20160416T1130.csv
+
+spring:
+
+  data:
+    mongodb:
+      database: library
+
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+
+  datasource:
+    url: jdbc:h2:./library
+    initialization-mode: embedded
+
+  shell:
+    interactive:
+      enabled: true
+    command:
+      exit:
+        enabled: true
+      history:
+        enabled: false
+
+  batch:
+    job:
+      enabled: false

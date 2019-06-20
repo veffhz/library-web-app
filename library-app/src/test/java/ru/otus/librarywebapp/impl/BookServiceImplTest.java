@@ -37,11 +37,11 @@ class BookServiceImplTest {
     @SpyBean
     private BookServiceImpl bookService;
 
-    @MockBean
-    private AuthorRepository authorRepository;
+    //@MockBean
+    //private AuthorRepository authorRepository;
 
-    @MockBean
-    private GenreRepository genreRepository;
+    //@MockBean
+    //private GenreRepository genreRepository;
 
     @MockBean
     private CommentRepository commentRepository;

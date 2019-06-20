@@ -1,8 +1,12 @@
 # library-web-app
 Simple CRUD application with Spring Boot, WebFlux, Spring Security and Vue.js.
 
-##### Prerequisites:
+##### prerequisites:
 Java 8, MongoDB
 
-##### Start:
+##### start:
 ```bash mvnw spring-boot:run -pl library-app -am``` or ```mvn spring-boot:run -pl library-app -am```
+
+
+##### batch tool:
+```bash mvnw spring-boot:run -pl library-batch -am``` or ```mvn spring-boot:run -pl library-batch -am```

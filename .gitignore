@@ -1,5 +1,6 @@
 HELP.md
 /target/
+*.db
 !.mvn/wrapper/maven-wrapper.jar
 
 ### STS ###
@@ -27,3 +28,7 @@ HELP.md
 
 ### VS Code ###
 .vscode/
+# Project exclude paths
+/library-batch/target/
+/library-model/target/
+/library-app/target/
