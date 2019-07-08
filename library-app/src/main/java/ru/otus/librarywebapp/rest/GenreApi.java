@@ -3,6 +3,9 @@ package ru.otus.librarywebapp.rest;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +14,7 @@ import reactor.core.publisher.Mono;
 
 import ru.otus.domain.Genre;
 
+import ru.otus.dto.GenreDto;
 import ru.otus.librarywebapp.exception.GenreNotFoundException;
 import ru.otus.librarywebapp.service.GenreService;
 
@@ -28,9 +32,10 @@ public class GenreApi {
     }
 
     @GetMapping("/api/genre")
-    public Flux<Genre> getAll() {
+    public Mono<GenreDto> getAll(@PageableDefault(size = 3, sort = { "genreName" },
+            direction = Sort.Direction.ASC) Pageable pageable) {
         log.info("get all genres");
-        return genreService.getAll();
+        return genreService.getAll(pageable);
     }
 
     @GetMapping("/api/genre/{id}")

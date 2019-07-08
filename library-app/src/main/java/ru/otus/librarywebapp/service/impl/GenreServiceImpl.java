@@ -1,6 +1,7 @@
 package ru.otus.librarywebapp.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import reactor.core.publisher.Flux;
@@ -8,6 +9,7 @@ import reactor.core.publisher.Mono;
 
 import ru.otus.domain.Genre;
 
+import ru.otus.dto.GenreDto;
 import ru.otus.librarywebapp.dao.GenreRepository;
 import ru.otus.librarywebapp.service.BookService;
 import ru.otus.librarywebapp.service.GenreService;
@@ -42,6 +44,12 @@ public class GenreServiceImpl implements GenreService {
     @Override
     public Flux<Genre> getAll() {
         return repository.findAll();
+    }
+
+    @Override
+    public Mono<GenreDto> getAll(Pageable pageable) {
+        return repository.findAll(pageable).collectList().zipWith(repository.count())
+                .map(data -> new GenreDto(data.getT1(), pageable.getPageNumber(), data.getT2()));
     }
 
     @Override
