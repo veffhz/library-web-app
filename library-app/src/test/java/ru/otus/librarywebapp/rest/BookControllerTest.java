@@ -9,14 +9,15 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import ru.otus.domain.Author;
 import ru.otus.domain.Book;
 import ru.otus.domain.Genre;
-
+import ru.otus.dto.BookDto;
 import ru.otus.librarywebapp.service.BookService;
+
+import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -35,13 +36,18 @@ class BookControllerTest extends BaseTest {
     @Test
     @DisplayName("Test get all books on /api/book")
     void shouldGetAllBooks() {
-        given(this.bookService.getAll()).willReturn(Flux.just(book()));
+        given(this.bookService.getAll(BookApi.BOOK_PAGE_REQUEST))
+                .willReturn(Mono.just(new BookDto(Collections.singletonList(book()), 0, 1L)));
 
-        String responseBody = "[{\"id\":null,\"author\":{\"id\":null,\"firstName\":null,\"birthDate\":null,\"lastName\":null,\"fullName\":\" \"}," +
-                "\"genre\":{\"id\":null,\"genreName\":null},\"bookName\":\"Best\",\"publishDate\":\"2019-04-27\",\"language\":\"russian\"," +
-                "\"publishingHouse\":\"Test\",\"city\":\"Test\",\"isbn\":\"555-555\"}]";
+        String responseBody = "{\"books\":[{\"id\":null,\"author\":{\"id\":null,\"firstName\":null,\"birthDate\":null," +
+                "\"lastName\":null,\"fullName\":\" \"},\"genre\":{\"id\":null,\"genreName\":null},\"bookName\":\"Best\"," +
+                "\"publishDate\":\"2019-04-27\",\"language\":\"russian\",\"publishingHouse\":\"Test\",\"city\":\"Test\"," +
+                "\"isbn\":\"555-555\"}],\"currentPage\":0,\"totalPages\":1}";
 
-        this.webClient.get().uri("/api/book")
+        this.webClient.get().uri(uriBuilder -> uriBuilder
+                .path("/api/book")
+                .queryParam("page", 0)
+                .build())
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()

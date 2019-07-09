@@ -4,13 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import ru.otus.domain.Comment;
@@ -29,7 +26,7 @@ public class CommentApi {
 
     private static final Sort COMMENT_SORT = Sort.by(Sort.Direction.ASC, COMMENTS_SORT_FIELD);
 
-    private static final int COMMENTS_PER_PAGE = 5;
+    public static final int COMMENTS_PER_PAGE = 5;
 
     public static final PageRequest COMMENTS_PAGE_REQUEST = PageRequest.of(0, COMMENTS_PER_PAGE, COMMENT_SORT);
 
@@ -41,10 +38,9 @@ public class CommentApi {
     }
 
     @GetMapping("/api/comment")
-    public Mono<CommentDto> getAll(@PageableDefault(size = COMMENTS_PER_PAGE, sort = { COMMENTS_SORT_FIELD },
-            direction = Sort.Direction.ASC) Pageable pageable) {
-        log.info("get all comments");
-        return commentService.getAll(pageable);
+    public Mono<CommentDto> getAll(@RequestParam("page") int page) {
+        log.info("get all comments, page {}", page);
+        return commentService.getAll(PageRequest.of(page, COMMENTS_PER_PAGE, COMMENT_SORT));
     }
 
     @GetMapping("/api/comment/{id}")

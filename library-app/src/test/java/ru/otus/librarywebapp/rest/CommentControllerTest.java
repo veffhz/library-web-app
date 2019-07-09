@@ -9,12 +9,13 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import ru.otus.domain.Comment;
-
+import ru.otus.dto.CommentDto;
 import ru.otus.librarywebapp.service.CommentService;
+
+import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -33,11 +34,16 @@ class CommentControllerTest extends BaseTest {
     @Test
     @DisplayName("Test get all comments on /api/comment")
     void shouldGetAllComments() {
-        given(this.commentService.getAll()).willReturn(Flux.just(comment()));
+        given(this.commentService.getAll(CommentApi.COMMENTS_PAGE_REQUEST))
+                .willReturn(Mono.just(new CommentDto(Collections.singletonList(comment()), 0, 1L)));
 
-        String responseBody = "[{\"id\":null,\"book\":null,\"author\":\"test\",\"date\":\"2019-04-27 00:00\",\"content\":\"test\"}]";
+        String responseBody = "{\"comments\":[{\"id\":null,\"book\":null,\"author\":\"test\"," +
+                "\"date\":\"2019-04-27 00:00\",\"content\":\"test\"}],\"currentPage\":0,\"totalPages\":1}";
 
-        this.webClient.get().uri("/api/comment")
+        this.webClient.get().uri(uriBuilder -> uriBuilder
+                .path("/api/comment")
+                .queryParam("page", 0)
+                .build())
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
