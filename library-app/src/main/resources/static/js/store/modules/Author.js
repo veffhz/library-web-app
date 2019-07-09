@@ -4,7 +4,7 @@ export const authorModule = {
   namespaced: true,
 
   state: {
-      authors: frontendData.authors
+      ...frontendData.authorDto
   },
 
   mutations: {

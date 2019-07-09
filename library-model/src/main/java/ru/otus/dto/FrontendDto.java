@@ -2,39 +2,33 @@ package ru.otus.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.otus.domain.Author;
-import ru.otus.domain.Book;
-import ru.otus.domain.Comment;
-import ru.otus.domain.Genre;
-
-import java.util.List;
 
 @Data
 @NoArgsConstructor
 public class FrontendDto {
 
-    private List<Author> authors;
-    private GenreDto genres;
-    private List<Book> books;
-    private List<Comment> comments;
+    private AuthorDto authorDto;
+    private GenreDto genreDto;
+    private BookDto bookDto;
+    private CommentDto commentDto;
 
-    public FrontendDto withAuthors(List<Author> authors) {
-        this.authors = authors;
+    public FrontendDto withAuthors(AuthorDto authorDto) {
+        this.authorDto = authorDto;
         return this;
     }
 
-    public FrontendDto withGenres(GenreDto genres) {
-        this.genres = genres;
+    public FrontendDto withGenres(GenreDto genreDto) {
+        this.genreDto = genreDto;
         return this;
     }
 
-    public FrontendDto withBooks(List<Book> books) {
-        this.books = books;
+    public FrontendDto withBooks(BookDto bookDto) {
+        this.bookDto = bookDto;
         return this;
     }
 
-    public FrontendDto withComments(List<Comment> comments) {
-        this.comments = comments;
+    public FrontendDto withComments(CommentDto commentDto) {
+        this.commentDto = commentDto;
         return this;
     }
 

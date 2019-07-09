@@ -4,7 +4,7 @@ export const genreModule = {
   namespaced: true,
 
   state: {
-      genres: frontendData.genres
+       ...frontendData.genreDto
   },
 
   mutations: {

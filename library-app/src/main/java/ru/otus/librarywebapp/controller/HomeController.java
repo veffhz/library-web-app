@@ -3,17 +3,17 @@ package ru.otus.librarywebapp.controller;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.reactive.result.view.Rendering;
 
 import reactor.core.publisher.Mono;
 
-import ru.otus.domain.FrontendData;
-
 import ru.otus.dto.FrontendDto;
+
+import ru.otus.librarywebapp.rest.BookApi;
+import ru.otus.librarywebapp.rest.CommentApi;
+import ru.otus.librarywebapp.rest.GenreApi;
 import ru.otus.librarywebapp.service.AuthorService;
 import ru.otus.librarywebapp.service.BookService;
 import ru.otus.librarywebapp.service.CommentService;
@@ -42,16 +42,13 @@ public class HomeController {
     public Rendering main() {
         log.info("get /");
 
-        Sort sort = Sort.by(Sort.Direction.ASC, "genreName");
-        PageRequest pageRequest = PageRequest.of(0, 3, sort);
-
-        Mono<FrontendDto> frontendData = authorService.getAll().collectList()
+        Mono<FrontendDto> frontendData = authorService.getAll(GenreApi.GENRE_PAGE_REQUEST)
                 .map(authors -> new FrontendDto().withAuthors(authors))
-                .zipWith(genreService.getAll(pageRequest))
+                .zipWith(genreService.getAll(GenreApi.GENRE_PAGE_REQUEST))
                 .map(data -> data.getT1().withGenres(data.getT2()))
-                .zipWith(bookService.getAll().collectList())
+                .zipWith(bookService.getAll(BookApi.BOOK_PAGE_REQUEST))
                 .map(data -> data.getT1().withBooks(data.getT2()))
-                .zipWith(commentService.getAll().collectList())
+                .zipWith(commentService.getAll(CommentApi.COMMENTS_PAGE_REQUEST))
                 .map(data -> data.getT1().withComments(data.getT2()));
 
         return Rendering.view("index")

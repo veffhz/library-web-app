@@ -4,7 +4,7 @@ export const bookModule = {
   namespaced: true,
 
   state: {
-      books: frontendData.books
+      ...frontendData.bookDto
   },
 
   mutations: {

@@ -4,7 +4,7 @@ export const commentModule = {
   namespaced: true,
 
   state: {
-      comments: frontendData.comments
+      ...frontendData.commentDto
   },
 
   mutations: {
