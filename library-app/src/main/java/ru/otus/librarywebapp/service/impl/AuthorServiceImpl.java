@@ -1,6 +1,7 @@
 package ru.otus.librarywebapp.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import reactor.core.publisher.Flux;
@@ -8,6 +9,7 @@ import reactor.core.publisher.Mono;
 
 import ru.otus.domain.Author;
 
+import ru.otus.dto.AuthorDto;
 import ru.otus.librarywebapp.dao.AuthorRepository;
 import ru.otus.librarywebapp.service.AuthorService;
 import ru.otus.librarywebapp.service.BookService;
@@ -42,6 +44,11 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public Flux<Author> getAll() {
         return repository.findAll();
+    }
+
+    @Override
+    public Mono<AuthorDto> getAll(Pageable pageable) {
+        return repository.findAll(pageable).collectList().map(AuthorDto::new);
     }
 
     @Override

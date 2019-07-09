@@ -3,14 +3,16 @@ package ru.otus.librarywebapp.rest;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import ru.otus.domain.Comment;
 
+import ru.otus.dto.CommentDto;
 import ru.otus.librarywebapp.exception.CommentNotFoundException;
 import ru.otus.librarywebapp.service.CommentService;
 
@@ -20,6 +22,14 @@ import javax.validation.Valid;
 @RestController
 public class CommentApi {
 
+    private static final String COMMENTS_SORT_FIELD = "date";
+
+    private static final Sort COMMENT_SORT = Sort.by(Sort.Direction.ASC, COMMENTS_SORT_FIELD);
+
+    public static final int COMMENTS_PER_PAGE = 5;
+
+    public static final PageRequest COMMENTS_PAGE_REQUEST = PageRequest.of(0, COMMENTS_PER_PAGE, COMMENT_SORT);
+
     private final CommentService commentService;
 
     @Autowired
@@ -28,9 +38,9 @@ public class CommentApi {
     }
 
     @GetMapping("/api/comment")
-    public Flux<Comment> getAll() {
-        log.info("get all comments");
-        return commentService.getAll();
+    public Mono<CommentDto> getAll(@RequestParam("page") int page) {
+        log.info("get all comments, page {}", page);
+        return commentService.getAll(PageRequest.of(page, COMMENTS_PER_PAGE, COMMENT_SORT));
     }
 
     @GetMapping("/api/comment/{id}")

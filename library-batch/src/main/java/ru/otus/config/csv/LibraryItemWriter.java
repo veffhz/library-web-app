@@ -10,7 +10,7 @@ import ru.otus.dao.jpa.GenreJpaRepository;
 
 import ru.otus.domain.Author;
 import ru.otus.domain.Genre;
-import ru.otus.domain.LibraryItem;
+import ru.otus.dto.LibraryItem;
 
 import java.util.Iterator;
 import java.util.List;

@@ -1,12 +1,10 @@
-package ru.otus.domain;
+package ru.otus.dto;
 
 import lombok.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 public class LibraryDto {
 
     private String bookName;
