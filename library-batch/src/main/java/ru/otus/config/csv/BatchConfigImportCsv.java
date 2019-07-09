@@ -27,8 +27,8 @@ import ru.otus.dao.jpa.AuthorJpaRepository;
 import ru.otus.dao.jpa.BookJpaRepository;
 import ru.otus.dao.jpa.GenreJpaRepository;
 
-import ru.otus.domain.LibraryDto;
-import ru.otus.domain.LibraryItem;
+import ru.otus.dto.LibraryDto;
+import ru.otus.dto.LibraryItem;
 
 @Slf4j
 @Configuration

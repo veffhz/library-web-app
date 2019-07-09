@@ -6,6 +6,8 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.util.StringUtils;
 
 import ru.otus.domain.*;
+import ru.otus.dto.LibraryDto;
+import ru.otus.dto.LibraryItem;
 
 import java.time.LocalDate;
 

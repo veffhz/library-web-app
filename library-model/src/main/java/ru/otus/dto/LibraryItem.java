@@ -1,7 +1,10 @@
-package ru.otus.domain;
+package ru.otus.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.otus.domain.Author;
+import ru.otus.domain.Book;
+import ru.otus.domain.Genre;
 
 @Data
 @NoArgsConstructor
