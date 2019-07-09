@@ -13,6 +13,4 @@ import java.util.List;
 @AllArgsConstructor
 public class AuthorDto {
     private List<Author> authors;
-    private int currentPage;
-    private Long totalPages;
 }

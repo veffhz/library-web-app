@@ -13,6 +13,4 @@ import java.util.List;
 @AllArgsConstructor
 public class GenreDto {
     private List<Genre> genres;
-    private int currentPage;
-    private Long totalPages;
 }

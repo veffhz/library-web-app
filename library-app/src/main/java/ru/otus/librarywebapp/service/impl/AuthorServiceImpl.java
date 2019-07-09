@@ -48,8 +48,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public Mono<AuthorDto> getAll(Pageable pageable) {
-        return repository.findAll(pageable).collectList().zipWith(repository.count())
-                .map(data -> new AuthorDto(data.getT1(), pageable.getPageNumber(), data.getT2()));
+        return repository.findAll(pageable).collectList().map(AuthorDto::new);
     }
 
     @Override

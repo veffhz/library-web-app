@@ -1,12 +1,14 @@
 import BookTr from './BookTr.js'
 import BookForm from './BookForm.js'
+import LazyLoader from '../LazyLoader.js'
 
 export default {
     name: 'BookTable',
     computed: Vuex.mapState('bookModule', ['books']),
     components: {
                 BookTr,
-                BookForm
+                BookForm,
+                LazyLoader
             },
     data: function() {
             return {
@@ -34,6 +36,7 @@ export default {
                 <tbody>
                 <book-tr v-for="book in books" :key="book.id"
                 :book="book" :editBook="editBook" />
+                <lazy-loader></lazy-loader>
                 </tbody>
             </table>
             <div class="gap-30"></div>

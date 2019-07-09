@@ -9,37 +9,37 @@ export const commentModule = {
 
   mutations: {
 
-    addCommentMutation(state, comment) {
-      state.comments = [...state.comments, comment]
-    },
+        addCommentMutation(state, comment) {
+          state.comments = [...state.comments, comment]
+        },
 
-    updateCommentMutation(state, comment) {
-      var indexUpdated = state.comments.findIndex(item => item.id === comment.id);
+        updateCommentMutation(state, comment) {
+          var indexUpdated = state.comments.findIndex(item => item.id === comment.id);
 
-      state.comments = [
-          ...state.comments.slice(0, indexUpdated),
-          comment,
-          ...state.comments.slice(indexUpdated + 1)
-      ]
-    },
-
-    removeCommentMutation(state, comment) {
-      var indexDeleted = state.comments.findIndex(item => item.id === comment.id);
-
-      if (indexDeleted > -1) {
           state.comments = [
-              ...state.comments.slice(0, indexDeleted),
-              ...state.comments.slice(indexDeleted + 1)
+              ...state.comments.slice(0, indexUpdated),
+              comment,
+              ...state.comments.slice(indexUpdated + 1)
           ]
-      }
-    },
+        },
 
-    removeCommentByBookIdMutation(state, bookId) {
-      if (bookId) {
-          var comments = state.comments.filter(comment => bookId != comment.book.id);
-          state.comments = comments;
-      }
-    }
+        removeCommentMutation(state, comment) {
+          var indexDeleted = state.comments.findIndex(item => item.id === comment.id);
+
+          if (indexDeleted > -1) {
+              state.comments = [
+                  ...state.comments.slice(0, indexDeleted),
+                  ...state.comments.slice(indexDeleted + 1)
+              ]
+          }
+        },
+
+        removeCommentByBookIdMutation(state, bookId) {
+          if (bookId) {
+              var comments = state.comments.filter(comment => bookId != comment.book.id);
+              state.comments = comments;
+          }
+        }
   },
 
   actions: {

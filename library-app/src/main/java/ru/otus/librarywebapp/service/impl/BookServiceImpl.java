@@ -12,6 +12,7 @@ import ru.otus.librarywebapp.dao.BookRepository;
 import ru.otus.librarywebapp.dao.CommentRepository;
 
 import ru.otus.domain.Book;
+import ru.otus.librarywebapp.rest.BookApi;
 import ru.otus.librarywebapp.service.BookService;
 
 @Service
@@ -53,7 +54,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public Mono<BookDto> getAll(Pageable pageable) {
         return repository.findAll(pageable).collectList().zipWith(repository.count())
-                .map(data -> new BookDto(data.getT1(), pageable.getPageNumber(), data.getT2()));
+                .map(data -> new BookDto(data.getT1(), pageable.getPageNumber(), data.getT2() / BookApi.BOOKS_PER_PAGE));
     }
 
     @Override

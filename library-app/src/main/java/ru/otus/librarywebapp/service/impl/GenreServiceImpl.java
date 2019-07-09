@@ -48,8 +48,7 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public Mono<GenreDto> getAll(Pageable pageable) {
-        return repository.findAll(pageable).collectList().zipWith(repository.count())
-                .map(data -> new GenreDto(data.getT1(), pageable.getPageNumber(), data.getT2()));
+        return repository.findAll(pageable).collectList().map(GenreDto::new);
     }
 
     @Override

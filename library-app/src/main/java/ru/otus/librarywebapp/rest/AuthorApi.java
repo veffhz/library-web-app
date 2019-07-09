@@ -3,10 +3,6 @@ package ru.otus.librarywebapp.rest;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +11,6 @@ import reactor.core.publisher.Mono;
 
 import ru.otus.domain.Author;
 
-import ru.otus.dto.AuthorDto;
 import ru.otus.librarywebapp.exception.AuthorNotFoundException;
 import ru.otus.librarywebapp.service.AuthorService;
 
@@ -24,14 +19,6 @@ import javax.validation.Valid;
 @Slf4j
 @RestController
 public class AuthorApi {
-
-    private static final String AUTHORS_SORT_FIELD = "lastName";
-
-    private static final Sort AUTHOR_SORT = Sort.by(Sort.Direction.ASC, AUTHORS_SORT_FIELD);
-
-    private static final int AUTHORS_PER_PAGE = 5;
-
-    public static final PageRequest AUTHORS_PAGE_REQUEST = PageRequest.of(0, AUTHORS_PER_PAGE, AUTHOR_SORT);
 
     private final AuthorService authorService;
 
@@ -42,10 +29,9 @@ public class AuthorApi {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/api/author")
-    public Mono<AuthorDto> getAll(@PageableDefault(size = AUTHORS_PER_PAGE, sort = { AUTHORS_SORT_FIELD },
-            direction = Sort.Direction.ASC) Pageable pageable) {
+    public Flux<Author> getAll() {
         log.info("get all authors");
-        return authorService.getAll(pageable);
+        return authorService.getAll();
     }
 
     @ResponseStatus(HttpStatus.OK)

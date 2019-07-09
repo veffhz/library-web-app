@@ -4,18 +4,15 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import ru.otus.domain.Book;
-
 import ru.otus.dto.BookDto;
+
 import ru.otus.librarywebapp.exception.BookNotFoundException;
 import ru.otus.librarywebapp.service.BookService;
 
@@ -29,7 +26,7 @@ public class BookApi {
 
     private static final Sort BOOK_SORT = Sort.by(Sort.Direction.ASC, BOOKS_SORT_FIELD);
 
-    private static final int BOOKS_PER_PAGE = 5;
+    public static final int BOOKS_PER_PAGE = 15;
 
     public static final PageRequest BOOK_PAGE_REQUEST = PageRequest.of(0, BOOKS_PER_PAGE, BOOK_SORT);
 
@@ -41,10 +38,9 @@ public class BookApi {
     }
 
     @GetMapping("/api/book")
-    public Mono<BookDto> getAll(@PageableDefault(size = BOOKS_PER_PAGE, sort = { BOOKS_SORT_FIELD },
-            direction = Sort.Direction.ASC) Pageable pageable) {
-        log.info("get all books");
-        return bookService.getAll(pageable);
+    public Mono<BookDto> getAll(@RequestParam("page") int page) {
+        log.info("get all books, page {}", page);
+        return bookService.getAll(PageRequest.of(page, BOOKS_PER_PAGE, BOOK_SORT));
     }
 
     @GetMapping("/api/book/{id}")

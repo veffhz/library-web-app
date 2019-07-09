@@ -9,30 +9,30 @@ export const genreModule = {
 
   mutations: {
 
-    addGenreMutation(state, genre) {
-      state.genres = [...state.genres, genre]
-    },
+        addGenreMutation(state, genre) {
+          state.genres = [...state.genres, genre]
+        },
 
-    updateGenreMutation(state, genre) {
-      var indexUpdated = state.genres.findIndex(item => item.id === genre.id);
+        updateGenreMutation(state, genre) {
+          var indexUpdated = state.genres.findIndex(item => item.id === genre.id);
 
-      state.genres = [
-          ...state.genres.slice(0, indexUpdated),
-          genre,
-          ...state.genres.slice(indexUpdated + 1)
-      ]
-    },
-
-    removeGenreMutation(state, genre) {
-      var indexDeleted = state.genres.findIndex(item => item.id === genre.id);
-
-      if (indexDeleted > -1) {
           state.genres = [
-              ...state.genres.slice(0, indexDeleted),
-              ...state.genres.slice(indexDeleted + 1)
+              ...state.genres.slice(0, indexUpdated),
+              genre,
+              ...state.genres.slice(indexUpdated + 1)
           ]
-      }
-    }
+        },
+
+        removeGenreMutation(state, genre) {
+          var indexDeleted = state.genres.findIndex(item => item.id === genre.id);
+
+          if (indexDeleted > -1) {
+              state.genres = [
+                  ...state.genres.slice(0, indexDeleted),
+                  ...state.genres.slice(indexDeleted + 1)
+              ]
+          }
+        }
   },
 
   actions: {

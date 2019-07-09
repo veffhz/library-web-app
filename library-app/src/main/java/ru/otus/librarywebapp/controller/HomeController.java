@@ -9,11 +9,13 @@ import org.springframework.web.reactive.result.view.Rendering;
 
 import reactor.core.publisher.Mono;
 
+import ru.otus.dto.AuthorDto;
 import ru.otus.dto.FrontendDto;
 
+import ru.otus.dto.GenreDto;
 import ru.otus.librarywebapp.rest.BookApi;
 import ru.otus.librarywebapp.rest.CommentApi;
-import ru.otus.librarywebapp.rest.GenreApi;
+
 import ru.otus.librarywebapp.service.AuthorService;
 import ru.otus.librarywebapp.service.BookService;
 import ru.otus.librarywebapp.service.CommentService;
@@ -42,10 +44,10 @@ public class HomeController {
     public Rendering main() {
         log.info("get /");
 
-        Mono<FrontendDto> frontendData = authorService.getAll(GenreApi.GENRE_PAGE_REQUEST)
-                .map(authors -> new FrontendDto().withAuthors(authors))
-                .zipWith(genreService.getAll(GenreApi.GENRE_PAGE_REQUEST))
-                .map(data -> data.getT1().withGenres(data.getT2()))
+        Mono<FrontendDto> frontendData = authorService.getAll().collectList()
+                .map(authors -> new FrontendDto().withAuthors(new AuthorDto(authors)))
+                .zipWith(genreService.getAll().collectList())
+                .map(data -> data.getT1().withGenres(new GenreDto(data.getT2())))
                 .zipWith(bookService.getAll(BookApi.BOOK_PAGE_REQUEST))
                 .map(data -> data.getT1().withBooks(data.getT2()))
                 .zipWith(commentService.getAll(CommentApi.COMMENTS_PAGE_REQUEST))

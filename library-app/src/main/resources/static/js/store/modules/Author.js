@@ -9,30 +9,30 @@ export const authorModule = {
 
   mutations: {
 
-    addAuthorMutation(state, author) {
-      state.authors = [...state.authors, author]
-    },
+        addAuthorMutation(state, author) {
+          state.authors = [...state.authors, author]
+        },
 
-    updateAuthorMutation(state, author) {
-      var indexUpdated = state.authors.findIndex(item => item.id === author.id);
+        updateAuthorMutation(state, author) {
+          var indexUpdated = state.authors.findIndex(item => item.id === author.id);
 
-      state.authors = [
-          ...state.authors.slice(0, indexUpdated),
-          author,
-          ...state.authors.slice(indexUpdated + 1)
-      ]
-    },
-
-    removeAuthorMutation(state, author) {
-      var indexDeleted = state.authors.findIndex(item => item.id === author.id);
-
-      if (indexDeleted > -1) {
           state.authors = [
-              ...state.authors.slice(0, indexDeleted),
-              ...state.authors.slice(indexDeleted + 1)
+              ...state.authors.slice(0, indexUpdated),
+              author,
+              ...state.authors.slice(indexUpdated + 1)
           ]
-      }
-    }
+        },
+
+        removeAuthorMutation(state, author) {
+          var indexDeleted = state.authors.findIndex(item => item.id === author.id);
+
+          if (indexDeleted > -1) {
+              state.authors = [
+                  ...state.authors.slice(0, indexDeleted),
+                  ...state.authors.slice(indexDeleted + 1)
+              ]
+          }
+        }
   },
 
   actions: {
