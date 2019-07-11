@@ -52,8 +52,13 @@ public class Author {
     }
 
     public String getFullName() {
-        return String.format("%s %s", Objects.toString(firstName, ""),
-                Objects.toString(lastName, ""));
+        if (isAvailable()) {
+            return String.format("%s %s", Objects.toString(firstName, ""),
+                    Objects.toString(lastName, ""));
+        } else {
+            return lastName;
+        }
+
     }
 
     @JsonIgnoreProperties

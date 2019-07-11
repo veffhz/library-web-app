@@ -33,7 +33,7 @@ public class BookValidateServiceImpl implements BookValidateService {
 
         if (!book.getAuthor().isAvailable()) {
             log.info("skip!");
-            return book;
+            return new Book();
         }
 
         log.info("In: {}", book.getBookName());
@@ -58,7 +58,7 @@ public class BookValidateServiceImpl implements BookValidateService {
             e.printStackTrace();
         }
         log.info("Out: {}", book.getBookName());
-        return new Book(book.getAuthor(), book.getGenre(), book.getBookName(), book.getPublishDate(),
+        return new Book(null, null, "###", book.getPublishDate(),
                 book.getLanguage(), book.getPublishingHouse(), book.getCity(), book.getIsbn());
     }
 

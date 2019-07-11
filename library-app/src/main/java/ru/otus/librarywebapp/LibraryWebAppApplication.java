@@ -11,9 +11,8 @@ import org.springframework.integration.config.EnableIntegration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import ru.otus.dto.BookDto;
+import ru.otus.librarywebapp.dao.BookRepository;
 import ru.otus.librarywebapp.integration.IntegrationService;
-import ru.otus.librarywebapp.service.BookService;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -28,16 +27,18 @@ public class LibraryWebAppApplication {
 	private final AtomicInteger counter = new AtomicInteger();
 
 	@Autowired
-	private BookService bookService;
+	private BookRepository bookRepository;
 
 	@Autowired
 	private IntegrationService integrationService;
 
-	@Scheduled(initialDelay = 1000, fixedRate = 60000)
+	@Scheduled(initialDelay = 1000, fixedRate = 30000)
 	void init() {
-		bookService.getAll(PageRequest.of(counter.getAndIncrement(), 10))
-				.map(BookDto::getBooks).flatMap(ls -> integrationService.process(ls))
-				.subscribe();
+		System.out.println("r");
+		bookRepository.findAll(PageRequest.of(counter.getAndIncrement(), 10))
+				.collectList().flatMap(ls -> integrationService.process(ls)).subscribe(
+						result -> result.forEach(System.out::println)
+		);
 
 		//Mono.fromCallable(book -> integrationService.process(books))
 		//		.subscribeOn(Schedulers.elastic());

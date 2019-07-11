@@ -3,6 +3,7 @@ package ru.otus.librarywebapp.integration;
 import org.springframework.integration.annotation.Gateway;
 import org.springframework.integration.annotation.MessagingGateway;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import ru.otus.domain.Book;
