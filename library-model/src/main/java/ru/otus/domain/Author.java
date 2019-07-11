@@ -1,6 +1,7 @@
 package ru.otus.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,9 @@ import java.util.Objects;
 @Entity
 @Table(name = "authors")
 public class Author {
+
+    public static final String N_A = "n/a";
+
     @Id
     @javax.persistence.Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,6 +54,11 @@ public class Author {
     public String getFullName() {
         return String.format("%s %s", Objects.toString(firstName, ""),
                 Objects.toString(lastName, ""));
+    }
+
+    @JsonIgnoreProperties
+    public boolean isAvailable() {
+        return !N_A.equals(lastName);
     }
 
 }

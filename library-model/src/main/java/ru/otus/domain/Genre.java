@@ -1,5 +1,7 @@
 package ru.otus.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,6 +21,9 @@ import javax.validation.constraints.NotBlank;
 @Entity
 @Table(name = "genres")
 public class Genre {
+
+    public static final String N_A = "n/a";
+
     @Id
     @javax.persistence.Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,6 +35,11 @@ public class Genre {
 
     public Genre(String genreName) {
         this.genreName = genreName;
+    }
+
+    @JsonIgnoreProperties
+    public boolean isAvailable() {
+        return !N_A.equals(genreName);
     }
 
 }
