@@ -30,14 +30,16 @@ import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-@DisplayName("Test for Book validate service")
+@DisplayName("Test for book additional info service")
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(properties = "validate-service.url=http://mock.ru")
 class BookValidateServiceImplTest {
 
     private static final String HTML_TEST_PAGE = "/test_1_sheckley.html";
+    private static final String HTML_REDIRECT_TEST_PAGE = "/test_2_redirect.html";
+    private static final String WINDOWS_1251 = "windows-1251";
 
     @MockBean
     private RestTemplate restTemplate;
@@ -46,9 +48,10 @@ class BookValidateServiceImplTest {
     private BookValidateServiceImpl bookService;
 
     @Test
-    void validate() throws IOException, URISyntaxException {
+    @DisplayName("Test get additional data for book")
+    void shouldGetAdditionalData() throws IOException, URISyntaxException {
         URI uri = this.getClass().getResource(HTML_TEST_PAGE).toURI();
-        String body = new String(Files.readAllBytes(Paths.get(uri)), "windows-1251");
+        String body = new String(Files.readAllBytes(Paths.get(uri)), WINDOWS_1251);
 
         when(restTemplate.exchange(any(URI.class), any(HttpMethod.class), any(),
                 ArgumentMatchers.<Class<String>>any()))
@@ -57,6 +60,22 @@ class BookValidateServiceImplTest {
         AdditionalData additionalData = bookService.validate(book());
 
         assertEquals(additionalData.getItems().size(), 4);
+    }
+
+    @Test
+    @DisplayName("Test get additional data for book with redirect")
+    void shouldGetAdditionalDataWithRedirect() throws IOException, URISyntaxException {
+        URI uri = this.getClass().getResource(HTML_REDIRECT_TEST_PAGE).toURI();
+        String body = new String(Files.readAllBytes(Paths.get(uri)), WINDOWS_1251);
+
+        when(restTemplate.exchange(any(URI.class), any(HttpMethod.class), any(),
+                ArgumentMatchers.<Class<String>>any()))
+                .thenReturn(new ResponseEntity<>(body, HttpStatus.OK));
+
+        bookService.validate(book());
+
+        verify(restTemplate, times(2)).exchange(any(URI.class),
+                any(HttpMethod.class), any(), ArgumentMatchers.<Class<String>>any());
     }
 
     private Book book() {

@@ -21,7 +21,6 @@ import ru.otus.librarywebapp.service.BookService;
 import ru.otus.librarywebapp.service.CommentService;
 import ru.otus.librarywebapp.service.GenreService;
 
-
 @Slf4j
 @Controller
 public class HomeController {

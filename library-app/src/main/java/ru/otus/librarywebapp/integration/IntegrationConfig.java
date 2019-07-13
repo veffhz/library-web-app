@@ -2,31 +2,30 @@ package ru.otus.librarywebapp.integration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import org.springframework.integration.channel.PublishSubscribeChannel;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.expression.common.LiteralExpression;
+import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.dsl.MessageChannels;
 import org.springframework.integration.dsl.Pollers;
+import org.springframework.integration.mongodb.outbound.MongoDbStoringMessageHandler;
 import org.springframework.integration.scheduling.PollerMetadata;
+import org.springframework.messaging.MessageHandler;
 
+import ru.otus.domain.AdditionalData;
 import ru.otus.domain.Book;
-
 import ru.otus.librarywebapp.service.BookValidateService;
 
 import java.util.concurrent.Executors;
 
 @Configuration
 public class IntegrationConfig {
+
     @Bean
     public QueueChannel bookInChannel() {
         return MessageChannels.queue(10).get();
-    }
-
-    @Bean
-    public PublishSubscribeChannel bookOutChannel() {
-        return MessageChannels.publishSubscribe().get();
     }
 
     @Bean (name = PollerMetadata.DEFAULT_POLLER)
@@ -35,16 +34,24 @@ public class IntegrationConfig {
     }
 
     @Bean
+    @ServiceActivator(inputChannel = "storeChannel")
+    public MessageHandler mongoOutboundAdapter(MongoTemplate mongoTemplate) {
+        MongoDbStoringMessageHandler adapter = new MongoDbStoringMessageHandler(mongoTemplate);
+        adapter.setCollectionNameExpression(new LiteralExpression("additionalData"));
+        return adapter;
+    }
+
+    @Bean
     public IntegrationFlow flow(BookValidateService bookValidateService) {
         return IntegrationFlows.from("bookInChannel")
                 .log()
                 .split()
                 .channel(c -> c.executor(Executors.newCachedThreadPool()))
-                //.filter((Book book) -> book.getAuthor().isAvailable())
+                .filter((Book book) -> book.getAuthor().isAvailable())
                 .transform(Book.class, bookValidateService::validate)
-                .aggregate()
+                .filter(AdditionalData::isNotEmpty)
                 .log()
-                .channel("bookOutChannel")
+                .channel("storeChannel")
                 .get();
     }
 }

@@ -23,8 +23,7 @@ public class ValidateTask {
     @Scheduled(initialDelay = 1000, fixedRate = 30000)
     void execute() {
         bookRepository.findAll(PageRequest.of(counter.getAndIncrement(), 10))
-                .collectList().flatMap(integrationService::process).subscribe(
-                result -> result.forEach(System.out::println) // TODO
-        );
+                .collectList().doOnNext(integrationService::process).subscribe();
+
     }
 }

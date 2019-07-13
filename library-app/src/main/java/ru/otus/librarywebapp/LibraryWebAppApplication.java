@@ -1,12 +1,8 @@
 package ru.otus.librarywebapp;
 
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
@@ -36,14 +32,16 @@ public class LibraryWebAppApplication {
 	}
 
 	@Bean
-	public RestTemplate restTemplate() {
-		return new RestTemplate(getClientHttpRequestFactory());
+	public RestTemplate restTemplate(ClientHttpRequestFactory clientHttpRequestFactory) {
+		return new RestTemplate(clientHttpRequestFactory);
 	}
 
 	@Bean
-	public ClientHttpRequestFactory getClientHttpRequestFactory() {
+	public ClientHttpRequestFactory clientHttpRequestFactory() {
 		HttpComponentsClientHttpRequestFactory clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory();
-		clientHttpRequestFactory.setConnectTimeout(60000);
+		clientHttpRequestFactory.setConnectTimeout(9000);
+		clientHttpRequestFactory.setReadTimeout(9000);
+		clientHttpRequestFactory.setConnectionRequestTimeout(9000);
 		return clientHttpRequestFactory;
 	}
 

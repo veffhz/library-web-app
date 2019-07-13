@@ -13,8 +13,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -23,12 +23,17 @@ import ru.otus.domain.Book;
 import ru.otus.librarywebapp.service.BookValidateService;
 
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class BookValidateServiceImpl implements BookValidateService {
+
+    private static final Charset WIN_CHARSET = Charset.forName("cp1251");
 
     private final RestTemplate restTemplate;
     private final String url;
@@ -41,14 +46,10 @@ public class BookValidateServiceImpl implements BookValidateService {
 
     @Override
     public AdditionalData validate(Book book) {
-        log.info("thread: {},  In: {}", Thread.currentThread().getName(), book.getBookName());
 
         AdditionalData data = new AdditionalData();
 
-        if (!book.getAuthor().isAvailable()) {
-            log.info("skip!");
-            return data;
-        }
+        log.info("thread: {},  In: {}", Thread.currentThread().getName(), book.getBookName());
 
         try {
             UriComponentsBuilder param = UriComponentsBuilder.fromHttpUrl(url)
@@ -61,7 +62,7 @@ public class BookValidateServiceImpl implements BookValidateService {
 
             HttpEntity<?> entity = new HttpEntity<>(new HttpHeaders());
 
-            ResponseEntity<String> responseEntity = restTemplate.exchange(param.build().encode(Charset.forName("cp1251")).toUri(),
+            ResponseEntity<String> responseEntity = restTemplate.exchange(param.build().encode(WIN_CHARSET).toUri(),
                     HttpMethod.GET, entity, String.class);
 
             if (log.isDebugEnabled()) {
@@ -69,6 +70,15 @@ public class BookValidateServiceImpl implements BookValidateService {
             }
 
             Document document = Jsoup.parse(Objects.requireNonNull(responseEntity.getBody()));
+
+            Element meta = document.select("meta[http-equiv]").first();
+            if (Objects.nonNull(meta) && "refresh".equals(meta.attr("http-equiv"))) {
+                log.info("http-equiv=\"refresh\" find, try again...");
+                responseEntity = restTemplate.exchange(param.build().encode(WIN_CHARSET).toUri(),
+                        HttpMethod.GET, entity, String.class);
+
+                document = Jsoup.parse(Objects.requireNonNull(responseEntity.getBody()));
+            }
 
             Elements tds = document.select("td > big").stream()
                     .map(Element::parent)
@@ -78,21 +88,27 @@ public class BookValidateServiceImpl implements BookValidateService {
                 Elements big = td.select("big");
                 Elements small = td.select("small");
 
-                log.info("{} {}", big.text(), small.text());
-
                 data.getItems().add(big.text());
                 data.getItems().add(small.text());
             }
 
-            data.setBook(book);
+            log.info("found {} items", data.getItems().size());
 
-            Thread.sleep(6000);
+            if (data.isNotEmpty()) {
+                data.setBook(book);
+            } else {
+                if (log.isTraceEnabled()) {  // TODO optional return
+                    Path file = Files.createFile(Paths.get(Thread.currentThread().getName() + "-" + book.getBookName() + ".html"));
+                    Files.write(file, responseEntity.getBody().getBytes());
+                }
+            }
 
+        } catch (RestClientException e) {
+            log.warn(e.getMessage(), e);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
 
-        log.info("Out: {}", data.getItems().size());
         return data;
     }
 

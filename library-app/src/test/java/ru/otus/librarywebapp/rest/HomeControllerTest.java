@@ -50,7 +50,7 @@ class HomeControllerTest {
 
     @Test
     @DisplayName("Test redirect on / ")
-    public void shouldRedirectToLogin() {
+    void shouldRedirectToLogin() {
         this.webClient.get()
                 .uri("/")
                 .exchange()

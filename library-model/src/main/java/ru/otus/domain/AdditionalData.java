@@ -10,6 +10,7 @@ import java.util.List;
 @Data
 @Document(collection = "additionalData")
 public class AdditionalData {
+
     private final List<String> items;
 
     @DBRef
@@ -19,7 +20,7 @@ public class AdditionalData {
         this.items = new ArrayList<>();
     }
 
-    public boolean isEmpty() {
-        return items.isEmpty();
+    public boolean isNotEmpty() {
+        return !items.isEmpty();
     }
 }
