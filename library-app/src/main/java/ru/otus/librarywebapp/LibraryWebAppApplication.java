@@ -1,15 +1,22 @@
 package ru.otus.librarywebapp;
 
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.integration.config.EnableIntegration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import org.springframework.web.client.RestTemplate;
 import ru.otus.librarywebapp.dao.BookRepository;
 import ru.otus.librarywebapp.integration.IntegrationService;
 import ru.otus.librarywebapp.integration.ValidateTask;
@@ -26,6 +33,18 @@ public class LibraryWebAppApplication {
 	@ConditionalOnProperty(prefix = "validate-service", value = "enabled", havingValue = "true")
 	public ValidateTask validateTask(IntegrationService integrationService, BookRepository bookRepository) {
 		return new ValidateTask(integrationService, bookRepository);
+	}
+
+	@Bean
+	public RestTemplate restTemplate() {
+		return new RestTemplate(getClientHttpRequestFactory());
+	}
+
+	@Bean
+	public ClientHttpRequestFactory getClientHttpRequestFactory() {
+		HttpComponentsClientHttpRequestFactory clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory();
+		clientHttpRequestFactory.setConnectTimeout(60000);
+		return clientHttpRequestFactory;
 	}
 
 	public static void main(String[] args) {

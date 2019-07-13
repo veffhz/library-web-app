@@ -1,65 +1,99 @@
 package ru.otus.librarywebapp.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import ru.otus.domain.AdditionalData;
 import ru.otus.domain.Book;
 import ru.otus.librarywebapp.service.BookValidateService;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.nio.charset.Charset;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class BookValidateServiceImpl implements BookValidateService {
 
-    private final RestTemplate client;
-    private final String urlValidateService;
+    private final RestTemplate restTemplate;
+    private final String url;
 
     @Autowired
-    public BookValidateServiceImpl(@Value("${validate-service.url}") String urlValidateService,
-                                   RestTemplateBuilder builder) {
-        this.client = builder.build();
-        this.urlValidateService = urlValidateService;
+    public BookValidateServiceImpl(RestTemplate restTemplate, @Value("${validate-service.url}") String url) {
+        this.restTemplate = restTemplate;
+        this.url = url;
     }
 
     @Override
-    public Book validate(Book book) {
-        log.info("{}", Thread.currentThread().getName());
+    public AdditionalData validate(Book book) {
+        log.info("thread: {},  In: {}", Thread.currentThread().getName(), book.getBookName());
+
+        AdditionalData data = new AdditionalData();
 
         if (!book.getAuthor().isAvailable()) {
             log.info("skip!");
-            return new Book();
+            return data;
         }
 
-        log.info("In: {}", book.getBookName());
-
         try {
-            //title=Paskal&authors=Kotov&isbn=isbn&publisher=house&r=0&s=1&viewsize=15&startidx=0
-            //title=Paskal&authors=Kotov&r=0&s=1&viewsize=15&startidx=0
-            Map<String, String> vars = new HashMap<>();
+            UriComponentsBuilder param = UriComponentsBuilder.fromHttpUrl(url)
+                    .queryParam("title", book.getBookName())
+                    .queryParam("authors", book.getAuthor().getLastName())
+                    .queryParam("publisher", "")
+                    .queryParam("isbn", "")
+                    .queryParam("r", 0)
+                    .queryParam("s", 1);
 
-            vars.put("title", book.getBookName());
-            vars.put("authors", book.getAuthor().getLastName());
-            vars.put("startidx", "0");
-            vars.put("r", "0");
-            vars.put("s", "1");
+            HttpEntity<?> entity = new HttpEntity<>(new HttpHeaders());
 
-            //String response = client.getForObject(urlValidateService, String.class, vars);
-            //log.info(response);
+            ResponseEntity<String> responseEntity = restTemplate.exchange(param.build().encode(Charset.forName("cp1251")).toUri(),
+                    HttpMethod.GET, entity, String.class);
+
+            if (log.isDebugEnabled()) {
+                log.debug(responseEntity.getBody());
+            }
+
+            Document document = Jsoup.parse(Objects.requireNonNull(responseEntity.getBody()));
+
+            Elements tds = document.select("td > big").stream()
+                    .map(Element::parent)
+                    .collect(Collectors.toCollection(Elements::new));
+
+            for (Element td : tds) {
+                Elements big = td.select("big");
+                Elements small = td.select("small");
+
+                log.info("{} {}", big.text(), small.text());
+
+                data.getItems().add(big.text());
+                data.getItems().add(small.text());
+            }
+
+            data.setBook(book);
 
             Thread.sleep(6000);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
-        log.info("Out: {}", book.getBookName());
-        return new Book(null, null, "###", book.getPublishDate(),
-                book.getLanguage(), book.getPublishingHouse(), book.getCity(), book.getIsbn());
+
+        log.info("Out: {}", data.getItems().size());
+        return data;
     }
 
 }

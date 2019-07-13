@@ -11,10 +11,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import ru.otus.librarywebapp.dao.AuthorRepository;
 import ru.otus.librarywebapp.dao.BookRepository;
 import ru.otus.librarywebapp.dao.CommentRepository;
-import ru.otus.librarywebapp.dao.GenreRepository;
 
 import ru.otus.domain.Author;
 import ru.otus.domain.Book;
@@ -36,12 +34,6 @@ class BookServiceImplTest {
 
     @SpyBean
     private BookServiceImpl bookService;
-
-    //@MockBean
-    //private AuthorRepository authorRepository;
-
-    //@MockBean
-    //private GenreRepository genreRepository;
 
     @MockBean
     private CommentRepository commentRepository;
