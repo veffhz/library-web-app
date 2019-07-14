@@ -14,7 +14,6 @@ import java.time.LocalDate;
 @Slf4j
 public class LibraryItemProcessor implements ItemProcessor<LibraryDto, LibraryItem> {
 
-    private static final String N_A = "n/a";
     private LocalDate LocalDateMIN = LocalDate.of(1900, 1, 1);
 
     @Override
@@ -53,7 +52,7 @@ public class LibraryItemProcessor implements ItemProcessor<LibraryDto, LibraryIt
         if (fio.length > 1) {
             return new Author(fio[1].trim(), LocalDateMIN, fio[0].trim());
         } else {
-            return new Author(N_A, LocalDateMIN, fio[0].trim());
+            return new Author(Author.N_A, LocalDateMIN, fio[0].trim());
         }
     }
 
@@ -65,7 +64,7 @@ public class LibraryItemProcessor implements ItemProcessor<LibraryDto, LibraryIt
     private Book parseBook(String strBookName, String year, String isbn, Author author, Genre genre) {
         String bookName = strBookName.trim();
         LocalDate date = LocalDate.of(Integer.parseInt(year), 1, 1);
-        return new Book(author, genre, bookName, date, "RU", N_A, N_A, isbn);
+        return new Book(author, genre, bookName, date, "RU", Author.N_A, Genre.N_A, isbn);
     }
 
 }

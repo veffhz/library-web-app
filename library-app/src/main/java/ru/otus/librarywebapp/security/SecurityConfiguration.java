@@ -41,6 +41,7 @@ public class SecurityConfiguration  {
                 .pathMatchers(HttpMethod.PUT, "/api/**").access(authorizationDecisionManger::isUser)
                 .pathMatchers(HttpMethod.POST, "/api/**").access(authorizationDecisionManger::isUser)
                 .pathMatchers(HttpMethod.DELETE, "/api/**").access(authorizationDecisionManger::isAdmin)
+                .pathMatchers(HttpMethod.PUT, "/task/**").access(authorizationDecisionManger::isAdmin)
                 .anyExchange().authenticated()
                 .and().formLogin()
                 .authenticationManager(authenticationManager())

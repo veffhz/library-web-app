@@ -29,7 +29,7 @@ public class Comment {
     private String id;
 
     @DBRef
-    @ManyToOne//(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "book_id")
     private Book book;
 

@@ -2,3 +2,7 @@ spring:
   data:
     mongodb:
       database: library
+
+validate-service:
+  url: http://findbook.ru/search/d1
+  enabled: true

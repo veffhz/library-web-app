@@ -45,4 +45,8 @@ public class Helper {
         return LocalDate.parse(date, formatter).atStartOfDay();
     }
 
+    public static LocalDate toLocalDate(String date) {
+        return LocalDate.parse(date, formatter);
+    }
+
 }
