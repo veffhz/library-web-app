@@ -79,12 +79,13 @@ public class TotalCountEndPoint {
     @GetMapping
     @ResponseBody
     public Mono<ResponseEntity<Map>> totalCount(ServerHttpRequest serverHttpRequest) {
-        Map<String, String> links = new HashMap<>();
-        links.put("authors", newPath(serverHttpRequest.getURI(), "/authors"));
-        links.put("books", newPath(serverHttpRequest.getURI(), "/books"));
-        links.put("genres", newPath(serverHttpRequest.getURI(), "/genres"));
-        links.put("comments", newPath(serverHttpRequest.getURI(), "/comments"));
-        return Mono.just(ResponseEntity.status(HttpStatus.OK).body(links));
+        Map<String, Link> links = new HashMap<>();
+        links.put("self", new Link(newPath(serverHttpRequest.getURI(), "")));
+        links.put("authors", new Link(newPath(serverHttpRequest.getURI(), "/authors")));
+        links.put("books", new Link(newPath(serverHttpRequest.getURI(), "/books")));
+        links.put("genres", new Link(newPath(serverHttpRequest.getURI(), "/genres")));
+        links.put("comments", new Link(newPath(serverHttpRequest.getURI(), "/comments")));
+        return Mono.just(ResponseEntity.status(HttpStatus.OK).body(Collections.singletonMap("_links", links)));
     }
 
     private String newPath(URI uri, String path) {

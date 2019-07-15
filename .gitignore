@@ -3,6 +3,7 @@ HELP.md
 *.db
 !.mvn/wrapper/maven-wrapper.jar
 *.log
+logs/*.gz
 
 ### STS ###
 .apt_generated
