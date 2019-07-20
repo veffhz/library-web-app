@@ -22,7 +22,7 @@ RUN mkdir -p $PROJECT_DIR
 
 WORKDIR $PROJECT_DIR
 
-COPY --from=MAVEN_IMAGE /tmp/project/library-app/target/library-app*.jar $PROJECT_DIR/library-app.jar
+COPY --from=MAVEN_IMAGE /tmp/project/library-app/target/library-app.jar $PROJECT_DIR/library-app.jar
 
 EXPOSE 8080
 
