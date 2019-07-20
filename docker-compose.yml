@@ -1,0 +1,19 @@
+version: '3.1'
+
+services:
+  library-app:
+    build: .
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:3.6
+    volumes:
+      - library_db:/data/db
+    restart: always
+
+volumes:
+  library_db:
