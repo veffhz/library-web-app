@@ -1,6 +1,7 @@
 package ru.otus.librarywebapp.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.netflix.hystrix.HystrixCommands;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import ru.otus.dto.GenreDto;
 import ru.otus.librarywebapp.dao.GenreRepository;
 import ru.otus.librarywebapp.service.BookService;
 import ru.otus.librarywebapp.service.GenreService;
+import ru.otus.librarywebapp.utils.Helper;
 
 @Service
 public class GenreServiceImpl implements GenreService {
@@ -43,7 +45,15 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public Flux<Genre> getAll() {
-        return repository.findAll();
+        return HystrixCommands
+                .from(repository.findAll())
+                .fallback(fallback())
+                .commandName("findAll")
+                .toFlux();
+    }
+
+    private Flux<Genre> fallback() {
+        return Flux.fromIterable(Helper.notAvailableGenres());
     }
 
     @Override

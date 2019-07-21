@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
@@ -23,6 +24,7 @@ import java.time.Duration;
 @EnableScheduling
 @EnableReactiveMongoRepositories
 @EnableIntegration
+@EnableCircuitBreaker
 @IntegrationComponentScan
 public class LibraryWebAppApplication {
 

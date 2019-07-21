@@ -1,6 +1,7 @@
 package ru.otus.librarywebapp.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.netflix.hystrix.HystrixCommands;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,7 @@ import ru.otus.dto.CommentDto;
 import ru.otus.librarywebapp.dao.CommentRepository;
 import ru.otus.librarywebapp.rest.CommentApi;
 import ru.otus.librarywebapp.service.CommentService;
+import ru.otus.librarywebapp.utils.Helper;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -42,14 +44,29 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Flux<Comment> getAll() {
-        return repository.findAll();
+        return HystrixCommands
+                .from(repository.findAll())
+                .fallback(fallback())
+                .commandName("findAll")
+                .toFlux();
+    }
+
+    private Flux<Comment> fallback() {
+        return Flux.fromIterable(Helper.notAvailableComments());
+    }
+
+    private Mono<CommentDto> fallbackMono() {
+        return Mono.just(Helper.notAvailableCommentDto());
     }
 
     @Override
     public Mono<CommentDto> getAll(Pageable pageable) {
-        return repository.findAll(pageable).collectList().zipWith(repository.count())
+        return HystrixCommands.from(repository.findAll(pageable).collectList().zipWith(repository.count())
                 .map(data -> new CommentDto(data.getT1(), pageable.getPageNumber(),
-                        data.getT2() / CommentApi.COMMENTS_PER_PAGE));
+                        data.getT2() / CommentApi.COMMENTS_PER_PAGE)))
+                .fallback(fallbackMono())
+                .commandName("findAll")
+                .toMono();
     }
 
     @Override
