@@ -4,15 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.web.annotation.RestControllerEndpoint;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import reactor.core.publisher.Mono;
 
 import ru.otus.librarywebapp.service.AuthorService;
 import ru.otus.librarywebapp.service.BookService;
@@ -45,47 +43,42 @@ public class TotalCountEndPoint {
 
     @GetMapping("/authors")
     @ResponseBody
-    public Mono<ResponseEntity<Map>> authors() {
-        return authorService.count()
-                .map(count -> ResponseEntity.status(HttpStatus.OK)
-                        .body(Collections.singletonMap("authors", count)));
+    public ResponseEntity<Map> authors() {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                Collections.singletonMap("authors", authorService.count()));
     }
 
     @GetMapping("/books")
     @ResponseBody
-    public Mono<ResponseEntity<Map>> books() {
-        return bookService.count()
-                .map(count -> ResponseEntity.status(HttpStatus.OK)
-                        .body(Collections.singletonMap("books", count)));
+    public ResponseEntity<Map> books() {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                Collections.singletonMap("books", bookService.count()));
     }
 
     @GetMapping("/genres")
     @ResponseBody
-    public Mono<ResponseEntity<Map>> genres() {
-        return genreService.count()
-                .map(count -> ResponseEntity.status(HttpStatus.OK)
-                        .body(Collections.singletonMap("genres", count)));
+    public ResponseEntity<Map> genres() {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                Collections.singletonMap("genres", genreService.count()));
     }
 
     @GetMapping("/comments")
     @ResponseBody
-    public Mono<ResponseEntity<Map>> comments() {
-        return commentService.count()
-                .map(count -> ResponseEntity.status(HttpStatus.OK)
-                        .body(Collections.singletonMap("comments", count)));
+    public ResponseEntity<Map> comments() {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                Collections.singletonMap("comments", commentService.count()));
     }
-
 
     @GetMapping
     @ResponseBody
-    public Mono<ResponseEntity<Map>> totalCount(ServerHttpRequest serverHttpRequest) {
+    public ResponseEntity<Map> totalCount(HttpRequest httpRequest) {
         Map<String, Link> links = new HashMap<>();
-        links.put("self", new Link(newPath(serverHttpRequest.getURI(), "")));
-        links.put("authors", new Link(newPath(serverHttpRequest.getURI(), "/authors")));
-        links.put("books", new Link(newPath(serverHttpRequest.getURI(), "/books")));
-        links.put("genres", new Link(newPath(serverHttpRequest.getURI(), "/genres")));
-        links.put("comments", new Link(newPath(serverHttpRequest.getURI(), "/comments")));
-        return Mono.just(ResponseEntity.status(HttpStatus.OK).body(Collections.singletonMap("_links", links)));
+        links.put("self", new Link(newPath(httpRequest.getURI(), "")));
+        links.put("authors", new Link(newPath(httpRequest.getURI(), "/authors")));
+        links.put("books", new Link(newPath(httpRequest.getURI(), "/books")));
+        links.put("genres", new Link(newPath(httpRequest.getURI(), "/genres")));
+        links.put("comments", new Link(newPath(httpRequest.getURI(), "/comments")));
+        return ResponseEntity.status(HttpStatus.OK).body(Collections.singletonMap("_links", links));
     }
 
     private String newPath(URI uri, String path) {

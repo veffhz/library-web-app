@@ -3,11 +3,10 @@ package ru.otus.librarywebapp.rest;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,22 +17,21 @@ public class UserApi {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/api/user")
-    public Mono<List<Object>> getUser() {
+    public List<Object> getUser() {
         log.info("get current user");
-
-        return ReactiveSecurityContextHolder.getContext()
-                .map(SecurityContext::getAuthentication)
-                .map(list -> Arrays.asList(list.getName(), list.getDetails(), list.getPrincipal(), list.getAuthorities()));
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        return Arrays.asList(authentication.getName(), authentication.getDetails(),
+                authentication.getPrincipal(), authentication.getAuthorities());
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/api/user")
-    public Mono<List<Object>> create(@RequestBody String data) {
+    public List<Object> create(@RequestBody String data) {
         log.info("receive data {}", data);
-        // TODO create user
-        return ReactiveSecurityContextHolder.getContext()
-                .map(SecurityContext::getAuthentication)
-                .map(sec -> Arrays.asList(sec.getName(), sec.getAuthorities(), data));
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        return Arrays.asList(authentication.getName(), authentication.getAuthorities(), data);
     }
 
     // TODO implement

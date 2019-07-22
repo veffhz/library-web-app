@@ -1,10 +1,9 @@
 package ru.otus.librarywebapp.dao;
 
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
-import reactor.core.publisher.Mono;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import ru.otus.domain.Role;
 
-public interface RoleRepository extends ReactiveMongoRepository<Role, String> {
-    Mono<Role> findByRoleName(String roleName);
+public interface RoleRepository extends MongoRepository<Role, String> {
+    Role findByRoleName(String roleName);
 }

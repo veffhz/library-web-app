@@ -1,12 +1,12 @@
 package ru.otus.librarywebapp.dao;
 
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
-
-import reactor.core.publisher.Flux;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import ru.otus.domain.Comment;
 
-public interface CommentRepository extends ReactiveMongoRepository<Comment, String>, PageableFindAll<Comment> {
-    Flux<Comment> findByBookId(String bookId);
-    Flux<Comment> deleteByBookId(String bookId);
+import java.util.List;
+
+public interface CommentRepository extends MongoRepository<Comment, String>, PageableFindAll<Comment> {
+    List<Comment> findByBookId(String bookId);
+    List<Comment> deleteByBookId(String bookId);
 }

@@ -8,8 +8,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import reactor.core.publisher.Mono;
-
 import ru.otus.domain.Book;
 import ru.otus.dto.BookDto;
 
@@ -38,37 +36,37 @@ public class BookApi {
     }
 
     @GetMapping("/api/book")
-    public Mono<BookDto> getAll(@RequestParam("page") int page) {
+    public BookDto getAll(@RequestParam("page") int page) {
         log.info("get all books, page {}", page);
         return bookService.getAll(PageRequest.of(page, BOOKS_PER_PAGE, BOOK_SORT));
     }
 
     @GetMapping("/api/book/{id}")
-    public Mono<Book> getById(@PathVariable String id) {
+    public Book getById(@PathVariable String id) {
         log.info("get books by id {}", id);
         return bookService.getById(id)
-                .switchIfEmpty(Mono.error(BookNotFoundException::new));
+                .orElseThrow(BookNotFoundException::new);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/api/book")
-    public Mono<Book> update(@Valid @RequestBody Book book) {
+    public Book update(@Valid @RequestBody Book book) {
         log.info("update book {} by id {}", book, book.getId());
         return bookService.update(book);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/api/book")
-    public Mono<Book> create(@Valid @RequestBody Book book) {
+    public Book create(@Valid @RequestBody Book book) {
         log.info("create book {}", book);
         return bookService.insert(book);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/api/book/{id}")
-    public Mono<Void> delete(@PathVariable String id) {
+    public void delete(@PathVariable String id) {
         log.info("delete book by id {}", id);
-        return bookService.deleteById(id);
+        bookService.deleteById(id);
     }
 
 }

@@ -4,12 +4,11 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class Link {
+class Link {
 
     @Getter
     private final String href;
 
     @Getter
     private boolean templated;
-
 }

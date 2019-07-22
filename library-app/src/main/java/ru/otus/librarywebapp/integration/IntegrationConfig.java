@@ -1,5 +1,6 @@
 package ru.otus.librarywebapp.integration;
 
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -13,15 +14,26 @@ import org.springframework.integration.dsl.Pollers;
 import org.springframework.integration.mongodb.outbound.MongoDbStoringMessageHandler;
 import org.springframework.integration.scheduling.PollerMetadata;
 import org.springframework.messaging.MessageHandler;
+import org.springframework.web.client.RestTemplate;
 
 import ru.otus.domain.AdditionalData;
 import ru.otus.domain.Book;
+
 import ru.otus.librarywebapp.service.BookValidateService;
 
+import java.time.Duration;
 import java.util.concurrent.Executors;
 
 @Configuration
 public class IntegrationConfig {
+
+    @Bean
+    public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
+        return restTemplateBuilder
+                .setConnectTimeout(Duration.ofSeconds(5))
+                .setReadTimeout(Duration.ofSeconds(5))
+                .build();
+    }
 
     @Bean
     public QueueChannel bookInChannel() {

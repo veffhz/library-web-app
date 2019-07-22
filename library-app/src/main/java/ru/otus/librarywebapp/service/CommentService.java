@@ -2,20 +2,20 @@ package ru.otus.librarywebapp.service;
 
 import org.springframework.data.domain.Pageable;
 
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
 import ru.otus.domain.Comment;
 import ru.otus.dto.CommentDto;
 
+import java.util.List;
+import java.util.Optional;
+
 public interface CommentService {
-    Mono<Long> count();
-    Mono<Comment> getById(String id);
-    Flux<Comment> getByBookId(String bookId);
-    Flux<Comment> getAll();
-    Mono<CommentDto> getAll(Pageable pageable);
-    Mono<Void> deleteById(String id);
-    Flux<Comment> deleteByBookId(String bookId);
-    Mono<Comment> update(Comment comment);
-    Mono<Comment> insert(Comment comment);
+    long count();
+    Optional<Comment> getById(String id);
+    List<Comment> getByBookId(String bookId);
+    List<Comment> getAll();
+    CommentDto getAll(Pageable pageable);
+    void deleteById(String id);
+    List<Comment> deleteByBookId(String bookId);
+    Comment update(Comment comment);
+    Comment insert(Comment comment);
 }

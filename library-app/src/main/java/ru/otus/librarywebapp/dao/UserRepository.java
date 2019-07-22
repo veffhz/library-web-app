@@ -1,12 +1,10 @@
 package ru.otus.librarywebapp.dao;
 
-import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import reactor.core.publisher.Mono;
 
 import ru.otus.domain.User;
 
-public interface UserRepository extends ReactiveMongoRepository<User, String> {
-    Mono<UserDetails> findByUsername(String username);
+public interface UserRepository extends MongoRepository<User, String> {
+    UserDetails findByUsername(String username);
 }

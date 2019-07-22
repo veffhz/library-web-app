@@ -8,18 +8,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
 import ru.otus.librarywebapp.dao.AuthorRepository;
 import ru.otus.librarywebapp.service.BookService;
 import ru.otus.librarywebapp.service.impl.AuthorServiceImpl;
 
 import ru.otus.domain.Author;
-import ru.otus.domain.Book;
-import ru.otus.domain.Genre;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -41,10 +37,10 @@ class AuthorServiceImplTest {
     @Test
     @DisplayName("Test invoke get author by id")
     void shouldGetAuthorById() {
-        Mono<Author> authorMock = Mono.just(new Author("test", LocalDate.now(), "test"));
-        when(authorRepository.findById(any(String.class))).thenReturn(authorMock);
+        Author authorMock = new Author("test", LocalDate.now(), "test");
+        when(authorRepository.findById(any(String.class))).thenReturn(Optional.of(authorMock));
 
-        Mono<Author> author = authorService.getById("000");
+        Author author = authorService.getById("000").get();
 
         verify(authorRepository, times(1)).findById("000");
         assertEquals(authorMock, author);
@@ -60,14 +56,6 @@ class AuthorServiceImplTest {
     @Test
     @DisplayName("Test invoke delete author by id")
     void shouldDeleteAuthorById() {
-        Book book = new Book(new Author("", null, ""),
-                new Genre(""), "Book",
-                LocalDate.now(), "russian",
-                "Test", "Test", "555-555");
-
-        when(bookService.deleteByAuthorId(any(String.class))).thenReturn(Flux.just(book));
-        when(authorRepository.deleteById(any(String.class))).thenReturn(Mono.empty());
-
         authorService.deleteById("000");
         verify(authorRepository, times(1)).deleteById("000");
         verify(bookService, times(1)).deleteByAuthorId(any(String.class));
@@ -77,7 +65,7 @@ class AuthorServiceImplTest {
     @DisplayName("Test invoke insert new author")
     void shouldInsertNewAuthor() {
         Author author = new Author("test", LocalDate.now(),"test");
-        when(authorRepository.save(author)).thenReturn(Mono.just(author));
+        when(authorRepository.save(author)).thenReturn(author);
         authorService.insert(author);
         verify(authorRepository, times(1)).insert(author);
     }

@@ -4,67 +4,61 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
+import org.springframework.security.access.vote.AffirmativeBased;
 import org.springframework.security.access.vote.RoleHierarchyVoter;
-import org.springframework.security.authentication.ReactiveAuthenticationManager;
-import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
-import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
-import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository;
 
-@EnableWebFluxSecurity
-public class SecurityConfiguration  {
+import java.util.Collections;
 
-    private final CustomReactiveUserDetailsService userDetailsService;
+@EnableWebSecurity
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    public SecurityConfiguration(CustomReactiveUserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    @Bean
+    public RoleHierarchy roleHierarchy() {
+        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+        roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_USER");
+        return roleHierarchy;
     }
 
     @Bean
     public RoleHierarchyVoter roleHierarchyVoter() {
-        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-        roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_USER");
-        return new RoleHierarchyVoter(roleHierarchy);
+        return new RoleHierarchyVoter(roleHierarchy());
     }
 
     @Bean
-    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http, CustomAuthorizationDecisionManger authorizationDecisionManger) {
-        return http
-                .csrf().disable()
-                .authorizeExchange()
-                .pathMatchers(HttpMethod.GET, "/api/**").access(authorizationDecisionManger::isUser)
-                .pathMatchers(HttpMethod.PUT, "/api/**").access(authorizationDecisionManger::isUser)
-                .pathMatchers(HttpMethod.POST, "/api/**").access(authorizationDecisionManger::isUser)
-                .pathMatchers(HttpMethod.DELETE, "/api/**").access(authorizationDecisionManger::isAdmin)
-                .pathMatchers(HttpMethod.PUT, "/task/**").access(authorizationDecisionManger::isAdmin)
-                .anyExchange().authenticated()
-                .and().formLogin()
-                .authenticationManager(authenticationManager())
-                .securityContextRepository(securityContextRepository())
-                .and().build();
+    public AffirmativeBased accessDecisionManager() {
+        return new AffirmativeBased(Collections.singletonList(roleHierarchyVoter()));
     }
 
-    @Bean
-    public ReactiveAuthenticationManager authenticationManager() {
-        UserDetailsRepositoryReactiveAuthenticationManager manager =
-                new UserDetailsRepositoryReactiveAuthenticationManager(userDetailsService);
-        manager.setPasswordEncoder(passwordEncoder());
-        return manager;
+    @Override
+    public void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable()
+                .authorizeRequests()
+                .mvcMatchers(HttpMethod.GET, "/api/**").access("hasRole('ROLE_USER')")
+                .mvcMatchers(HttpMethod.PUT, "/api/**").access("hasRole('ROLE_USER')")
+                .mvcMatchers(HttpMethod.POST, "/api/**").access("hasRole('ROLE_USER')")
+                .mvcMatchers(HttpMethod.DELETE, "/api/**").access("hasRole('ROLE_ADMIN')")
+                .mvcMatchers(HttpMethod.PUT, "/task/**").access("hasRole('ROLE_ADMIN')")
+                .anyRequest().authenticated()
+                .and().formLogin();
+    }
+
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth,
+                                                       CustomUserDetailsService userDetailsService) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public WebSessionServerSecurityContextRepository securityContextRepository() {
-        return new WebSessionServerSecurityContextRepository();
     }
 
 }

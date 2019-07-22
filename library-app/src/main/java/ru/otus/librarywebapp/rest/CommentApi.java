@@ -8,11 +8,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import reactor.core.publisher.Mono;
-
 import ru.otus.domain.Comment;
-
 import ru.otus.dto.CommentDto;
+
 import ru.otus.librarywebapp.exception.CommentNotFoundException;
 import ru.otus.librarywebapp.service.CommentService;
 
@@ -38,37 +36,37 @@ public class CommentApi {
     }
 
     @GetMapping("/api/comment")
-    public Mono<CommentDto> getAll(@RequestParam("page") int page) {
+    public CommentDto getAll(@RequestParam("page") int page) {
         log.info("get all comments, page {}", page);
         return commentService.getAll(PageRequest.of(page, COMMENTS_PER_PAGE, COMMENT_SORT));
     }
 
     @GetMapping("/api/comment/{id}")
-    public Mono<Comment> getById(@PathVariable String id) {
+    public Comment getById(@PathVariable String id) {
         log.info("get comment by id {}", id);
         return commentService.getById(id)
-                .switchIfEmpty(Mono.error(CommentNotFoundException::new));
+                .orElseThrow(CommentNotFoundException::new);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/api/comment")
-    public Mono<Comment> update(@Valid @RequestBody Comment comment) {
+    public Comment update(@Valid @RequestBody Comment comment) {
         log.info("update comment {} by id {}", comment, comment.getId());
         return commentService.update(comment);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/api/comment")
-    public Mono<Comment> create(@Valid @RequestBody Comment comment) {
+    public Comment create(@Valid @RequestBody Comment comment) {
         log.info("create comment {}", comment);
         return commentService.insert(comment);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/api/comment/{id}")
-    public Mono<Void> delete(@PathVariable String id) {
+    public void delete(@PathVariable String id) {
         log.info("delete comment by id {}", id);
-        return commentService.deleteById(id);
+        commentService.deleteById(id);
     }
 
 }

@@ -3,28 +3,31 @@ package ru.otus.librarywebapp.rest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.web.reactive.function.BodyInserters;
-
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import ru.otus.domain.Author;
 
 import ru.otus.librarywebapp.service.AuthorService;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("Test for author api")
-@WebFluxTest(controllers = AuthorApi.class)
+@WebMvcTest(controllers = AuthorApi.class)
 @Import(AuthorApi.class)
 class AuthorControllerTest extends BaseTest {
 
@@ -33,73 +36,65 @@ class AuthorControllerTest extends BaseTest {
 
     @Test
     @DisplayName("Test get all authors page on /api/author")
-    void shouldGetAllAuthors() {
-        given(this.authorService.getAll()).willReturn(Flux.just(author(), author()));
+    void shouldGetAllAuthors() throws Exception {
+        given(this.authorService.getAll()).willReturn(Arrays.asList(author(), author()));
 
         String responseBody = "[{\"id\":null,\"firstName\":\"test\",\"birthDate\":\"2019-04-27\",\"lastName\":\"test\",\"fullName\":\"test test\"}," +
                 "{\"id\":null,\"firstName\":\"test\",\"birthDate\":\"2019-04-27\",\"lastName\":\"test\",\"fullName\":\"test test\"}]";
 
-        this.webClient.get().uri("/api/author")
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(String.class).isEqualTo(responseBody);
+        this.webClient.perform(get("/api/author")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string(responseBody));
     }
 
     @Test
     @DisplayName("Test get author on /api/author/{id}")
-    void shouldGetAuthor() {
-        given(this.authorService.getById("123")).willReturn(Mono.just(author()));
+    void shouldGetAuthor() throws Exception {
+        given(this.authorService.getById("123")).willReturn(Optional.of(author()));
 
         String responseBody = "{\"id\":null,\"firstName\":\"test\",\"birthDate\":\"2019-04-27\",\"lastName\":\"test\",\"fullName\":\"test test\"}";
 
-        this.webClient.get().uri("/api/author/123")
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(String.class).isEqualTo(responseBody);
+        this.webClient.perform(get("/api/author/123")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string(responseBody));
     }
 
     @Test
     @DisplayName("Test update author on /api/author")
-    void shouldUpdateAuthor() {
+    void shouldUpdateAuthor() throws Exception {
         Author author = author();
 
-        given(this.authorService.update(author)).willReturn(Mono.just(author));
+        given(this.authorService.update(author)).willReturn(author);
 
         String responseBody = "{\"id\":null,\"firstName\":\"test\",\"birthDate\":\"2019-04-27\",\"lastName\":\"test\",\"fullName\":\"test test\"}";
 
-        this.webClient
-                .mutateWith(csrf())
-                .put().uri("/api/author")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromObject(author))
+        this.webClient.perform(put("/api/author").with(csrf())
                 .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(String.class).isEqualTo(responseBody);
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(author)))
+                .andExpect(status().isOk())
+                .andExpect(content().string(responseBody));
 
         verify(this.authorService, times(1)).update(any(Author.class));
     }
 
     @Test
     @DisplayName("Test create author on post /api/author")
-    void shouldCreateAuthor() {
+    void shouldCreateAuthor() throws Exception {
         Author author = author();
 
-        given(this.authorService.insert(author)).willReturn(Mono.just(author));
+        given(this.authorService.insert(author)).willReturn(author);
 
         String responseBody = "{\"id\":null,\"firstName\":\"test\",\"birthDate\":\"2019-04-27\",\"lastName\":\"test\",\"fullName\":\"test test\"}";
 
-        this.webClient
-                .mutateWith(csrf())
-                .post().uri("/api/author")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromObject(author))
+        this.webClient.perform(post("/api/author").with(csrf())
                 .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isCreated()
-                .expectBody(String.class).isEqualTo(responseBody);
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(author)))
+                .andExpect(status().isCreated())
+                .andExpect(content().string(responseBody));
 
         verify(this.authorService, times(1)).insert(any(Author.class));
     }
@@ -107,15 +102,10 @@ class AuthorControllerTest extends BaseTest {
     @Test
     @DisplayName("Test delete author on /api/author/{id}")
     @WithMockUser(username = "adm", authorities = "ROLE_ADMIN") // TODO check admin
-    void shouldDeleteAuthorById() {
-        given(this.authorService.deleteById("123")).willReturn(Mono.empty());
-
-        this.webClient
-                .mutateWith(csrf())
-                .delete().uri("/api/author/123")
-                .exchange()
-                .expectStatus().isNoContent();
-
+    void shouldDeleteAuthorById() throws Exception {
+        this.webClient.perform(delete("/api/author/123").with(csrf())
+                .accept(MediaType.TEXT_PLAIN))
+                .andExpect(status().isNoContent());
         verify(this.authorService, times(1)).deleteById("123");
     }
 

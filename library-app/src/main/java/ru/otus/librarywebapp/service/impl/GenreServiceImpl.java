@@ -4,15 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
 import ru.otus.domain.Genre;
-
 import ru.otus.dto.GenreDto;
+
 import ru.otus.librarywebapp.dao.GenreRepository;
 import ru.otus.librarywebapp.service.BookService;
 import ru.otus.librarywebapp.service.GenreService;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class GenreServiceImpl implements GenreService {
@@ -27,42 +27,43 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    public Mono<Long> count() {
+    public long count() {
         return repository.count();
     }
 
     @Override
-    public Mono<Genre> getById(String id) {
+    public Optional<Genre> getById(String id) {
         return repository.findById(id);
     }
 
     @Override
-    public Flux<Genre> getByGenreName(String genreName) {
+    public List<Genre> getByGenreName(String genreName) {
         return repository.findByGenreName(genreName);
     }
 
     @Override
-    public Flux<Genre> getAll() {
+    public List<Genre> getAll() {
         return repository.findAll();
     }
 
     @Override
-    public Mono<GenreDto> getAll(Pageable pageable) {
-        return repository.findAll(pageable).collectList().map(GenreDto::new);
+    public GenreDto getAll(Pageable pageable) {
+        return new GenreDto(repository.findAll(pageable).getContent());
     }
 
     @Override
-    public Mono<Void> deleteById(String id) {
-        return bookService.deleteByGenreId(id).then(repository.deleteById(id));
+    public void deleteById(String id) {
+        bookService.deleteByGenreId(id);
+        repository.deleteById(id);
     }
 
     @Override
-    public Mono<Genre> insert(Genre genre) {
+    public Genre insert(Genre genre) {
         return repository.insert(genre);
     }
 
     @Override
-    public Mono<Genre> update(Genre genre) {
+    public Genre update(Genre genre) {
         return repository.save(genre);
     }
 

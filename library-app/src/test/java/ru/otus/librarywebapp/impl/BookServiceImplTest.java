@@ -8,21 +8,17 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
 import ru.otus.librarywebapp.dao.BookRepository;
 import ru.otus.librarywebapp.dao.CommentRepository;
 
 import ru.otus.domain.Author;
 import ru.otus.domain.Book;
-import ru.otus.domain.Comment;
 import ru.otus.domain.Genre;
 
 import ru.otus.librarywebapp.service.impl.BookServiceImpl;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -44,13 +40,13 @@ class BookServiceImplTest {
     @Test
     @DisplayName("Test invoke get book by id")
     void shouldGetBookById() {
-        Mono<Book> bookMock = Mono.just(new Book(new Author("", null, ""),
+        Book bookMock = new Book(new Author("", null, ""),
                 new Genre(""), "Book",
                 LocalDate.now(), "russian",
-                "Test", "Test", "555-555"));
-        when(bookRepository.findById(any(String.class))).thenReturn(bookMock);
+                "Test", "Test", "555-555");
+        when(bookRepository.findById(any(String.class))).thenReturn(Optional.of(bookMock));
 
-        Mono<Book> book = bookService.getById("000");
+        Book book = bookService.getById("000").get();
 
         verify(bookRepository, times(1)).findById("000");
         assertEquals(bookMock, book);
@@ -66,11 +62,6 @@ class BookServiceImplTest {
     @Test
     @DisplayName("Test invoke delete book by id")
     void shouldDeleteBookById() {
-        Comment comment = new Comment("test", LocalDateTime.now(), "test");
-
-        when(commentRepository.deleteByBookId(any(String.class))).thenReturn(Flux.just(comment));
-        when(bookRepository.deleteById(any(String.class))).thenReturn(Mono.empty());
-
         bookService.deleteById("000");
         verify(commentRepository, times(1)).deleteByBookId("000");
         verify(bookRepository, times(1)).deleteById("000");

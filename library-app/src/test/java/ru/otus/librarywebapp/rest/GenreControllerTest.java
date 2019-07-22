@@ -3,27 +3,30 @@ package ru.otus.librarywebapp.rest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.BodyInserters;
-
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import ru.otus.domain.Genre;
 
 import ru.otus.librarywebapp.service.GenreService;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("Test for genre api")
-@WebFluxTest(controllers = GenreApi.class)
+@WebMvcTest(controllers = GenreApi.class)
 @Import(GenreApi.class)
 class GenreControllerTest extends BaseTest {
 
@@ -32,86 +35,73 @@ class GenreControllerTest extends BaseTest {
 
     @Test
     @DisplayName("Test get genres on /api/genre")
-    void shouldGetAllGenres() {
-        given(this.genreService.getAll()).willReturn(Flux.just(genre(), genre()));
+    void shouldGetAllGenres() throws Exception {
+        given(this.genreService.getAll()).willReturn(Arrays.asList(genre(), genre()));
 
         String responseBody = "[{\"id\":null,\"genreName\":\"test\"},{\"id\":null,\"genreName\":\"test\"}]";
 
-        this.webClient.get().uri("/api/genre")
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(String.class).isEqualTo(responseBody);
+        this.webClient.perform(get("/api/genre")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string(responseBody));
     }
 
     @Test
     @DisplayName("Test get genre on /api/genre/{id}")
-    void shouldGetGenre() {
-        given(this.genreService.getById("123")).willReturn(Mono.just(genre()));
+    void shouldGetGenre() throws Exception {
+        given(this.genreService.getById("123")).willReturn(Optional.of(genre()));
 
         String responseBody = "{\"id\":null,\"genreName\":\"test\"}";
 
-        this.webClient.get().uri("/api/genre/123")
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(String.class).isEqualTo(responseBody);
+        this.webClient.perform(get("/api/genre/123")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string(responseBody));
     }
 
     @Test
     @DisplayName("Test update genre on /api/genre")
-    void shouldUpdateGenre() {
+    void shouldUpdateGenre() throws Exception {
         Genre genre = genre();
 
-        given(this.genreService.update(genre)).willReturn(Mono.just(genre()));
+        given(this.genreService.update(genre)).willReturn(genre());
 
         String responseBody = "{\"id\":null,\"genreName\":\"test\"}";
 
-        this.webClient
-                .mutateWith(csrf())
-                .put().uri("/api/genre")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromObject(genre))
+        this.webClient.perform(put("/api/genre").with(csrf())
                 .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(String.class).isEqualTo(responseBody);
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(genre)))
+                .andExpect(status().isOk())
+                .andExpect(content().string(responseBody));
 
         verify(this.genreService, times(1)).update(any(Genre.class));
     }
 
     @Test
     @DisplayName("Test create genre on post /api/genre")
-    void shouldCreateGenre() {
+    void shouldCreateGenre() throws Exception {
         Genre genre = genre();
 
-        given(this.genreService.insert(genre)).willReturn(Mono.just(genre()));
+        given(this.genreService.insert(genre)).willReturn(genre());
 
         String responseBody = "{\"id\":null,\"genreName\":\"test\"}";
 
-        this.webClient
-                .mutateWith(csrf())
-                .post().uri("/api/genre")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromObject(genre))
+        this.webClient.perform(post("/api/genre").with(csrf())
                 .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isCreated()
-                .expectBody(String.class).isEqualTo(responseBody);
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(genre)))
+                .andExpect(status().isCreated())
+                .andExpect(content().string(responseBody));
 
         verify(this.genreService, times(1)).insert(any(Genre.class));
     }
 
     @Test
     @DisplayName("Test delete genre on /api/genre/{id}")
-    void shouldDeleteGenreById() {
-        given(this.genreService.deleteById("123")).willReturn(Mono.empty());
-
-        this.webClient
-                .mutateWith(csrf())
-                .delete().uri("/api/genre/123")
-                .exchange()
-                .expectStatus().isNoContent();
+    void shouldDeleteGenreById() throws Exception {
+        this.webClient.perform(delete("/api/genre/123").with(csrf()))
+                .andExpect(status().isNoContent());
 
         verify(this.genreService, times(1)).deleteById("123");
     }

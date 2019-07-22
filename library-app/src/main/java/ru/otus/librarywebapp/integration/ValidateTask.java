@@ -1,8 +1,10 @@
 package ru.otus.librarywebapp.integration;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import ru.otus.domain.Book;
 import ru.otus.librarywebapp.dao.BookRepository;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -22,8 +24,7 @@ public class ValidateTask {
 
     @Scheduled(initialDelay = 1000, fixedRate = 30000)
     void execute() {
-        bookRepository.findAll(PageRequest.of(counter.getAndIncrement(), 10))
-                .collectList().doOnNext(integrationService::process).subscribe();
-
+        Page<Book> page = bookRepository.findAll(PageRequest.of(counter.getAndIncrement(), 10));
+        integrationService.process(page.getContent());
     }
 }

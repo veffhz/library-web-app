@@ -4,15 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
 import ru.otus.domain.Author;
-
 import ru.otus.dto.AuthorDto;
+
 import ru.otus.librarywebapp.dao.AuthorRepository;
 import ru.otus.librarywebapp.service.AuthorService;
 import ru.otus.librarywebapp.service.BookService;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AuthorServiceImpl implements AuthorService {
@@ -27,42 +27,43 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Mono<Long> count() {
+    public long count() {
         return repository.count();
     }
 
     @Override
-    public Mono<Author> getById(String id) {
+    public Optional<Author> getById(String id) {
         return repository.findById(id);
     }
 
     @Override
-    public Flux<Author> getByLastName(String lastName) {
+    public List<Author> getByLastName(String lastName) {
         return repository.findByLastName(lastName);
     }
 
     @Override
-    public Flux<Author> getAll() {
+    public List<Author> getAll() {
         return repository.findAll();
     }
 
     @Override
-    public Mono<AuthorDto> getAll(Pageable pageable) {
-        return repository.findAll(pageable).collectList().map(AuthorDto::new);
+    public AuthorDto getAll(Pageable pageable) {
+        return new AuthorDto(repository.findAll(pageable).getContent());
     }
 
     @Override
-    public Mono<Void> deleteById(String id) {
-        return bookService.deleteByAuthorId(id).then(repository.deleteById(id));
+    public void deleteById(String id) {
+        bookService.deleteByAuthorId(id);
+        repository.deleteById(id);
     }
 
     @Override
-    public Mono<Author> insert(Author author) {
+    public Author insert(Author author) {
         return repository.insert(author);
     }
 
     @Override
-    public Mono<Author> update(Author author) {
+    public Author update(Author author) {
         return repository.save(author);
     }
 

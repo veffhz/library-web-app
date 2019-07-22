@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.context.annotation.ComponentScan;
 
-import reactor.test.StepVerifier;
-
 import ru.otus.domain.Book;
 import ru.otus.domain.Comment;
 
@@ -31,15 +29,12 @@ class CommentRepositoryTest {
     @DisplayName("Test add comment")
     void shouldAddCommentToBook() {
         Comment comment = new Comment("author", LocalDateTime.now(), "content");
-        Book book = bookRepository.findAll().blockFirst();
+        Book book = bookRepository.findAll().get(0);
 
         comment.setBook(book);
 
-        StepVerifier
-                .create(commentRepository.save(comment))
-                .assertNext(c -> assertNotNull(c.getId()))
-                .expectComplete()
-                .verify();
+        commentRepository.save(comment);
+        assertNotNull(comment.getId());
     }
 
 }

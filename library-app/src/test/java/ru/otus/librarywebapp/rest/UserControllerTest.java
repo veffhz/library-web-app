@@ -3,46 +3,45 @@ package ru.otus.librarywebapp.rest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.BodyInserters;
 
-import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("Test for user api")
-@WebFluxTest(controllers = UserApi.class)
+@WebMvcTest(controllers = UserApi.class)
 @Import(UserApi.class)
 class UserControllerTest extends BaseTest {
 
     @Test
     @DisplayName("Test get on /api/user")
-    void shouldGetUser() {
+    void shouldGetUser() throws Exception {
         String responseBody = "[\"usr\",null,{\"password\":\"password\",\"username\":\"usr\"," +
                 "\"authorities\":[{\"authority\":\"ROLE_USER\"}],\"accountNonExpired\":true,\"accountNonLocked\":true," +
                 "\"credentialsNonExpired\":true,\"enabled\":true},[{\"authority\":\"ROLE_USER\"}]]";
 
-        this.webClient.get().uri("/api/user")
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(String.class).isEqualTo(responseBody);
+        this.webClient.perform(get("/api/user")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string(responseBody));
     }
 
     @Test
     @DisplayName("Test post on /api/user")
-    void shouldPostUser() {
+    void shouldPostUser() throws Exception {
         String responseBody = "[\"usr\",[{\"authority\":\"ROLE_USER\"}],\"Test\"]";
 
-        this.webClient
-                .mutateWith(csrf())
-                .post().uri("/api/user")
+        this.webClient.perform(post("/api/user").with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromObject("Test"))
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isCreated()
-                .expectBody(String.class).isEqualTo(responseBody);
+                .content("Test")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(content().string(responseBody));
     }
 
 }

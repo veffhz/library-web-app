@@ -3,28 +3,31 @@ package ru.otus.librarywebapp.rest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.BodyInserters;
-
-import reactor.core.publisher.Mono;
 
 import ru.otus.domain.Comment;
 import ru.otus.dto.CommentDto;
 import ru.otus.librarywebapp.service.CommentService;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("Test for comment api")
-@WebFluxTest(controllers = CommentApi.class)
+@WebMvcTest(controllers = CommentApi.class)
 @Import(CommentApi.class)
 class CommentControllerTest extends BaseTest {
 
@@ -33,92 +36,76 @@ class CommentControllerTest extends BaseTest {
 
     @Test
     @DisplayName("Test get all comments on /api/comment")
-    void shouldGetAllComments() {
+    void shouldGetAllComments() throws Exception {
         given(this.commentService.getAll(CommentApi.COMMENTS_PAGE_REQUEST))
-                .willReturn(Mono.just(new CommentDto(Collections.singletonList(comment()), 0, 1L)));
+                .willReturn(new CommentDto(Collections.singletonList(comment()), 0, 1L));
 
         String responseBody = "{\"comments\":[{\"id\":null,\"book\":null,\"author\":\"test\"," +
                 "\"date\":\"2019-04-27 00:00\",\"content\":\"test\"}],\"currentPage\":0,\"totalPages\":1}";
 
-        this.webClient.get().uri(uriBuilder -> uriBuilder
-                .path("/api/comment")
-                .queryParam("page", 0)
-                .build())
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(String.class).isEqualTo(responseBody);
+        this.webClient.perform(get("/api/comment").param("page", "0")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string(responseBody));
     }
 
     @Test
     @DisplayName("Test get comment on /api/comment{id}")
-    void shouldGetComment() {
-        given(this.commentService.getById("123")).willReturn(Mono.just(comment()));
+    void shouldGetComment() throws Exception {
+        given(this.commentService.getById("123")).willReturn(Optional.of(comment()));
 
         String responseBody = "{\"id\":null,\"book\":null,\"author\":\"test\",\"date\":\"2019-04-27 00:00\",\"content\":\"test\"}";
 
-        this.webClient.get().uri("/api/comment/123")
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(String.class).isEqualTo(responseBody);
+        this.webClient.perform(get("/api/comment/123")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string(responseBody));
     }
 
     @Test
     @DisplayName("Test update comment page on /api/comment")
-    void shouldUpdateComment() {
+    void shouldUpdateComment() throws Exception {
         Comment comment = comment();
 
-        given(this.commentService.update(any(Comment.class))).willReturn(Mono.just(comment));
+        given(this.commentService.update(any(Comment.class))).willReturn(comment);
 
         String responseBody = "{\"id\":null,\"book\":null,\"author\":\"test\",\"date\":\"2019-04-27 00:00\",\"content\":\"test\"}";
 
-        this.webClient
-                .mutateWith(csrf())
-                .put().uri("/api/comment")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromObject(comment))
+        this.webClient.perform(put("/api/comment").with(csrf())
                 .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(String.class).isEqualTo(responseBody);
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(comment)))
+                .andExpect(status().isOk())
+                .andExpect(content().string(responseBody));
 
         verify(this.commentService, times(1)).update(comment);
     }
 
     @Test
     @DisplayName("Test create comment on post /api/comment")
-    void shouldCreateComment() {
+    void shouldCreateComment() throws Exception {
         Comment comment = new Comment("test", null, "test");
         Comment savedComment = comment();
 
-        given(this.commentService.insert(any(Comment.class))).willReturn(Mono.just(savedComment));
+        given(this.commentService.insert(any(Comment.class))).willReturn(savedComment);
 
         String responseBody = "{\"id\":null,\"book\":null,\"author\":\"test\",\"date\":\"2019-04-27 00:00\",\"content\":\"test\"}";
 
-        this.webClient
-                .mutateWith(csrf())
-                .post().uri("/api/comment")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromObject(comment))
+        this.webClient.perform(post("/api/comment").with(csrf())
                 .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isCreated()
-                .expectBody(String.class).isEqualTo(responseBody);
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(comment)))
+                .andExpect(status().isCreated())
+                .andExpect(content().string(responseBody));
 
         verify(this.commentService, times(1)).insert(any(Comment.class));
     }
 
     @Test
     @DisplayName("Test delete comment on /api/comment/{id}")
-    void shouldDeleteCommentById() {
-        given(this.commentService.deleteById("123")).willReturn(Mono.empty());
-
-        this.webClient
-                .mutateWith(csrf())
-                .delete().uri("/api/comment/123")
-                .exchange()
-                .expectStatus().isNoContent();
+    void shouldDeleteCommentById() throws Exception {
+        this.webClient.perform(delete("/api/comment/123").with(csrf()))
+                .andExpect(status().isNoContent());
 
         verify(this.commentService, times(1)).deleteById("123");
     }
