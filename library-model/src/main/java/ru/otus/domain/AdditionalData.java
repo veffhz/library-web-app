@@ -1,6 +1,7 @@
 package ru.otus.domain;
 
 import lombok.Data;
+
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -11,13 +12,17 @@ import java.util.List;
 @Document(collection = "additionalData")
 public class AdditionalData {
 
-    private final List<String> items;
+    private List<String> items;
 
     @DBRef
     private Book book;
 
     public AdditionalData() {
         this.items = new ArrayList<>();
+    }
+
+    void setItems(List<String> items) {
+        this.items = items;
     }
 
     public boolean isNotEmpty() {

@@ -12,7 +12,7 @@ import org.springframework.scheduling.annotation.ScheduledAnnotationBeanPostProc
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import ru.otus.librarywebapp.controller.TaskController;
+import ru.otus.librarywebapp.endpoints.TaskEndPoint;
 import ru.otus.librarywebapp.integration.ValidateTask;
 
 import static org.mockito.ArgumentMatchers.anyString;
@@ -22,8 +22,8 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
 
 @DisplayName("Test for Task Controller")
-@WebFluxTest(controllers = TaskController.class)
-@Import(TaskController.class)
+@WebFluxTest(controllers = TaskEndPoint.class)
+@Import(TaskEndPoint.class)
 class TaskControllerTest {
 
     @Autowired
