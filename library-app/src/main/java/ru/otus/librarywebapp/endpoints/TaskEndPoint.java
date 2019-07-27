@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.lang.Nullable;
 import org.springframework.scheduling.annotation.ScheduledAnnotationBeanPostProcessor;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -23,9 +23,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-@Controller
+@Component
 @Slf4j
-@RestControllerEndpoint(id="task")
+@RestControllerEndpoint(id="tasks")
 public class TaskEndPoint {
 
     private static final String SCHEDULED_TASKS = "validateTask";
