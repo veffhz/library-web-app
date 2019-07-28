@@ -1,6 +1,7 @@
 package ru.otus.validateapp.service.impl;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jsoup.Jsoup;
@@ -56,7 +57,8 @@ public class BookValidateServiceImpl implements BookValidateService {
     }
 
     @Override
-    @HystrixCommand(fallbackMethod = "defaultAdditionalData")
+    @HystrixCommand(fallbackMethod = "defaultAdditionalData", groupKey = "BookValidateService", commandKey = "validate",
+            commandProperties = {@HystrixProperty(name="execution.timeout.enabled", value="false")})
     public List<AdditionalData> validate(List<Book> books) {
         List<AdditionalData> items = books.stream().map(this::validate)
                 .filter(AdditionalData::isNotEmpty)
@@ -149,6 +151,7 @@ public class BookValidateServiceImpl implements BookValidateService {
     }
 
     private List<AdditionalData> defaultAdditionalData(List<Book> books) {
+        log.warn("fallback!");
         return Collections.singletonList(new AdditionalData("1a1a111aa1a1aa111a1a1111",
                 books.iterator().next()));
     }
