@@ -26,11 +26,10 @@ public class Api {
     }
 
     @PostMapping("/api/data")
-    public ResponseEntity validate(@RequestBody BookDto dto) {
+    public ResponseEntity<List<AdditionalData>> validate(@RequestBody BookDto dto) {
         log.info("received books {}", dto.getBooks());
-        bookValidateService.validate(dto.getBooks());
-        if (false) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        return ResponseEntity.status(HttpStatus.OK).build();
+        List<AdditionalData> data = bookValidateService.validate(dto.getBooks());
+        return ResponseEntity.status(HttpStatus.OK).body(data);
     }
 
     @GetMapping("/api/data/{id}")

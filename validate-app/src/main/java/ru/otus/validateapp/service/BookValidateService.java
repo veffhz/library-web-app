@@ -10,6 +10,6 @@ public interface BookValidateService {
     void drop();
     AdditionalData validate(Book book);
     List<AdditionalData> findAll();
-    void validate(List<Book> book);
+    List<AdditionalData> validate(List<Book> book);
     Optional<AdditionalData> findById(String id);
 }

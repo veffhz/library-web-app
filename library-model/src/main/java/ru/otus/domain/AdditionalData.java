@@ -29,6 +29,12 @@ public class AdditionalData {
         this.items = new ArrayList<>();
     }
 
+    public AdditionalData(String id, Book book) {
+        this();
+        this.id = id;
+        this.book = book;
+    }
+
     @JsonIgnore
     public boolean isNotEmpty() {
         return !items.isEmpty();

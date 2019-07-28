@@ -2,16 +2,22 @@ package ru.otus.librarywebapp.integration;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
+import ru.otus.domain.AdditionalData;
 import ru.otus.dto.BookDto;
 
 import ru.otus.librarywebapp.dao.BookRepository;
@@ -38,13 +44,14 @@ public class ValidateTask {
                     log.info("processing #{} next {}", counter, BookApi.BOOKS_PER_PAGE);
                     WebClient.create(url).post().accept(MediaType.APPLICATION_JSON_UTF8).
                             body(BodyInserters.fromObject(new BookDto(list, counter.intValue(), 0L))).
-                            exchange().subscribe(result -> {
-                        if (result.statusCode().isError()) {
-                            throw new ValidateException(result.statusCode().getReasonPhrase());
-                        } else {
-                            log.info("response code {}", result.statusCode());
-                        }
-                    });
+                            retrieve().onStatus(HttpStatus::isError,
+                            response -> Mono.error(new ValidateException(response.statusCode().name())))
+                            .bodyToMono(new ParameterizedTypeReference<List<AdditionalData>>() {
+                            })
+                            .subscribe(
+                                    result -> log.info("response {} ids {}", result.size(), result.stream()
+                                            .map(AdditionalData::getId).collect(Collectors.toList()))
+                            );
                 })
                 .subscribe();
     }
