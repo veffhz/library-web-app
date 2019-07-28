@@ -2,10 +2,22 @@ version: '3.1'
 
 services:
   library-app:
-    build: .
+    build:
+      context: .
+      dockerfile: ./library-app/Dockerfile
     restart: always
     ports:
       - 8080:8080
+    depends_on:
+      - mongo
+
+  validate-app:
+    build:
+      context: .
+      dockerfile: ./validate-app/Dockerfile
+    restart: always
+    ports:
+      - 8090:8090
     depends_on:
       - mongo
 
