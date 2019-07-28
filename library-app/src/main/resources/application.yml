@@ -7,7 +7,7 @@ spring:
 
 validate-app:
   url: http://localhost:8090/api/data
-  enabled: false
+  enabled: true
 
 management:
   endpoint:

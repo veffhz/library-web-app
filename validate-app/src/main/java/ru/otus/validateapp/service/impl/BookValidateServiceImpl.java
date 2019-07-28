@@ -29,6 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -52,24 +53,35 @@ public class BookValidateServiceImpl implements BookValidateService {
 
     @Override
     public void validate(List<Book> books) {
-        List<AdditionalData> collect = books.stream().map(this::validate).collect(Collectors.toList());
-        collect.forEach(item -> {
+        List<AdditionalData> items = books.stream().map(this::validate)
+                .filter(AdditionalData::isNotEmpty)
+                .collect(Collectors.toList());
+        items.forEach(item -> {
             log.info("save {}", item);
             repository.save(item);
         });
     }
 
     @Override
-    public AdditionalData findById(String id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Not found!"));
+    public Optional<AdditionalData> findById(String id) {
+        return repository.findById(id);
+    }
+
+    @Override
+    public List<AdditionalData> findAll() {
+        return repository.findAll();
+    }
+
+    @Override
+    public void drop() {
+        repository.deleteAll();
     }
 
     public AdditionalData validate(Book book) {
 
         AdditionalData data = new AdditionalData();
 
-        log.info("thread: {},  In: {}", Thread.currentThread().getName(), book.getBookName());
+        log.info("In: {}", book.getBookName());
 
         try {
             UriComponentsBuilder param = UriComponentsBuilder.fromHttpUrl(url)

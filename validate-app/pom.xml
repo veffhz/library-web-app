@@ -33,8 +33,6 @@
             <artifactId>jsoup</artifactId>
             <version>1.12.1</version>
         </dependency>
-
-
     </dependencies>
 
 </project>
