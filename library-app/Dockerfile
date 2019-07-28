@@ -8,6 +8,7 @@ COPY ./pom.xml $BUILD_DIR/
 COPY ./library-model $BUILD_DIR/library-model
 COPY ./library-app $BUILD_DIR/library-app
 COPY ./library-batch $BUILD_DIR/library-batch
+COPY ./validate-app $BUILD_DIR/validate-app
 
 RUN mvn package -pl library-app -am
 
@@ -16,6 +17,7 @@ RUN mvn package -pl library-app -am
 FROM openjdk:8-alpine
 
 ENV SPRING_DATA_MONGODB_URI=mongodb://mongo:27017
+ENV VALIDATE-APP_URL=http://validate-app:8090/api/data
 
 ENV PROJECT_DIR=/opt/project
 RUN mkdir -p $PROJECT_DIR

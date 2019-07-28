@@ -1,6 +1,7 @@
 package ru.otus.librarywebapp.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.netflix.hystrix.HystrixCommands;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import ru.otus.dto.AuthorDto;
 import ru.otus.librarywebapp.dao.AuthorRepository;
 import ru.otus.librarywebapp.service.AuthorService;
 import ru.otus.librarywebapp.service.BookService;
+import ru.otus.librarywebapp.utils.Helper;
 
 @Service
 public class AuthorServiceImpl implements AuthorService {
@@ -43,7 +45,15 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public Flux<Author> getAll() {
-        return repository.findAll();
+        return HystrixCommands
+                .from(repository.findAll())
+                .fallback(fallback())
+                .commandName("findAllAuthors")
+                .toFlux();
+    }
+
+    private Flux<Author> fallback() {
+        return Flux.fromIterable(Helper.notAvailableAuthors());
     }
 
     @Override

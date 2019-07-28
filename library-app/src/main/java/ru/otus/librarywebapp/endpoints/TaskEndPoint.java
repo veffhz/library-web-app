@@ -1,22 +1,32 @@
-package ru.otus.librarywebapp.controller;
+package ru.otus.librarywebapp.endpoints;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.endpoint.web.annotation.RestControllerEndpoint;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.lang.Nullable;
 import org.springframework.scheduling.annotation.ScheduledAnnotationBeanPostProcessor;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import org.springframework.web.util.UriComponentsBuilder;
+import reactor.core.publisher.Mono;
 import ru.otus.librarywebapp.integration.ValidateTask;
 
+import java.net.URI;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
+@Component
 @Slf4j
-@Controller
-public class TaskController {
+@RestControllerEndpoint(id="tasks")
+public class TaskEndPoint {
 
     private static final String SCHEDULED_TASKS = "validateTask";
 
@@ -24,12 +34,12 @@ public class TaskController {
     private final ValidateTask scheduledTask;
 
     @Autowired
-    public TaskController(ScheduledAnnotationBeanPostProcessor postProcessor, @Nullable ValidateTask scheduledTask) {
+    public TaskEndPoint(ScheduledAnnotationBeanPostProcessor postProcessor, @Nullable ValidateTask scheduledTask) {
         this.postProcessor = postProcessor;
         this.scheduledTask = scheduledTask;
     }
 
-    @PutMapping(value = "/task/stop")
+    @GetMapping(value = "/stop")
     @ResponseBody
     public ResponseEntity<String> stopSchedule(){
 
@@ -44,7 +54,7 @@ public class TaskController {
         return ResponseEntity.ok("OK");
     }
 
-    @PutMapping(value = "/task/start")
+    @GetMapping(value = "/start")
     @ResponseBody
     public ResponseEntity<String> startSchedule(){
 
@@ -57,6 +67,19 @@ public class TaskController {
 
         postProcessor.postProcessAfterInitialization(scheduledTask, SCHEDULED_TASKS);
         return ResponseEntity.ok("OK");
+    }
+
+    @GetMapping
+    @ResponseBody
+    public Mono<ResponseEntity<Map>> task(ServerHttpRequest serverHttpRequest) {
+        Map<String, Link> links = new HashMap<>();
+        links.put("stop", new Link(newPath(serverHttpRequest.getURI(), "/stop")));
+        links.put("start", new Link(newPath(serverHttpRequest.getURI(), "/start")));
+        return Mono.just(ResponseEntity.status(HttpStatus.OK).body(Collections.singletonMap("_links", links)));
+    }
+
+    private String newPath(URI uri, String path) {
+        return UriComponentsBuilder.fromUri(uri).path(path).toUriString();
     }
 
 }

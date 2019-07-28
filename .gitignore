@@ -34,3 +34,4 @@ logs/*.gz
 /library-batch/target/
 /library-model/target/
 /library-app/target/
+/validate-app/target/

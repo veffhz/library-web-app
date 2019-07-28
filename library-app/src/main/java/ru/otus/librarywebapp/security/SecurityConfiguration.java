@@ -1,6 +1,7 @@
 package ru.otus.librarywebapp.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.autoconfigure.security.reactive.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 
@@ -37,6 +38,7 @@ public class SecurityConfiguration  {
         return http
                 .csrf().disable()
                 .authorizeExchange()
+                .matchers(EndpointRequest.to("hystrix.stream")).permitAll()
                 .pathMatchers(HttpMethod.GET, "/api/**").access(authorizationDecisionManger::isUser)
                 .pathMatchers(HttpMethod.PUT, "/api/**").access(authorizationDecisionManger::isUser)
                 .pathMatchers(HttpMethod.POST, "/api/**").access(authorizationDecisionManger::isUser)

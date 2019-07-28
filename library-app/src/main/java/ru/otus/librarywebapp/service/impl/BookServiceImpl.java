@@ -1,6 +1,7 @@
 package ru.otus.librarywebapp.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.netflix.hystrix.HystrixCommands;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import ru.otus.librarywebapp.dao.CommentRepository;
 import ru.otus.domain.Book;
 import ru.otus.librarywebapp.rest.BookApi;
 import ru.otus.librarywebapp.service.BookService;
+import ru.otus.librarywebapp.utils.Helper;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -48,14 +50,29 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Flux<Book> getAll() {
-        return repository.findAll();
+        return HystrixCommands
+                .from(repository.findAll())
+                .fallback(fallback())
+                .commandName("findAllBooks")
+                .toFlux();
     }
 
     @Override
     public Mono<BookDto> getAll(Pageable pageable) {
-        return repository.findAll(pageable).collectList().zipWith(repository.count())
+        return HystrixCommands.from(repository.findAll(pageable).collectList().zipWith(repository.count())
                 .map(data -> new BookDto(data.getT1(), pageable.getPageNumber(),
-                        data.getT2() / BookApi.BOOKS_PER_PAGE));
+                        data.getT2() / BookApi.BOOKS_PER_PAGE)))
+                .fallback(fallbackMono())
+                .commandName("findAllBooks")
+                .toMono();
+    }
+
+    private Flux<Book> fallback() {
+        return Flux.fromIterable(Helper.notAvailableBooks());
+    }
+
+    private Mono<BookDto> fallbackMono() {
+        return Mono.just(Helper.notAvailableBookDto());
     }
 
     @Override

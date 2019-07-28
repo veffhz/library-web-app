@@ -1,3 +1,6 @@
+server:
+  port : 8090
+
 spring:
   main:
     banner-mode: "off"
@@ -5,9 +8,9 @@ spring:
     mongodb:
       database: library
 
-validate-app:
-  url: http://localhost:8090/api/data
-  enabled: true
+validate-service:
+  url: http://findbook.ru/search/d1
+  enabled: false
 
 management:
   endpoint:
