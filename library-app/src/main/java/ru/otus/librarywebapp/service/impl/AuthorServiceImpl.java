@@ -48,7 +48,7 @@ public class AuthorServiceImpl implements AuthorService {
         return HystrixCommands
                 .from(repository.findAll())
                 .fallback(fallback())
-                .commandName("findAll")
+                .commandName("findAllAuthors")
                 .toFlux();
     }
 

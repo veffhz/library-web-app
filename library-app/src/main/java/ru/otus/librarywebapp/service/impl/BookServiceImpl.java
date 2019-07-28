@@ -53,7 +53,7 @@ public class BookServiceImpl implements BookService {
         return HystrixCommands
                 .from(repository.findAll())
                 .fallback(fallback())
-                .commandName("findAll")
+                .commandName("findAllBooks")
                 .toFlux();
     }
 
@@ -63,7 +63,7 @@ public class BookServiceImpl implements BookService {
                 .map(data -> new BookDto(data.getT1(), pageable.getPageNumber(),
                         data.getT2() / BookApi.BOOKS_PER_PAGE)))
                 .fallback(fallbackMono())
-                .commandName("findAll")
+                .commandName("findAllBooks")
                 .toMono();
     }
 

@@ -47,7 +47,7 @@ public class CommentServiceImpl implements CommentService {
         return HystrixCommands
                 .from(repository.findAll())
                 .fallback(fallback())
-                .commandName("findAll")
+                .commandName("findAllComments")
                 .toFlux();
     }
 
@@ -57,7 +57,7 @@ public class CommentServiceImpl implements CommentService {
                 .map(data -> new CommentDto(data.getT1(), pageable.getPageNumber(),
                         data.getT2() / CommentApi.COMMENTS_PER_PAGE)))
                 .fallback(fallbackMono())
-                .commandName("findAll")
+                .commandName("findAllComments")
                 .toMono();
     }
 

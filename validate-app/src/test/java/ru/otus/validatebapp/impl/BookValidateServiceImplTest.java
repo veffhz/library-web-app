@@ -22,6 +22,7 @@ import ru.otus.domain.Author;
 import ru.otus.domain.Book;
 import ru.otus.domain.Genre;
 
+import ru.otus.validateapp.dao.AdditionalDataRepository;
 import ru.otus.validateapp.service.impl.BookValidateServiceImpl;
 
 import java.io.IOException;
@@ -43,6 +44,9 @@ class BookValidateServiceImplTest {
 
     @MockBean
     private RestTemplate restTemplate;
+
+    @MockBean
+    private AdditionalDataRepository additionalDataRepository;
 
     @SpyBean
     private BookValidateServiceImpl bookService;

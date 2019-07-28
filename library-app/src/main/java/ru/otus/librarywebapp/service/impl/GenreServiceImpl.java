@@ -48,7 +48,7 @@ public class GenreServiceImpl implements GenreService {
         return HystrixCommands
                 .from(repository.findAll())
                 .fallback(fallback())
-                .commandName("findAll")
+                .commandName("findAllGenres")
                 .toFlux();
     }
 
